@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>ME Header Font Roughs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Grand+Hotel&family=Lobster+Two:ital,wght@1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root { color-scheme:light; font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif; }
+    * { box-sizing:border-box; }
+    html,body { width:100%;min-height:100%;margin:0;background:#fff;color:#111; }
+    body { padding:max(18px,env(safe-area-inset-top)) 0 max(18px,env(safe-area-inset-bottom)); }
+    main { width:min(100%,430px);margin:0 auto; }
+    section { min-height:258px;padding:18px 18px 22px;display:grid;grid-template-rows:24px 1fr;border-bottom:1px solid #eceaec; }
+    section:last-child { border-bottom:0; }
+    small { align-self:start;color:#8b8789;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;font-size:11px;font-style:normal;font-weight:600;letter-spacing:.08em; }
+    .words { align-self:center;display:grid;gap:17px;text-align:center; }
+    .words span { display:block;background:var(--ink);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 .25px rgba(255,20,147,.28));white-space:nowrap;line-height:1; }
+    .words span:nth-child(1) { font-size:38px; }
+    .words span:nth-child(2) { font-size:47px; }
+    .words span:nth-child(3) { font-size:38px; }
+    .instagram,.modern,.editorial { font-family:"Cookie",cursive;font-weight:400;letter-spacing:-.015em; }
+    .instagram { --ink:repeating-linear-gradient(100deg,#FF1493 0,#FF5FB8 11px,#FFF9FC 22px,#FF7BC4 33px,#FF1493 44px); }
+    .modern { --ink:linear-gradient(#FF1493,#FF1493); }
+    .modern .words span:nth-child(1) { --ink:linear-gradient(96deg,#FF1493 0%,#FFF9FC 7%,#FF6DBD 13%,#FF1493 20%,#FF1493 41%,#FF76C1 47%,#FFF9FC 51%,#FF70BE 56%,#FF1493 63%,#FF1493 83%,#FF73C0 89%,#FFF9FC 93%,#FF69BA 97%,#FF1493 100%); }
+    .modern .words span:nth-child(2) { --ink:linear-gradient(94deg,#FF1493 0%,#FFF9FC 9%,#FF6DBD 17%,#FF1493 25%,#FF1493 41%,#FF77C2 49%,#FFF9FC 54%,#FF6FBD 61%,#FF1493 69%,#FF1493 79%,#FF72BF 86%,#FFF9FC 91%,#FF1493 100%); }
+    .modern .words span:nth-child(3) { --ink:linear-gradient(98deg,#FF1493 0%,#FFF9FC 6%,#FF6DBD 12%,#FF1493 19%,#FF1493 36%,#FF75C1 43%,#FFF9FC 47%,#FF70BE 53%,#FF1493 60%,#FF1493 81%,#FF72BF 87%,#FFF9FC 91%,#FF6BBB 96%,#FF1493 100%); }
+    .editorial { --ink:linear-gradient(108deg,#FF1493 0%,#FF1493 21%,#FF72BE 27%,#FFF9FC 30%,#FF72BE 33%,#FF1493 40%,#FF1493 63%,#FF72BE 69%,#FFF9FC 72%,#FF72BE 75%,#FF1493 82%,#FF1493 100%); }
+    .instagram .words span:nth-child(1),.instagram .words span:nth-child(3),
+    .modern .words span:nth-child(1),.modern .words span:nth-child(3),
+    .editorial .words span:nth-child(1),.editorial .words span:nth-child(3) { font-size:41px; }
+    .instagram .words span:nth-child(2),.modern .words span:nth-child(2),.editorial .words span:nth-child(2) { font-size:53px;letter-spacing:.02em; }
+    .selected { min-height:calc(100vh - max(36px,env(safe-area-inset-top) + env(safe-area-inset-bottom)));border:0;font-family:"Cookie",cursive;font-weight:400;letter-spacing:-.015em; }
+    .selected .words span:nth-child(1) { --ink:linear-gradient(108deg,#FF1493 0%,#FF1493 21%,#FF72BE 27%,#FFF9FC 30%,#FF72BE 33%,#FF1493 40%,#FF1493 63%,#FF72BE 69%,#FFF9FC 72%,#FF72BE 75%,#FF1493 82%,#FF1493 100%);font-size:41px; }
+    .selected .words span:nth-child(2) { --ink:linear-gradient(94deg,#FF1493 0%,#FFF9FC 9%,#FF6DBD 17%,#FF1493 25%,#FF1493 41%,#FF77C2 49%,#FFF9FC 54%,#FF6FBD 61%,#FF1493 69%,#FF1493 79%,#FF72BF 86%,#FFF9FC 91%,#FF1493 100%);font-size:53px;letter-spacing:.02em; }
+    .selected .words span:nth-child(3) { --ink:linear-gradient(98deg,#FF1493 0%,#FFF9FC 6%,#FF6DBD 12%,#FF1493 19%,#FF1493 36%,#FF75C1 43%,#FFF9FC 47%,#FF70BE 53%,#FF1493 60%,#FF1493 81%,#FF72BF 87%,#FFF9FC 91%,#FF6BBB 96%,#FF1493 100%);font-size:41px; }
+    @media (max-height:760px) {
+      section { min-height:224px;padding-block:12px 16px; }
+      .words { gap:13px; }
+    }
+  </style>
+</head>
+<body>
+  <main aria-label="選択したMEヘッダー組み合わせ">
+    <section class="selected" aria-label="Style GalleryはC、MEとAI StylistはB">
+      <small>SELECTED · STYLE GALLERY C / ME B / AI STYLIST B</small>
+      <div class="words"><span>Style Gallery</span><span>ME</span><span>AI Stylist</span></div>
+    </section>
+  </main>
+</body>
+</html>
