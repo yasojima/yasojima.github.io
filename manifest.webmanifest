@@ -3,6 +3,7 @@
   "short_name": "ME",
   "description": "美容室で髪型と髪色を試せるAIミラー",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
