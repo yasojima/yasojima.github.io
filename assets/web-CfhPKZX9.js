@@ -1,0 +1,1 @@
+import{h as e}from"./index-DtP4MTUE.js";var t=class extends e{async show(e){}async hide(e){}};export{t as SplashScreenWeb};
