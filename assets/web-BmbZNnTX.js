@@ -1,0 +1,1 @@
+import{m as e}from"./index-CYtbhNoW.js";var t=class extends e{async show(e){}async hide(e){}};export{t as SplashScreenWeb};
