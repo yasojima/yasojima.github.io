@@ -220,9 +220,7 @@
 <ul>
 <li><a class="c-site-menu-link" href="/about/">クリスタルクリーンホームのハウスクリーニングとは</a></li>
 <li><a class="c-site-menu-link" href="/beginner/">はじめての方へ</a></li>
-<li><a class="c-site-menu-link" href="/house-cleaning/faq/">よくあるご質問</a></li>
 <li><a class="c-site-menu-link" href="/sitepolicy/">サイトのご利用にあたって</a></li>
-<li><a class="c-site-menu-link" href="/eco/">アレルギーをお持ちのお客様へ</a></li>
 <li><a class="c-site-menu-link" href="/info/">お知らせ</a></li>
 <li><a class="c-site-menu-link" href="#" data-demo-dialog="">お問い合わせ</a></li>
 </ul>
@@ -241,8 +239,8 @@
 </ul>
 <p class="c-site-menu__category c-site-menu__category--underline" data-others="">ビジネス・法人向け</p>
 <ul>
-<li><a class="c-site-menu-link c-site-menu-link--gray" href="/office/">店舗・オフィスクリーニング</a></li>
-<li><a class="c-site-menu-link c-site-menu-link--gray" href="/business/">法人のお客様へ</a></li>
+<li><a class="c-site-menu-link c-site-menu-link--gray" aria-disabled="true">店舗・オフィスクリーニング</a></li>
+<li><a class="c-site-menu-link c-site-menu-link--gray" aria-disabled="true">法人のお客様へ</a></li>
 <li><a class="c-site-menu-link c-site-menu-link--gray" href="#" data-demo-dialog="">クリスタルクリーンホームFCパートナー募集</a></li>
 </ul>
 <ul class="c-site-menu__sns c-site-menu-sns">
@@ -273,7 +271,7 @@
                     <img class="c-flex-image c-flex-image--stretched" src="/assets/top_banner_tvcm2026_pc.webp" alt="TVCM2026 放送開始" width="1024" height="432" loading="eager">
                 </picture>
               </a>
-                <a id="Top_Slide_bn4" class="mv__slide swiper-slide" href="/business/">
+                <a id="Top_Slide_bn4" class="mv__slide swiper-slide" aria-disabled="true">
                 <picture class="c-flex-picture">
                     <source srcset="/assets/images/top/kv/slider-sp_business.jpg" width="375" height="320" media="screen and (max-width: 767.98px)">
                     <img class="c-flex-image c-flex-image--stretched" src="/assets/images/top/kv/slider-pc_business.jpg" alt="slider-pc_business" width="1024" height="432" loading="eager">
@@ -673,7 +671,7 @@
 </section>
 <section class="l-section l-section--limited u-pt-56_32">
 <div class="l-section-inner l-section-inner--limited"><a class="c-banner about-link" href="/about/"> <span class="c-brand-banner c-brand-banner--about"><img class="c-brand-banner__logo" src="/assets/images/crystal-clean-home.png" alt="クリスタルクリーンホーム"><span class="c-brand-banner__copy"><span class="c-brand-banner__eyebrow">初めての方はこちら</span><span class="c-brand-banner__label">ハウスクリーニングについて</span></span><span class="c-brand-banner__arrow" aria-hidden="true">›</span></span> </a></div>
-<div class="l-section-inner l-section-inner--limited" style="margin-top: 24px;"><a class="c-banner about-link" href="/business/"> <picture class="c-flex-picture"> <source srcset="/assets/images/top/business-link_sp.webp" width="690" height="348" media="screen and (max-width: 767.98px)"> <img class="c-flex-image c-flex-image--stretched" src="/assets/images/top/business-link_pc.webp" alt="事務所・介護施設・学校など　法人のお客様はこちら" width="750" height="98" loading="lazy"> </picture> </a></div>
+<div class="l-section-inner l-section-inner--limited" style="margin-top: 24px;"><a class="c-banner about-link" aria-disabled="true"> <picture class="c-flex-picture"> <source srcset="/assets/images/top/business-link_sp.webp" width="690" height="348" media="screen and (max-width: 767.98px)"> <img class="c-flex-image c-flex-image--stretched" src="/assets/images/top/business-link_pc.webp" alt="事務所・介護施設・学校など　法人のお客様はこちら" width="750" height="98" loading="lazy"> </picture> </a></div>
 </section>
   <section class="l-section l-section--limited u-pb-0" style="--bg-color:#06408c;">
     <div class="l-section-inner">
@@ -962,9 +960,7 @@
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/beginner/">はじめての方へ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/flow/">ご注文の流れ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/howto-cart/">カートの使い方</a></li>
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/house-cleaning/faq/">よくあるご質問</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/sitepolicy/">サイトのご利用にあたって</a></li>
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/eco/">アレルギーをお持ちのお客様へ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/info/">お知らせ</a></li>
 </ul>
 </div>
@@ -988,8 +984,8 @@
 <div class="c-footer-item-heading c-footer-global-links__item--sp-bg-gray"><button class="c-footer-accordion__trigger c-footer-accordion-no-link__trigger js-accordion-trigger" type="button" aria-controls="footer-accordion_12">ビジネス・法人向け</button></div>
 <div class="c-footer-accordion__content" id="footer-accordion_12">
 <ul class="c-footer-global-links">
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/office/">店舗・オフィスクリーニング</a></li>
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/business/">法人のお客様へ</a></li>
+<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" aria-disabled="true">店舗・オフィスクリーニング</a></li>
+<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" aria-disabled="true">法人のお客様へ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="#" data-demo-dialog="">クリスタルクリーンホームFCパートナー募集</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="#" data-demo-dialog="">店舗求人情報</a></li>
 </ul>
@@ -1072,9 +1068,7 @@
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/beginner/">はじめての方へ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/flow/">ご注文の流れ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/howto-cart/">カートの使い方</a></li>
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/house-cleaning/faq/">よくあるご質問</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/sitepolicy/">サイトのご利用にあたって</a></li>
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/eco/">アレルギーをお持ちのお客様へ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/info/">お知らせ</a></li>
 </ul>
 <div class="c-footer-item-heading"><span class="c-footer-item-heading__text">お役立ち情報</span></div>
@@ -1092,8 +1086,8 @@
 </ul>
 <div class="c-footer-item-heading"><span class="c-footer-item-heading__text">ビジネス・法人向け</span></div>
 <ul class="c-footer-global-links">
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/office/">店舗・オフィスクリーニング</a></li>
-<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="/business/">法人のお客様へ</a></li>
+<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" aria-disabled="true">店舗・オフィスクリーニング</a></li>
+<li class="c-footer-global-links__item"><a class="c-footer-global-links__link" aria-disabled="true">法人のお客様へ</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="#" data-demo-dialog="">クリスタルクリーンホームFCパートナー募集</a></li>
 <li class="c-footer-global-links__item"><a class="c-footer-global-links__link" href="#" data-demo-dialog="">店舗求人情報</a></li>
 </ul>
