@@ -29,6 +29,31 @@
     return svg;
   }
 
+  const footerPhone = document.querySelector('.footer-tel-pc .c-demo-phone');
+  const contactDetails = footerPhone?.querySelector('img')?.alt.match(/([\d-]+)。受付時間\s*(.+)$/);
+  if (contactDetails) {
+    const contact = document.createElement('div');
+    contact.className = 'c-header-contact';
+    for (const [file, label] of [['visa', 'Visa'], ['master-card', 'Mastercard']]) {
+      const logo = document.createElement('img');
+      logo.className = 'c-header-contact__payment';
+      logo.src = `/assets/images/common-parts/payments/${file}.webp`;
+      logo.alt = label;
+      contact.append(logo);
+    }
+    const phone = footerPhone.querySelector('button, a[href]').cloneNode(false);
+    phone.className = 'c-header-contact__phone';
+    const phoneIcon = document.createElement('span');
+    phoneIcon.className = 'c-icon c-icon--phone';
+    phoneIcon.setAttribute('aria-hidden', 'true');
+    phone.append(phoneIcon, document.createTextNode(contactDetails[1]));
+    const hours = document.createElement('span');
+    hours.className = 'c-header-contact__hours';
+    hours.textContent = `受付時間 ${contactDetails[2]}`;
+    contact.append(phone, hours);
+    header.append(contact);
+  }
+
   const menuEnglish = {
     '/about/': 'About Us',
     '/house-cleaning/aircon/': 'Air Conditioning',
