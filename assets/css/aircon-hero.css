@@ -16,6 +16,10 @@
   mask-repeat: no-repeat;
 }
 
+.c-service-page .c-house-cleaning-mv--check .c-house-cleaning-mv__image {
+  height: calc(100% - var(--hero-projection));
+}
+
 .c-house-cleaning-mv__check {
   position: absolute;
   z-index: 2;
