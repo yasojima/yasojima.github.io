@@ -37,6 +37,19 @@
   text-align: center;
 }
 
+.c-service-page .c-reasons__card::before {
+  content: none;
+}
+
+.c-service-page .c-reasons__point {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  width: auto;
+  height: 48px;
+  transform: translateX(-50%);
+}
+
 @media (min-width: 1024px) and (max-width: 1199.98px) {
   .c-service-page .c-reasons__card { padding: 32px; }
   .c-service-page .c-reason-card__heading { font-size: .9375rem; }
