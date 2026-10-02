@@ -29,6 +29,34 @@
     return svg;
   }
 
+  const menuEnglish = {
+    '/about/': 'About Us',
+    '/house-cleaning/aircon/': 'Air Conditioning',
+    '/house-cleaning/pack/': 'Pack Service',
+    '/house-cleaning/water/': 'Water Areas',
+    '/house-cleaning/washer/': 'Washing Machines',
+    '/house-cleaning/kitchen/': 'Kitchen',
+    '/house-cleaning/room/': 'Rooms',
+    '/house-cleaning/coating/': 'Coating',
+    '/house-cleaning/others/': 'Others',
+  };
+
+  function headingContent(heading, label, englishLabel, prefix) {
+    const english = document.createElement('span');
+    english.className = `${prefix}__en`;
+    english.textContent = englishLabel;
+    const title = document.createElement('span');
+    title.className = `${prefix}__title`;
+    const text = document.createElement('span');
+    text.textContent = label;
+    title.append(text);
+    if (heading.matches('a[href]')) {
+      title.append(arrow('right'));
+      heading.setAttribute('aria-label', label);
+    }
+    heading.replaceChildren(english, title);
+  }
+
   function fullMenuSection(name, heading, content) {
     const section = document.createElement('div');
     section.className = `aircon-full-menu__section aircon-full-menu__section--${name}`;
@@ -36,6 +64,9 @@
     head.className = 'aircon-full-menu__head';
     const body = document.createElement('div');
     body.className = 'aircon-full-menu__body';
+    const english = menuEnglish[heading.getAttribute('href')] ||
+      ({ guide: 'User Guide', business: 'Business' }[name]);
+    headingContent(heading, heading.textContent.trim(), english, 'aircon-full-menu');
     head.append(heading);
     body.append(content);
     section.append(head, body);
@@ -96,26 +127,7 @@
     heading.className = 'aircon-mega__heading';
     heading.href = parentLink.getAttribute('href');
     const label = parentLink.querySelector('span').textContent.trim();
-    heading.setAttribute('aria-label', label);
-    const english = document.createElement('span');
-    english.className = 'aircon-mega__en';
-    english.textContent = {
-      '/about/': 'About Us',
-      '/house-cleaning/aircon/': 'Air Conditioning',
-      '/house-cleaning/pack/': 'Pack Service',
-      '/house-cleaning/water/': 'Water Areas',
-      '/house-cleaning/washer/': 'Washing Machines',
-      '/house-cleaning/kitchen/': 'Kitchen',
-      '/house-cleaning/room/': 'Rooms',
-      '/house-cleaning/coating/': 'Coating',
-      '/house-cleaning/others/': 'Others',
-    }[heading.getAttribute('href')] || '';
-    const title = document.createElement('span');
-    title.className = 'aircon-mega__title';
-    const titleText = document.createElement('span');
-    titleText.textContent = label;
-    title.append(titleText, arrow('right'));
-    heading.append(english, title);
+    headingContent(heading, label, menuEnglish[heading.getAttribute('href')] || '', 'aircon-mega');
 
     const list = document.createElement('div');
     list.className = 'aircon-mega__links';
