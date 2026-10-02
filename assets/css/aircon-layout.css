@@ -6,7 +6,9 @@
   background-color: #264574;
 }
 
-.c-service-page .p-reasons__heading {
+.c-service-page .p-reasons__heading,
+.c-service-page .p-page-anchors__heading,
+.c-service-page .recommend-plan__heading {
   position: relative;
   width: fit-content;
   max-width: calc(100% - 64px);
@@ -14,16 +16,30 @@
   padding-inline: 10px;
 }
 
-.c-service-page .p-reasons__heading::after {
+.c-service-page .p-reasons__heading::after,
+.c-service-page .p-page-anchors__heading::after,
+.c-service-page .recommend-plan__heading::after {
   position: absolute;
   right: -18px;
   bottom: -14px;
   left: -18px;
+  width: auto;
   height: 24px;
   border: 2px solid currentColor;
   border-top: 0;
   border-radius: 0 0 20px 20px;
+  background: none;
+  transform: none;
   content: "";
+}
+
+.c-service-page .p-page-anchors__heading {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.c-service-page .p-page-anchors__cards {
+  margin-top: 40px;
 }
 
 .c-service-page .c-reasons__card {
@@ -150,19 +166,6 @@
   --art-width: 355;
   --art-left: 422;
   --art-top: 83;
-}
-
-.c-section-heading--qa .c-section-heading__english::after {
-  content: "";
-  display: block;
-  width: 32px;
-  margin: 10px auto 0;
-  border-bottom: 1px solid currentColor;
-}
-
-.c-section-heading--qa .c-section-heading__subtitle::before,
-.c-section-heading--qa .c-section-heading__subtitle::after {
-  content: none;
 }
 
 .c-service-page #service-faq {
