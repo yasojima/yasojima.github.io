@@ -165,9 +165,117 @@
   content: none;
 }
 
+.c-service-page #service-faq {
+  --faq-accent: #5b9fcd;
+}
+
+.c-service-page #service-faq .c-faq-accordion__item + .c-faq-accordion__item {
+  margin-top: 20px;
+}
+
+.c-service-page #service-faq .c-faq-accordion__heading {
+  border-bottom: 2px solid var(--faq-accent);
+}
+
+.c-service-page #service-faq .c-faq-accordion__heading::before,
+.c-service-page #service-faq .c-faq-accordion__text::before {
+  width: 40px;
+  height: 40px;
+  background: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+  color: var(--faq-accent);
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.c-service-page #service-faq .c-faq-accordion__heading::before {
+  content: "Q.";
+}
+
+.c-service-page #service-faq .c-faq-accordion__trigger {
+  min-height: 76px;
+  padding: 14px 76px 14px 76px;
+  text-align: left;
+}
+
+.c-service-page #service-faq .c-faq-accordion__trigger::before {
+  top: 50%;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--faq-accent);
+  transform: translateY(-50%);
+}
+
+.c-service-page #service-faq .c-faq-accordion__trigger::after {
+  top: 50%;
+  right: 31px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  background: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+  transform: translateY(-70%) rotate(45deg);
+}
+
+.c-service-page #service-faq .c-faq-accordion__trigger[aria-expanded=true]::after {
+  transform: translateY(-30%) rotate(225deg);
+}
+
+.c-service-page #service-faq .c-faq-accordion__trigger:focus-visible {
+  outline: 2px solid #264574;
+  outline-offset: 3px;
+}
+
+.c-service-page #service-faq .c-faq-accordion__content {
+  background: #fff;
+}
+
+.c-service-page #service-faq .c-faq-accordion__text {
+  color: #000;
+}
+
+.c-service-page #service-faq .c-faq-accordion__text::before {
+  margin-top: 0;
+  content: "A.";
+}
+
 @media (max-width: 767.98px) {
   .c-section-heading__subtitle {
     gap: 4px;
     font-size: clamp(12px, 3.4vw, 16px);
+  }
+
+  .c-service-page #service-faq .c-faq-accordion__item + .c-faq-accordion__item {
+    margin-top: 16px;
+  }
+
+  .c-service-page #service-faq .c-faq-accordion__heading::before,
+  .c-service-page #service-faq .c-faq-accordion__text::before {
+    width: 32px;
+    height: 32px;
+    font-size: 28px;
+  }
+
+  .c-service-page #service-faq .c-faq-accordion__trigger {
+    padding-inline: 60px;
+  }
+
+  .c-service-page #service-faq .c-faq-accordion__trigger::before {
+    right: 16px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .c-service-page #service-faq .c-faq-accordion__trigger::after {
+    right: 26px;
+    width: 8px;
+    height: 8px;
   }
 }
