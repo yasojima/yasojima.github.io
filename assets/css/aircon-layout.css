@@ -61,3 +61,14 @@
   .c-service-page .c-reasons__card { width: calc(100% - 16px); }
   .c-service-page .c-reason-card__heading { font-size: .9375rem; }
 }
+
+@media (max-width: 767.98px) {
+  .c-service-page .p-page-anchors__cards .c-category-simple-card__bottom {
+    padding-inline: 6px;
+  }
+
+  .c-service-page .p-page-anchors__cards .c-category-simple-card__text {
+    font-size: clamp(11px, 3.1vw, 13px);
+    white-space: nowrap;
+  }
+}
