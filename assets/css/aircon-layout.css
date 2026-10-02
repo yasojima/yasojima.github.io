@@ -6,6 +6,17 @@
   --section-curve-depth: clamp(28px, 4vw, 64px);
 }
 
+.c-service-page .c-compare-image .icv__label {
+  transform: none;
+  transition: none;
+  pointer-events: none;
+  background: rgba(0, 0, 0, .6);
+}
+
+.c-aircon-comparison-note {
+  margin-top: 8px;
+}
+
 .c-curved-section {
   isolation: isolate;
 }
@@ -102,20 +113,24 @@
 
 .c-service-page .recommend-plan__heading::before,
 .c-service-page .recommend-plan__heading::after {
-  box-sizing: border-box;
-  flex: 0 0 14px;
-  height: 56px;
-  border: 0 solid currentColor;
-  border-radius: 50%;
-  content: "";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  height: 52px;
+  font-family: Arial, sans-serif;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  transform: translateY(-2px);
 }
 
 .c-service-page .recommend-plan__heading::before {
-  border-left-width: 1.5px;
+  content: "(";
 }
 
 .c-service-page .recommend-plan__heading::after {
-  border-right-width: 1.5px;
+  content: ")";
 }
 
 .c-bracket-heading__text {
@@ -130,8 +145,9 @@
 
   .c-service-page .recommend-plan__heading::before,
   .c-service-page .recommend-plan__heading::after {
-    flex-basis: 12px;
+    flex-basis: 20px;
     height: 64px;
+    font-size: 60px;
   }
 }
 
