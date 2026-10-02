@@ -152,6 +152,30 @@
   --art-top: 83;
 }
 
+.c-section-heading--qa .c-section-heading__english {
+  font-family: "Times New Roman", serif;
+  letter-spacing: .035em;
+}
+
+.c-section-heading--qa .c-section-heading__english::after {
+  content: "";
+  display: block;
+  width: 32px;
+  margin: 10px auto 0;
+  border-bottom: 1px solid currentColor;
+}
+
+.c-section-heading--qa .c-section-heading__subtitle {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS PMincho", serif;
+  font-size: 16px;
+  letter-spacing: .2em;
+}
+
+.c-section-heading--qa .c-section-heading__subtitle::before,
+.c-section-heading--qa .c-section-heading__subtitle::after {
+  content: none;
+}
+
 @media (max-width: 767.98px) {
   .c-section-heading__subtitle {
     gap: 4px;
