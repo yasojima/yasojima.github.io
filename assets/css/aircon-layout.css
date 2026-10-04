@@ -600,8 +600,14 @@
   }
 }
 
-/* Keep the aircon flow in its original five-across layout near 1440px. */
-@media (min-width: 1400px) and (max-width: 1439.98px) {
+/* Keep the original five-step row throughout desktop widths. */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  #service-flow .c-howto-container {
+    width: min(830px, calc(100vw - 80px));
+    max-width: none;
+    margin-inline: auto;
+  }
+
   #service-flow .c-howto--aircon-original {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 40px;
@@ -612,7 +618,12 @@
     grid-column: auto;
   }
 
-  #service-flow .c-howto--aircon-original .c-howto__item:nth-child(3) .c-howto__step::after {
+  #service-flow .c-howto--aircon-original .c-howto__item:last-child {
+    width: auto;
+    justify-self: stretch;
+  }
+
+  #service-flow .c-howto--aircon-original .c-howto__item:not(:last-child) .c-howto__step::after {
     content: "";
   }
 }
