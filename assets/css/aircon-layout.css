@@ -600,6 +600,23 @@
   }
 }
 
+/* Keep the aircon flow in its original five-across layout near 1440px. */
+@media (min-width: 1400px) and (max-width: 1439.98px) {
+  #service-flow .c-howto--aircon-original {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 40px;
+    --howto-gap: 40px;
+  }
+
+  #service-flow .c-howto--aircon-original .c-howto__item {
+    grid-column: auto;
+  }
+
+  #service-flow .c-howto--aircon-original .c-howto__item:nth-child(3) .c-howto__step::after {
+    content: "";
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1199.98px) {
   .c-howto-container {
     width: min(700px, calc(100vw - 370px));
