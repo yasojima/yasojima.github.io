@@ -41,7 +41,7 @@ body .office-wf .office-wf__mosaic-heading { font-size:3.53cqw; font-weight:500;
 .office-wf__mosaic-label-kicker { z-index:3; left:89.965%; top:1.983cqw; font-size:.991cqw; line-height:2.84; letter-spacing:.14em; }
 .office-wf__basin { position:absolute; z-index:2; left:35.302%; top:30.961cqw; width:64.098%; height:31.74cqw; }
 .office-wf__kitchen { width:min(90%,1485px); margin-top:36px; margin-inline:auto; }
-.office-wf p.office-wf__kitchen-copy { max-width:100%; font-size:15px; text-wrap:balance; overflow-wrap:break-word; }
+.office-wf p.office-wf__kitchen-copy { max-width:48em; font-size:15px; text-wrap:balance; overflow-wrap:break-word; }
 .office-wf__kitchen-pair { position:relative; isolation:isolate; aspect-ratio:5 / 3; overflow:hidden; margin-top:20px; box-shadow:0 12px 32px rgba(36,59,70,.16),0 2px 8px rgba(36,59,70,.08); }
 .office-wf__kitchen-pair figure { position:absolute; inset:0; width:100%; }
 .office-wf__kitchen-pair figure:first-child { clip-path:polygon(0 0,70% 0,34% 100%,0 100%); }
