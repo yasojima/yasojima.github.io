@@ -111,13 +111,11 @@ body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card__bottom {
 }
 
 body.c-beginner-lp #cch-first-lp {
-  --lp-home: #fff8ec;
-  --lp-water: #e0f5ff;
+  --lp-paper: #fff;
+  --lp-water: #edf7fb;
+  --lp-deep: #15232e;
   --lp-blue: #168fc5;
   --lp-border: #8fd5ef;
-  --lp-ribbon: url('/assets/images/first-lp/decor/water-ribbon.svg');
-  --lp-home-light: url('/assets/images/first-lp/decor/home-light.svg');
-  --lp-water-edge: url('/assets/images/first-lp/decor/water-edge.svg');
   background: #fff;
   overflow-x: clip;
 }
@@ -127,13 +125,13 @@ body.c-beginner-lp #cch-first-lp .lp-canvas {
 }
 body.c-beginner-lp #cch-first-lp .lp-canvas > :is(section, .lp-cta-scene) {
   --lp-surface: #fff;
-  --lp-side-decor: none;
+  --lp-join-from: var(--lp-paper);
   position: relative;
   isolation: isolate;
   background: transparent;
 }
 body.c-beginner-lp #cch-first-lp .lp-canvas > .lp-cta-scene { overflow: visible; }
-body.c-beginner-lp #cch-first-lp .lp-canvas > :is(section:not(#first-introduction), .lp-cta-scene)::before {
+body.c-beginner-lp #cch-first-lp .lp-canvas > :is(section:not(#first-introduction), .lp-cta-scene):not(.lp-designed-section)::before {
   content: "";
   position: absolute;
   inset: var(--lp-bg-top, 0px) auto var(--lp-bg-bottom, 0px) 50%;
@@ -143,37 +141,42 @@ body.c-beginner-lp #cch-first-lp .lp-canvas > :is(section:not(#first-introductio
   z-index: -1;
   pointer-events: none;
   clip-path: none;
-  background: var(--lp-side-decor) center / 100% 100% no-repeat, var(--lp-surface);
+  background: var(--lp-surface);
 }
-body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#first-comic, #first-work, #infection-prevention, #first-finish) {
-  --lp-surface: var(--lp-home);
-  --lp-side-decor: var(--lp-home-light);
-}
-body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#cleaning-approach, #first-concerns, #first-comparison, #first-services, .cta-assurance, .cta-aftercare, .cta-final) {
+body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#first-comic, #first-work, #first-voices, #first-flow) {
   --lp-surface: var(--lp-water);
-  --lp-side-decor: var(--lp-water-edge);
+}
+body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#cleaning-approach, #infection-prevention) {
+  --lp-join-from: var(--lp-water);
 }
 body.c-beginner-lp #cch-first-lp .lp-canvas > :is(.cta-assurance, .cta-aftercare) { --lp-bg-bottom: -72px; }
-body.c-beginner-lp #cch-first-lp #first-bath-results { --lp-bg-top: -80px; }
-body.c-beginner-lp #cch-first-lp .cta-final { --lp-bg-top: -44px; }
-body.c-beginner-lp #cch-first-lp #first-faq { --lp-surface: #edf9ff; }
-body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#first-comic, #cleaning-approach, #first-work, #first-concerns, #first-voices, #first-flow, #first-bath-results)::after {
+body.c-beginner-lp #cch-first-lp #first-faq { --lp-surface: var(--lp-deep); }
+body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#first-comic, #cleaning-approach, #first-work, #infection-prevention, #first-concerns, #first-voices, #first-flow)::after {
   content: "";
   position: absolute;
-  top: -28px;
+  top: -1px;
   bottom: auto;
   left: 50%;
   width: 100vw;
-  height: 90px;
+  height: 48px;
   transform: translateX(-50%);
-  background: var(--lp-ribbon) center / 100% 100% no-repeat;
+  background: var(--lp-join-from);
   pointer-events: none;
   z-index: -1;
-  clip-path: none;
+  clip-path: ellipse(78% 100% at 24% 0);
 }
-body.c-beginner-lp #cch-first-lp #first-comic::after { top: -20px; }
 body.c-beginner-lp #cch-first-lp #first-flow::after { transform: translateX(-50%) scaleX(-1); }
-body.c-beginner-lp #cch-first-lp #first-faq::after { content: none; }
+body.c-beginner-lp #cch-first-lp #first-faq::after {
+  content: "";
+  position: absolute;
+  inset: auto auto -1px 50%;
+  width: 100vw;
+  height: 42px;
+  transform: translateX(-50%);
+  background: var(--lp-paper);
+  clip-path: ellipse(78% 100% at 50% 100%);
+  pointer-events: none;
+}
 body.c-beginner-lp #cch-first-lp .lp-art-section > :is(img, picture),
 body.c-beginner-lp #cch-first-lp :is(#cleaning-approach, #infection-prevention) > img,
 body.c-beginner-lp #cch-first-lp :is(#first-work, #first-finish) > picture,
@@ -210,17 +213,6 @@ body.c-beginner-lp #cch-first-lp #first-voices .lp-voice {
   box-shadow: 0 8px 24px #0c739b0b;
   background: #fff;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison::after {
-  content: "";
-  position: absolute;
-  inset: 28px 2% 32px;
-  z-index: -1;
-  border: 1px solid var(--lp-border);
-  border-radius: 24px;
-  background: #fff;
-  box-shadow: 0 8px 26px #0c739b0c;
-  pointer-events: none;
-}
 body.c-beginner-lp #cch-first-lp #first-comparison h2 { color: #134a74; }
 body.c-beginner-lp #cch-first-lp #first-comparison h2 strong {
   color: #073a6a;
@@ -240,17 +232,6 @@ body.c-beginner-lp #cch-first-lp #first-comparison thead th:nth-child(2) { backg
 body.c-beginner-lp #cch-first-lp #first-services .lp-services {
   position: relative;
   isolation: isolate;
-}
-body.c-beginner-lp #cch-first-lp #first-services .lp-services::before {
-  content: "";
-  position: absolute;
-  inset: 30px 4% 16px;
-  z-index: -1;
-  border: 1px solid var(--lp-border);
-  border-radius: 24px;
-  background: #fff;
-  box-shadow: 0 8px 26px #0c739b0c;
-  pointer-events: none;
 }
 body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card {
   overflow: hidden;
@@ -289,15 +270,17 @@ body.c-beginner-lp #cch-first-lp #first-flow .lp-flow-steps > li {
 }
 body.c-beginner-lp #cch-first-lp #first-flow .lp-flow-number { background: #d9f4ff; color: #006caa; }
 body.c-beginner-lp #cch-first-lp #first-flow .lp-flow-steps::before { background: #7dcced; }
-body.c-beginner-lp #cch-first-lp #first-faq :is(h2, summary) { color: #263743; }
+body.c-beginner-lp #cch-first-lp #first-faq :is(h2, summary) { color: #fff; }
 body.c-beginner-lp #cch-first-lp #first-faq details {
-  border-color: #9fd5e9;
-  background: #fff;
+  border-color: #586b79;
+  background: #203440;
 }
-body.c-beginner-lp #cch-first-lp #first-faq .cch-faq-number { color: #075b91; }
-body.c-beginner-lp #cch-first-lp #first-faq summary::after { border-color: #075b91; }
-body.c-beginner-lp #cch-first-lp #first-faq summary:focus-visible { outline-color: #075b91; }
-body.c-beginner-lp #cch-first-lp #first-faq summary:hover { background: #edf7fa; }
+body.c-beginner-lp #cch-first-lp #first-faq summary { background: transparent; }
+body.c-beginner-lp #cch-first-lp #first-faq .cch-faq-number { color: #9edff5; }
+body.c-beginner-lp #cch-first-lp #first-faq summary::after { border-color: #9edff5; }
+body.c-beginner-lp #cch-first-lp #first-faq summary:focus-visible { outline-color: #9edff5; }
+body.c-beginner-lp #cch-first-lp #first-faq summary:hover { background: #2b4453; }
+body.c-beginner-lp #cch-first-lp #first-faq .cch-faq-answer { background: #fff; color: #263743; }
 body.c-beginner-lp #cch-first-lp .lp-scene-art {
   position: relative;
   container-type: inline-size;
@@ -318,15 +301,91 @@ body.c-beginner-lp #cch-first-lp :is(.lp-closing-results, .lp-bath-comparison) .
   box-shadow: 0 8px 28px #0c739b0b;
 }
 
+/* Full-width scenery is independent of the original center artwork. */
+body.c-beginner-lp #cch-first-lp .lp-backdrop {
+  position: absolute;
+  inset: 0 auto 0 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+  background: var(--lp-paper);
+}
+body.c-beginner-lp #cch-first-lp .lp-designed-section > :not(.lp-backdrop) { z-index: 1; }
+body.c-beginner-lp #cch-first-lp #first-comparison > :not(.lp-backdrop) { position: relative; }
+body.c-beginner-lp #cch-first-lp .lp-backdrop-information,
+body.c-beginner-lp #cch-first-lp .lp-backdrop-menu {
+  background: var(--lp-paper);
+}
+body.c-beginner-lp #cch-first-lp #first-comparison {
+  padding-top: 64px;
+  padding-bottom: 44px;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-heading h2 {
+  font-size: 18px;
+  line-height: 1.7;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-heading strong {
+  font-size: clamp(30px, 3.4cqw, 38px);
+  letter-spacing: .1em;
+}
+body.c-beginner-lp #cch-first-lp .lp-backdrop-bath {
+  top: -1px;
+  bottom: -44px;
+  background: var(--lp-paper);
+}
+body.c-beginner-lp #cch-first-lp .lp-backdrop-room,
+body.c-beginner-lp #cch-first-lp .lp-backdrop-join {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+body.c-beginner-lp #cch-first-lp .lp-backdrop-bath .lp-backdrop-join {
+  top: calc(830 / 1426 * 100cqw - 32px);
+  height: 64px;
+  background: var(--lp-paper);
+  clip-path: ellipse(78% 100% at 50% 100%);
+}
+body.c-beginner-lp #cch-first-lp #first-bath-results .lp-bath-comparison {
+  position: relative;
+  isolation: isolate;
+}
+body.c-beginner-lp #cch-first-lp .lp-backdrop-estimate .lp-backdrop-join {
+  top: -44px;
+  height: 72px;
+  background: var(--lp-paper);
+  clip-path: ellipse(78% 100% at 25% 0);
+}
+@media (min-width: 768px) {
+  body.c-beginner-lp #cch-first-lp .lp-backdrop-bath .lp-backdrop-room {
+    top: 0;
+    height: calc(830 / 1426 * 100cqw);
+    background: url('/assets/images/first-lp/art/complements/bath-sides.png') center top / 200cqw auto no-repeat;
+    mask-image: linear-gradient(#000, #000 calc(100% - 28px), transparent);
+  }
+  body.c-beginner-lp #cch-first-lp .lp-backdrop-estimate .lp-backdrop-room {
+    top: 0;
+    height: 100%;
+    background: url('/assets/images/first-lp/art/complements/estimate-sides.png') center top / 200cqw auto no-repeat;
+  }
+}
+@media (max-width: 767.98px) {
+  body.c-beginner-lp #cch-first-lp #first-comparison { padding-top: 40px; padding-bottom: 28px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-heading h2 { font-size: 14px; }
+  body.c-beginner-lp #cch-first-lp .lp-backdrop-bath { bottom: -28px; }
+  body.c-beginner-lp #cch-first-lp .lp-backdrop-bath .lp-backdrop-join { display: none; }
+  body.c-beginner-lp #cch-first-lp .lp-backdrop-estimate .lp-backdrop-join { top: -28px; height: 52px; }
+}
+
 @media (min-width: 768px) {
   body.c-beginner-lp #cch-first-lp { overflow-x: clip; }
   body.c-beginner-lp #cch-first-lp .lp-canvas > .cta-final,
   body.c-beginner-lp #cch-first-lp #first-concerns .lp-closing-art { overflow: visible; }
   body.c-beginner-lp #cch-first-lp .lp-scene-hygiene { --lp-scene-background: url('/assets/images/first-lp/art/complements/hygiene-sides.png'); }
   body.c-beginner-lp #cch-first-lp .lp-scene-concerns { --lp-scene-background: url('/assets/images/first-lp/art/complements/concerns-sides.png'); }
-  body.c-beginner-lp #cch-first-lp .lp-scene-estimate { --lp-scene-background: url('/assets/images/first-lp/art/complements/estimate-sides.png'); }
   /* Outpainted margins use the original artwork's scale; the original center remains in front. */
-  body.c-beginner-lp #cch-first-lp .lp-scene-art::before {
+  body.c-beginner-lp #cch-first-lp .lp-scene-art:not(.lp-scene-estimate)::before {
     content: "";
     position: absolute;
     inset: 0 auto auto 50%;
@@ -341,19 +400,11 @@ body.c-beginner-lp #cch-first-lp :is(.lp-closing-results, .lp-bath-comparison) .
   body.c-beginner-lp #cch-first-lp .lp-scene-art > img {
     mask-image: linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
   }
-  body.c-beginner-lp #cch-first-lp #first-concerns .lp-closing-art::after { content: none; }
-  /* The side plate shares the cropped original's scale; only the original contains people and copy. */
-  body.c-beginner-lp #cch-first-lp #first-bath-results .lp-bath-lead::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto auto 50%;
-    width: 100vw;
-    height: calc(830 / 1426 * 100cqw);
-    transform: translateX(-50%);
-    z-index: -1;
-    pointer-events: none;
-    background: url('/assets/images/first-lp/art/complements/bath-sides.png') center top / 200cqw auto no-repeat;
+  body.c-beginner-lp #cch-first-lp .lp-scene-estimate > img {
+    mask-image: linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent), linear-gradient(transparent, #000 12px);
+    mask-composite: intersect;
   }
+  body.c-beginner-lp #cch-first-lp #first-concerns .lp-closing-art::after { content: none; }
   body.c-beginner-lp #cch-first-lp #first-bath-results .lp-bath-lead-scene > img {
     mask-image: linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
   }
@@ -385,16 +436,12 @@ body.c-beginner-lp #cch-first-lp :is(.lp-closing-results, .lp-bath-comparison) .
 
 @media (max-width: 767.98px) {
   body.c-beginner-lp #cch-first-lp .lp-canvas > :is(.cta-assurance, .cta-aftercare) { --lp-bg-bottom: 0px; }
-  body.c-beginner-lp #cch-first-lp #first-bath-results,
-  body.c-beginner-lp #cch-first-lp .cta-final { --lp-bg-top: -28px; }
-  body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#first-comic, #cleaning-approach, #first-work, #first-concerns, #first-voices, #first-flow, #first-bath-results)::after {
-    top: -12px;
-    height: 34px;
+  body.c-beginner-lp #cch-first-lp .lp-canvas > :is(#first-comic, #cleaning-approach, #first-work, #infection-prevention, #first-concerns, #first-voices, #first-flow)::after {
+    height: 24px;
   }
+  body.c-beginner-lp #cch-first-lp #first-faq::after { height: 24px; }
   body.c-beginner-lp #cch-first-lp :is(#first-comic, #first-work, #first-finish) > picture { outline-offset: 3px; }
   body.c-beginner-lp #cch-first-lp #first-comic .lp-chapter-title { border-radius: 12px 12px 0 0; }
-  body.c-beginner-lp #cch-first-lp #first-services .lp-services::before { inset: 16px 2% 8px; border-radius: 16px; }
-  body.c-beginner-lp #cch-first-lp #first-comparison::after { inset: 16px 2% 16px; border-radius: 16px; }
   body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card { border-radius: 8px; }
   body.c-beginner-lp #cch-first-lp :is(.lp-closing-results, .lp-bath-comparison) .c-compare-image { outline-offset: 4px; }
 }
