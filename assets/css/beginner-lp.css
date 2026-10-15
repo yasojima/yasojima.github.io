@@ -851,3 +851,17 @@ body.c-beginner-lp #cch-first-lp #first-comparison td:nth-child(2) .lp-compariso
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr { --comparison-card-unit: calc(100cqw / 352); }
 }
+
+body.c-beginner-lp #cch-first-lp .lp-closing-services {
+  background: #fff;
+}
+body.c-beginner-lp #cch-first-lp .lp-closing-services .lp-services {
+  padding: 48px 6% 24px;
+  gap: 16px;
+}
+@media (max-width: 767.98px) {
+  body.c-beginner-lp #cch-first-lp .lp-closing-services .lp-services {
+    padding: 24px 16px 12px;
+    gap: 13px;
+  }
+}
