@@ -211,11 +211,20 @@
 
   .c-footer--aircon .footer-tel-btn {
     grid-column: 1 / -1;
+    width: 50%;
+    margin-inline: auto;
   }
 
   .c-footer--aircon .footer-tel-btn a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     height: 48px;
-    line-height: 48px;
+    padding-inline: 16px;
+    font-size: clamp(14px, 4vw, 16px);
+    line-height: 1.4;
+    white-space: nowrap;
   }
 
   .aircon-footer-menu__row {
