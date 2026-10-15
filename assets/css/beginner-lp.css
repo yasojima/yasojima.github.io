@@ -1,3 +1,37 @@
+body.c-beginner-lp #cch-first-lp .lp-information-layout { display: block; }
+body.c-beginner-lp #cch-first-lp .lp-information-layout > section {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+}
+body.c-beginner-lp #cch-first-lp .lp-menu-heading { position: relative; color: #073a6a; }
+body.c-beginner-lp #cch-first-lp .lp-menu-eyebrow { margin: 0; font-size: 16px; line-height: 1.6; font-weight: 700; }
+body.c-beginner-lp #cch-first-lp .lp-menu-heading h2 { margin: 0 0 8px; font-size: 28px; line-height: 1.4; font-weight: 700; letter-spacing: .04em; }
+body.c-beginner-lp #cch-first-lp .lp-menu-caption { margin: 0; font-size: 14px; line-height: 1.7; color: #536e81; }
+body.c-beginner-lp #cch-first-lp #first-services { padding: 32px 4% 48px; }
+body.c-beginner-lp #cch-first-lp #first-services .lp-services { padding: 24px 0; }
+body.c-beginner-lp #cch-first-lp #first-services > .cta-menu { margin: 0; overflow: visible; }
+body.c-beginner-lp #cch-first-lp #first-services > .cta-menu > img { display: none; }
+body.c-beginner-lp #cch-first-lp #first-services .lp-cta-action { position: relative; inset: auto; width: 100%; margin: 0; padding: 0; transform: none; }
+body.c-beginner-lp #cch-first-lp #first-services .lp-estimate-button { width: 100% !important; max-width: 400px !important; margin: 0 auto !important; }
+body.c-beginner-lp #cch-first-lp #first-services .c-double-icon-button__inner { min-height: 60px; padding: 14px 12px; gap: 8px; }
+body.c-beginner-lp #cch-first-lp #first-services .btn-free { font-size: 20px; letter-spacing: .04em; }
+
+@media (max-width: 1142px) {
+  body.c-beginner-lp #cch-first-lp #first-comparison table { min-width: 740px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-price-number { font-size: 16px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison td:nth-child(2) .lp-price-number { font-size: 22px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison tr > :first-child { position: sticky; left: 0; z-index: 2; background: #fff; border-right: 1px solid #c3e5f3; }
+  body.c-beginner-lp #cch-first-lp #first-comparison thead th:first-child { background: #dcf3fd; }
+  body.c-beginner-lp #cch-first-lp #first-comparison tbody th { padding-left: 12px; }
+}
+@media (max-width: 767.98px) {
+  body.c-beginner-lp #cch-first-lp .lp-menu-heading { text-align: center; }
+  body.c-beginner-lp #cch-first-lp .lp-menu-eyebrow { font-size: 14px; }
+  body.c-beginner-lp #cch-first-lp .lp-menu-heading h2 { font-size: 26px; }
+  body.c-beginner-lp #cch-first-lp #first-services { padding: 28px 16px 40px; }
+}
+
 body.c-beginner-lp > main {
   width: 100%;
   margin: 0;
@@ -466,4 +500,89 @@ body.c-beginner-lp #cch-first-lp .lp-backdrop-estimate .lp-backdrop-join {
    body.c-beginner-lp #cch-first-lp #first-flow,
    body.c-beginner-lp #cch-first-lp #first-faq { padding-top: 56px; padding-bottom: 56px; }
   }
+}
+
+@container lp-content (min-width: 1080px) {
+  body.c-beginner-lp #cch-first-lp .lp-information-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr);
+    gap: 28px;
+    padding: 56px 0 48px;
+    position: relative;
+    isolation: isolate;
+    align-items: stretch;
+  }
+  body.c-beginner-lp #cch-first-lp .lp-information-layout::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background: var(--lp-paper);
+    z-index: -1;
+    pointer-events: none;
+  }
+  body.c-beginner-lp #cch-first-lp .lp-information-layout > section {
+    min-width: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  body.c-beginner-lp #cch-first-lp .lp-information-layout .lp-backdrop { display: none; }
+  body.c-beginner-lp #cch-first-lp #first-comparison,
+  body.c-beginner-lp #cch-first-lp #first-services { padding: 0; background: transparent; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-heading {
+    text-align: left;
+    margin: 0 0 8px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-heading h2 { font-size: 16px; line-height: 1.6; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-heading strong {
+    display: block;
+    font-size: 28px;
+    line-height: 1.4;
+    letter-spacing: .04em;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison h2 br { display: none; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-table-caption {
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-table-scroll { padding: 0; border-radius: 10px; box-shadow: none; flex: 1; }
+  body.c-beginner-lp #cch-first-lp #first-comparison table { min-width: 0; height: 100%; }
+  body.c-beginner-lp #cch-first-lp #first-comparison :is(th, td) { padding: 16px 5px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison thead th { font-size: 14px; padding: 16px 5px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison thead th:first-child { font-size: 12px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison thead th:nth-child(2) { font-size: 20px; padding: 14px 5px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison tbody th { font-size: 13px; padding-left: 10px; word-break: keep-all; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-price-number { font-size: 14px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison td:nth-child(2) .lp-price-number { font-size: 20px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-price-condition { font-size: 13px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-price-unit { font-size: 11px; margin-left: 1px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-control-hint { display: none; }
+  body.c-beginner-lp #cch-first-lp .lp-menu-heading { display: block; order: 0; color: #073a6a; }
+  body.c-beginner-lp #cch-first-lp .lp-menu-eyebrow { margin: 0; font-size: 16px; line-height: 1.6; font-weight: 700; }
+  body.c-beginner-lp #cch-first-lp .lp-menu-heading h2 { margin: 0 0 8px; font-size: 28px; line-height: 1.4; font-weight: 700; letter-spacing: .04em; }
+  body.c-beginner-lp #cch-first-lp .lp-menu-caption { margin: 0 0 18px; font-size: 13px; line-height: 1.6; color: #536e81; }
+  body.c-beginner-lp #cch-first-lp #first-services .lp-services {
+    order: 1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-services .c-category-simple-card { border-radius: 8px; }
+  body.c-beginner-lp #cch-first-lp #first-services .c-category-simple-card__top { height: auto; min-height: 0; aspect-ratio: 4 / 3; }
+  body.c-beginner-lp #cch-first-lp #first-services .c-category-simple-card__bottom { padding: 8px 5px; min-height: 76px; }
+  body.c-beginner-lp #cch-first-lp #first-services .c-category-simple-card__text { font-size: 13px; line-height: 1.5; letter-spacing: 0; word-break: keep-all; }
+  body.c-beginner-lp #cch-first-lp #first-services .c-category-simple-card__text .u-sp-only { display: block !important; }
+  body.c-beginner-lp #cch-first-lp #first-services .c-category-simple-card__sub-heading { font-size: 12px; line-height: 1.5; letter-spacing: 0; text-wrap: balance; }
+  body.c-beginner-lp #cch-first-lp #first-services .c-category-simple-card__label { font-size: 10px; padding: 3px 5px; }
+  body.c-beginner-lp #cch-first-lp #first-services > .cta-menu { order: 2; margin: auto 0 0; overflow: visible; }
+  body.c-beginner-lp #cch-first-lp #first-services > .cta-menu > img { display: none; }
+  body.c-beginner-lp #cch-first-lp #first-services .lp-cta-action { position: relative; inset: auto; width: 100%; margin: 0; padding: 0; transform: none; }
+  body.c-beginner-lp #cch-first-lp #first-services .lp-estimate-button { width: 100% !important; max-width: none !important; margin: 0 !important; }
+  body.c-beginner-lp #cch-first-lp #first-services .c-double-icon-button__inner { min-height: 60px; padding: 14px 12px; gap: 8px; }
+  body.c-beginner-lp #cch-first-lp #first-services .btn-free { font-size: 20px; letter-spacing: .04em; }
 }
