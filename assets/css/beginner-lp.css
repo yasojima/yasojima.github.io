@@ -444,3 +444,4 @@ body.c-beginner-lp #cch-first-lp #first-faq::after {
   pointer-events: none;
 }
 body.c-beginner-lp #cch-first-lp #first-faq::before { background: var(--lp-water); }
+body.c-beginner-lp #cch-first-lp #first-faq::after { clip-path: ellipse(80% 100% at 78% 100%); }
