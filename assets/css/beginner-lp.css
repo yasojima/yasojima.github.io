@@ -11,10 +11,6 @@ body.c-beginner-lp #cch-first-lp .lp-canvas {
   box-shadow: none;
 }
 
-body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card__bottom {
-  min-height: 64px;
-}
-
 @media (max-width: 767.98px) {
   body.c-beginner-lp:has(#cch-first-lp) { background: #fff; }
   body.c-beginner-lp #cch-first-lp { --lp-section-space: 28px; }
@@ -233,36 +229,6 @@ body.c-beginner-lp #cch-first-lp #first-services .lp-services {
   position: relative;
   isolation: isolate;
 }
-body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card {
-  overflow: hidden;
-  border-radius: 12px;
-  outline: 1px solid #b8dfea;
-  box-shadow: none;
-}
-body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card__top {
-  position: relative;
-  background: #edf7fa;
-  overflow: hidden;
-}
-body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card__icon {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--lp-menu-photo) center / cover no-repeat;
-}
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--aircon { --lp-menu-photo: url('/assets/images/service-scenes/aircon-wall-after.png'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--pack { --lp-menu-photo: url('/assets/images/office-cleaning/floor.png'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--bath { --lp-menu-photo: url('/assets/images/service-scenes/bathroom-after.webp'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--washing-machine { --lp-menu-photo: url('/assets/images/service-scenes/washer-top-after.webp'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--kitchen { --lp-menu-photo: url('/assets/images/service-scenes/kitchen-sink-after.webp'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--room { --lp-menu-photo: url('/assets/images/service-scenes/flooring-before.webp'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--coating { --lp-menu-photo: url('/assets/images/service-scenes/wood-coating.webp'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-illust--other { --lp-menu-photo: url('/assets/images/service-scenes/outerwall.webp'); }
-body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card__label { z-index: 1; }
-body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card__bottom { background: #e7f6fd; color: #073a6a; }
-body.c-beginner-lp #cch-first-lp .lp-services :is(.c-category-simple-card__text, .c-category-simple-card__sub-heading) { color: #073a6a; }
 body.c-beginner-lp #cch-first-lp #first-flow .lp-flow-steps > li {
   border-color: #b6dcea;
   background: #fff;
@@ -442,7 +408,6 @@ body.c-beginner-lp #cch-first-lp .lp-backdrop-estimate .lp-backdrop-join {
   body.c-beginner-lp #cch-first-lp #first-faq::after { height: 24px; }
   body.c-beginner-lp #cch-first-lp :is(#first-comic, #first-work, #first-finish) > picture { outline-offset: 3px; }
   body.c-beginner-lp #cch-first-lp #first-comic .lp-chapter-title { border-radius: 12px 12px 0 0; }
-  body.c-beginner-lp #cch-first-lp .lp-services .c-category-simple-card { border-radius: 8px; }
   body.c-beginner-lp #cch-first-lp :is(.lp-closing-results, .lp-bath-comparison) .c-compare-image { outline-offset: 4px; }
 }
 
@@ -466,4 +431,45 @@ body.c-beginner-lp #cch-first-lp .lp-backdrop-estimate .lp-backdrop-join {
    body.c-beginner-lp #cch-first-lp #first-flow,
    body.c-beginner-lp #cch-first-lp #first-faq { padding-top: 56px; padding-bottom: 56px; }
   }
+}
+
+body.c-beginner-lp #cch-first-lp #first-comparison { scroll-margin-top: 160px; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-art { width: 100%; overflow-x: auto; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-grid > img { display: block; width: 100%; height: auto; }
+body.c-beginner-lp #cch-first-lp #first-services .lp-reference-estimate {
+  position: relative;
+  display: block;
+  width: min(100%, 480px);
+  aspect-ratio: 1160 / 202;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  background: #ef003b;
+  border-radius: 1.2% 1.2% 6.2% 1.2% / 6.9% 6.9% 35.6% 6.9%;
+  box-shadow: 0 4px 6px #182a3c33;
+}
+body.c-beginner-lp #cch-first-lp #first-services .lp-reference-estimate > img {
+  position: absolute;
+  display: block;
+  width: 187.241379%;
+  max-width: none;
+  height: auto;
+  left: -78.706897%;
+  top: -209.405941%;
+}
+body.c-beginner-lp #cch-first-lp #first-services .lp-reference-estimate:focus-visible { outline: 3px solid #005bac; outline-offset: 4px; }
+
+body.c-beginner-lp #cch-first-lp .lp-comparison-title-art { display: none; }
+@media (max-width: 992px) {
+  body.c-beginner-lp #cch-first-lp #first-comparison { padding: 32px 16px 24px; scroll-margin-top: 96px; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-title-art {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1867 / 278;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-title-art > img { display: block; width: 100%; max-width: none; height: auto; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-grid { position: relative; min-width: 740px; aspect-ratio: 1867 / 556; overflow: hidden; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-grid > img { position: absolute; top: -51.438849%; left: 0; width: 100%; max-width: none; height: auto; }
 }
