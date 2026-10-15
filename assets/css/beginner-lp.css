@@ -465,24 +465,17 @@ body.c-beginner-lp #cch-first-lp #first-faq::after {
 body.c-beginner-lp #cch-first-lp #first-faq::before { background: var(--lp-water); }
 body.c-beginner-lp #cch-first-lp #first-faq::after { clip-path: ellipse(80% 100% at 78% 100%); }
 
-body.c-beginner-lp #cch-first-lp #first-comparison > h2 {
-  margin: 0 0 28px;
-  color: #073b75;
-  font-family: "Yu Mincho", YuMincho, "Hiragino Mincho ProN", serif;
-  font-size: clamp(30px, 3.6vw, 43px);
-  font-weight: 800;
-  line-height: 1.2;
-  text-align: center;
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art {
+  width: min(100%, 1000px);
+  aspect-ratio: 1867 / 278;
+  margin: 0 auto 14px;
+  overflow: hidden;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison > h2::after {
-  content: "";
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art img {
   display: block;
-  width: min(250px, 52%);
-  height: 5px;
-  margin: 8px auto 0;
-  border-radius: 50% 50% 40% 40%;
-  background: #72c8ed;
-  transform: skewX(-16deg);
+  width: 100%;
+  max-width: none;
+  height: auto;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data {
   width: min(100%, 1000px);
@@ -516,13 +509,25 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th 
   text-align: center;
   white-space: nowrap;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:first-child { width: 22%; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:first-child {
+  width: 22%;
+  background: #0b72ac;
+  color: #fff;
+}
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:nth-child(2) {
   width: 15%;
   background: #0b72ac;
   color: #fff;
   font-size: clamp(17px, 1.9vw, 22px);
 }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-crown {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  vertical-align: -2px;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge { display: none; }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:last-child,
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:last-child { border-right: 0; }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody th,
@@ -557,7 +562,7 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name s
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td {
   background: #fff;
-  font-size: clamp(13px, 1.32vw, 16px);
+  font-size: clamp(15px, 1.4vw, 18px);
   text-align: center;
   white-space: nowrap;
 }
@@ -569,7 +574,7 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:
 }
 @media (max-width: 900px) {
   body.c-beginner-lp #cch-first-lp #first-comparison { padding: 40px 16px 36px; scroll-margin-top: 96px; }
-  body.c-beginner-lp #cch-first-lp #first-comparison > h2 { margin-bottom: 20px; font-size: clamp(27px, 4vw, 34px); }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art { margin-bottom: 12px; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data {
     width: 100%;
     overflow: visible;
@@ -596,8 +601,9 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: 80px auto;
     min-width: 0;
-    padding: 13px;
+    padding: 10px;
     border: 1px solid #b6d8eb;
     border-radius: 15px;
     background: #fff;
@@ -612,11 +618,35 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:
     border: 0;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody th {
+    position: relative;
     grid-column: 1 / -1;
-    padding: 0 0 10px;
+    grid-row: 1;
+    padding: 0;
     background: transparent;
-    font-size: 18px;
+    font-size: 17px;
     white-space: nowrap;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service { align-items: flex-start; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name { padding-top: 2px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px 6px;
+    border-radius: 10px;
+    background: #fff7df;
+    color: #ce8700;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge img {
+    display: block;
+    width: 13px;
+    height: 13px;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-image {
     --width: 78px;
@@ -626,19 +656,25 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(2) {
     display: flex;
     grid-column: 1 / -1;
+    grid-row: 1;
     align-items: center;
-    justify-content: space-between;
-    min-height: 42px;
-    margin-bottom: 8px;
-    padding: 6px 10px;
-    border-radius: 7px;
-    font-size: 21px;
+    align-self: end;
+    justify-content: flex-start;
+    gap: 7px;
+    height: 29px;
+    min-height: 0;
+    margin: 0 0 5px 86px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 18px;
+    line-height: 1;
+    z-index: 1;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(2)::before {
     content: "当社";
     display: inline-block;
-    padding: 3px 9px;
-    border-radius: 4px;
+    padding: 4px 7px;
+    border-radius: 2px;
     background: #0b72ac;
     color: #fff;
     font-size: 13px;
@@ -649,7 +685,8 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:
     flex-direction: column;
     align-items: center;
     gap: 2px;
-    padding: 3px 1px;
+    grid-row: 2;
+    padding: 5px 1px 1px;
     border-right: 1px solid #deedf5;
     color: #0b3867;
     font-size: 11px;
@@ -670,8 +707,5 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody { grid-template-columns: 1fr; gap: 12px; }
 }
 @media (max-width: 350px) {
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(n+3):nth-child(-n+5) { grid-column: span 2; }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(n+6) { grid-column: span 3; margin-top: 7px; }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(5) { border-right: 0; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(n+3) { font-size: 10px; letter-spacing: -.04em; }
 }
