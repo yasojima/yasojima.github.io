@@ -584,7 +584,7 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-link {
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tr > :last-child { border-right: 0; }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr:last-child > * { border-bottom: 0; }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody :is(th, td) {
-  height: 7.65cqw;
+  height: 10.2cqw;
   background: #fff;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody th {
@@ -604,6 +604,7 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-icon {
   flex: 0 0 5.2cqw;
   width: 5.2cqw;
   height: 5.2cqw;
+  object-fit: contain;
   overflow: hidden;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name {
