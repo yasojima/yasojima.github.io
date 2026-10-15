@@ -442,8 +442,7 @@ body.c-beginner-lp #cch-first-lp .lp-comparison-mobile { display: none; }
 
 @media (max-width: 767.98px) {
   body.c-beginner-lp #cch-first-lp .cta-final .lp-reference-estimate {
-    width: calc((100cqw - 30px) / 2);
-    min-height: 48px;
+    width: calc(100% - 30px);
   }
   body.c-beginner-lp #cch-first-lp :is(.cta-menu, .cta-assurance) .lp-cta-action {
     position: absolute;
@@ -506,11 +505,6 @@ body.c-beginner-lp #cch-first-lp .lp-comparison-mobile { display: none; }
   body.c-beginner-lp #cch-first-lp .lp-comparison-companies > img {
     left: calc(var(--lp-comparison-image-width) * -605 / 1867);
   }
-}
-
-@media (max-width: 767.98px) and (max-height: 660px),
-       (max-width: 374.98px) and (max-height: 720px) {
-  body.c-beginner-lp #cch-first-lp .cta-final .lp-reference-estimate { min-height: 44px; }
 }
 
 @media (max-width: 600px) {
