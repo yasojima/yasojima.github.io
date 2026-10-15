@@ -390,9 +390,11 @@
     visibleScrollY = lastScrollY;
   }
 
+  header.addEventListener('focusin', showHeader);
+
   function scheduleHeaderReturn() {
     window.clearTimeout(scrollIdleTimer);
-    if (touchActive || !mobileHeader.matches || menuOpen) return;
+    if (touchActive || menuOpen) return;
     scrollIdleTimer = window.setTimeout(() => {
       if (!touchActive) showHeader();
     }, scrollIdleDelay);
@@ -414,19 +416,22 @@
   window.addEventListener('scroll', () => {
     const currentY = Math.max(0, window.scrollY);
     updateFooterVisibility();
-    if (!mobileHeader.matches || menuOpen || restoringPage) {
+    if (menuOpen || restoringPage) {
       showHeader();
       return;
     }
     if (currentY === lastScrollY) return;
     lastScrollY = currentY;
     window.clearTimeout(scrollIdleTimer);
-    if (!header.classList.contains('is-footer-visible') && Math.abs(currentY - visibleScrollY) >= 8) header.classList.add('is-scroll-hidden');
+    if (!header.classList.contains('is-footer-visible') && Math.abs(currentY - visibleScrollY) >= 8) {
+      closeMega();
+      header.classList.add('is-scroll-hidden');
+    }
     scheduleHeaderReturn();
   }, { passive: true });
   document.addEventListener('scrollend', scheduleHeaderReturn);
   document.addEventListener('touchstart', event => {
-    if (!mobileHeader.matches || menuOpen) return;
+    if (menuOpen) return;
     touchActive = event.touches.length > 0;
     window.clearTimeout(scrollIdleTimer);
   }, { passive: true });
