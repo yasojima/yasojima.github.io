@@ -465,26 +465,45 @@ body.c-beginner-lp #cch-first-lp #first-faq::after {
 body.c-beginner-lp #cch-first-lp #first-faq::before { background: var(--lp-water); }
 body.c-beginner-lp #cch-first-lp #first-faq::after { clip-path: ellipse(80% 100% at 78% 100%); }
 
+body.c-beginner-lp #cch-first-lp #first-comparison {
+  --comparison-ink: #0a226c;
+  --comparison-blue: #0644b0;
+  --comparison-line: #cce5f8;
+  --comparison-serif: "Noto Serif JP", "Yu Mincho", serif;
+  --comparison-sans: "Noto Sans JP", sans-serif;
+}
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art {
   width: min(100%, 1000px);
-  aspect-ratio: 1867 / 278;
-  margin: 0 auto 14px;
+  height: 83px;
+  margin: 0 auto 18px;
   overflow: hidden;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art img {
   display: block;
-  width: 100%;
+  width: 550px;
   max-width: none;
   height: auto;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data {
+  position: relative;
+  container-type: inline-size;
   width: min(100%, 1000px);
   margin: 0 auto;
   overflow: hidden;
-  border: 1px solid #b6d8eb;
-  border-radius: 15px;
+  border: 1px solid #bcdcf6;
+  border-radius: 10px;
   background: #fff;
-  box-shadow: 0 5px 18px rgb(12 67 113 / 8%);
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 19.36%;
+  width: 15.6%;
+  border: 2px solid #46bfff;
+  border-radius: 6px;
+  pointer-events: none;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data table {
   width: 100%;
@@ -492,99 +511,154 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data table {
   margin: 0;
   border: 0;
   border-spacing: 0;
+  border-collapse: separate;
   border-radius: 0;
   table-layout: fixed;
-  color: #0b3867;
-  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  background: #fff;
+  color: var(--comparison-ink);
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data :is(th, td) {
+  width: auto;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--comparison-line);
+  border-bottom: 1px solid var(--comparison-line);
+  border-radius: 0;
+  color: var(--comparison-ink);
+  font-family: var(--comparison-serif) !important;
+  line-height: 1.3;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  letter-spacing: 0;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th {
-  height: 62px;
-  padding: 8px 4px;
-  border-right: 1px solid #c5dfef;
-  border-bottom: 1px solid #b6d8eb;
-  background: #e5f4fc;
-  font-size: clamp(13px, 1.35vw, 17px);
+  height: 7.75cqw;
+  background: #e7f4fe;
+  font-size: 2.08cqw;
   font-weight: 700;
-  color: #0b3867;
-  text-align: center;
-  white-space: nowrap;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:first-child {
-  width: 22%;
-  background: #0b72ac;
+  width: 19.36%;
+  background: linear-gradient(115deg, #0063a6, #0669a9);
   color: #fff;
+  font-family: var(--comparison-sans) !important;
+  font-size: 2.05cqw;
+  font-weight: 700;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:nth-child(2) {
-  width: 15%;
-  background: #0b72ac;
+  width: 15.6%;
+  background: linear-gradient(110deg, #0072d3, #0062d0);
   color: #fff;
-  font-size: clamp(17px, 1.9vw, 22px);
+  font-family: var(--comparison-sans) !important;
+  font-size: 2.8cqw;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:nth-child(3) { width: 11.62%; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:nth-child(4) { width: 11.5%; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:nth-child(5) { width: 12.5%; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:nth-child(6) { width: 14.6%; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-own-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .65cqw;
+  line-height: 1.3;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-crown {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 5px;
-  vertical-align: -2px;
+  display: block;
+  flex: none;
+  width: 3.3cqw;
+  height: 3.08cqw;
+  color: #fbd361;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge { display: none; }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead th:last-child,
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:last-child { border-right: 0; }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody th,
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td {
-  height: 84px;
-  padding: 8px 6px;
-  border-right: 1px solid #d6e9f4;
-  border-bottom: 1px solid #d6e9f4;
-  vertical-align: middle;
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-own-caption {
+  display: block;
+  margin-top: .35cqw;
+  font-size: 1.42cqw;
+  font-weight: 500;
+  line-height: 1.3;
 }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge,
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-image,
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-link { display: none; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tr > :last-child { border-right: 0; }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr:last-child > * { border-bottom: 0; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody :is(th, td) {
+  height: 7.65cqw;
+  background: #fff;
+}
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody th {
-  background: #fbfdff;
-  font-size: clamp(14px, 1.5vw, 17px);
+  padding-left: 1.5cqw;
+  font-family: var(--comparison-sans) !important;
+  font-size: 2.12cqw;
   font-weight: 700;
   text-align: left;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service { display: flex; align-items: center; gap: 8px; }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-image {
-  --width: 62px;
-  --artwork-height: 50px;
-  flex: 0 0 62px;
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service {
+  display: flex;
+  align-items: center;
+  gap: 1.7cqw;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name { min-width: 0; white-space: nowrap; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-icon {
+  display: block;
+  flex: 0 0 5.2cqw;
+  width: 5.2cqw;
+  height: 5.2cqw;
+  overflow: hidden;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name {
+  display: block;
+  min-width: 0;
+  white-space: nowrap;
+}
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name small {
   display: block;
-  margin-top: 3px;
-  color: #59758a;
-  font-size: 11px;
-  font-weight: 400;
+  margin-top: .25cqw;
+  color: #6383b1;
+  font-size: 1.13cqw;
+  font-weight: 500;
+  line-height: 1.5;
   white-space: nowrap;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td {
-  background: #fff;
-  font-size: clamp(15px, 1.4vw, 18px);
-  text-align: center;
-  white-space: nowrap;
+  font-size: 2.05cqw;
+  font-weight: 400;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(2) {
-  background: #e8f5fc;
-  color: #005da5;
-  font-size: clamp(17px, 1.85vw, 22px);
-  font-weight: 800;
+  background: #e2f5fd;
+  color: var(--comparison-blue);
+  font-family: var(--comparison-sans) !important;
+  font-size: 2.85cqw;
+  font-weight: 700;
+  letter-spacing: -.04em;
 }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-unit { font-size: .9em; }
+body.c-beginner-lp #cch-first-lp #first-comparison td:nth-child(2) .lp-comparison-unit { font-size: .72em; }
 @media (max-width: 900px) {
-  body.c-beginner-lp #cch-first-lp #first-comparison { padding: 40px 16px 36px; scroll-margin-top: 96px; }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art { margin-bottom: 12px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison {
+    padding: 36px 16px 32px;
+    scroll-margin-top: 96px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art {
+    width: min(100%, 736px);
+    height: 54px;
+    margin-bottom: 14px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art img { width: 358px; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data {
     width: 100%;
+    max-width: 736px;
     overflow: visible;
     border: 0;
     border-radius: 0;
     background: transparent;
-    box-shadow: none;
   }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data table,
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody { display: block; width: 100%; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data::after { display: none; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data table {
+    display: block;
+    width: 100%;
+    background: transparent;
+  }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data thead {
     position: absolute;
     width: 1px;
@@ -596,116 +670,183 @@ body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    width: 100%;
+    gap: 12px;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr {
+    --comparison-card-unit: calc((100cqw - 12px) / 2 / 352);
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-template-rows: 80px auto;
+    grid-template-rows: calc(62 * var(--comparison-card-unit)) calc(39 * var(--comparison-card-unit));
+    row-gap: calc(7 * var(--comparison-card-unit));
     min-width: 0;
-    padding: 10px;
-    border: 1px solid #b6d8eb;
-    border-radius: 15px;
-    background: #fff;
-    box-shadow: 0 4px 13px rgb(12 67 113 / 8%);
+    padding: calc(9 * var(--comparison-card-unit)) calc(12 * var(--comparison-card-unit)) calc(8 * var(--comparison-card-unit));
+    border: 1px solid #c1e1f8;
+    border-radius: 13px;
+    background: linear-gradient(180deg, #fff 70%, #f7fcff);
+    box-shadow: 0 1px 5px rgb(26 120 190 / 12%);
   }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody th,
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td {
-    box-sizing: border-box;
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr:first-child {
+    grid-template-rows: calc(71 * var(--comparison-card-unit)) calc(39 * var(--comparison-card-unit));
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody :is(th, td) {
+    width: auto;
     height: auto;
     min-width: 0;
-    width: auto;
+    padding: 0;
     border: 0;
+    border-radius: 0;
+    background: transparent;
+    letter-spacing: 0;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody th {
     position: relative;
     grid-column: 1 / -1;
     grid-row: 1;
-    padding: 0;
-    background: transparent;
-    font-size: 17px;
-    white-space: nowrap;
+    font-size: calc(20 * var(--comparison-card-unit));
+    line-height: 1.3;
   }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service { align-items: flex-start; }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name { padding-top: 2px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service {
+    align-items: flex-start;
+    gap: calc(9 * var(--comparison-card-unit));
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-icon { display: none; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-image {
+    display: block;
+    flex: 0 0 calc(91 * var(--comparison-card-unit));
+    width: calc(91 * var(--comparison-card-unit));
+    height: calc(63 * var(--comparison-card-unit));
+    overflow: hidden;
+    border-radius: 6px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison tr:first-child .lp-comparison-service-image {
+    height: calc(56 * var(--comparison-card-unit));
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name { padding-top: 0; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-name small {
+    margin-top: 0;
+    font-size: calc(11 * var(--comparison-card-unit));
+    line-height: 1.5;
+  }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge {
     position: absolute;
     top: 0;
-    right: 0;
+    right: calc(8 * var(--comparison-card-unit));
     display: inline-flex;
     align-items: center;
-    gap: 2px;
-    padding: 3px 6px;
-    border-radius: 10px;
-    background: #fff7df;
-    color: #ce8700;
-    font-size: 11px;
+    gap: calc(3 * var(--comparison-card-unit));
+    width: calc(92 * var(--comparison-card-unit));
+    height: calc(28 * var(--comparison-card-unit));
+    padding: 0;
+    border-radius: 20px;
+    background: transparent;
+    color: #f2a300;
+    font-family: var(--comparison-sans);
+    font-size: calc(11 * var(--comparison-card-unit));
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1;
+    white-space: nowrap;
   }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge img {
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-badge svg {
     display: block;
-    width: 13px;
-    height: 13px;
-  }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-image {
-    --width: 78px;
-    --artwork-height: 62px;
-    flex-basis: 78px;
+    width: 100%;
+    height: 100%;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(2) {
+    position: relative;
+    z-index: 1;
     display: flex;
     grid-column: 1 / -1;
     grid-row: 1;
     align-items: center;
     align-self: end;
-    justify-content: flex-start;
-    gap: 7px;
-    height: 29px;
-    min-height: 0;
-    margin: 0 0 5px 86px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 18px;
+    gap: calc(8 * var(--comparison-card-unit));
+    height: calc(29 * var(--comparison-card-unit));
+    margin: 0 calc(17 * var(--comparison-card-unit)) 0 calc(100 * var(--comparison-card-unit));
+    border-radius: 5px;
+    background: #e2f2ff;
+    color: var(--comparison-blue);
+    font-size: calc(22 * var(--comparison-card-unit));
     line-height: 1;
-    z-index: 1;
+    letter-spacing: -.04em;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(2)::before {
     content: "当社";
-    display: inline-block;
-    padding: 4px 7px;
-    border-radius: 2px;
-    background: #0b72ac;
+    display: flex;
+    flex: 0 0 calc(52 * var(--comparison-card-unit));
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px 0 0 5px;
+    background: #0066cc;
     color: #fff;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: calc(17 * var(--comparison-card-unit));
+    font-weight: 500;
+    letter-spacing: 0;
   }
+  body.c-beginner-lp #cch-first-lp #first-comparison td:nth-child(2) .lp-comparison-unit { font-size: .8em; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-link {
+    position: absolute;
+    right: calc(-25 * var(--comparison-card-unit));
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(25 * var(--comparison-card-unit));
+    height: 44px;
+    transform: translateY(-50%);
+    color: var(--comparison-blue);
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-link svg {
+    display: block;
+    width: calc(10 * var(--comparison-card-unit));
+    height: calc(16 * var(--comparison-card-unit));
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-service-link:focus-visible { outline: 2px solid #0057c4; outline-offset: -1px; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(n+3) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    justify-content: center;
+    gap: calc(3 * var(--comparison-card-unit));
     grid-row: 2;
-    padding: 5px 1px 1px;
-    border-right: 1px solid #deedf5;
-    color: #0b3867;
-    font-size: 11px;
+    padding: 0;
+    border-right: 1px solid #d9eaf9;
+    background: linear-gradient(180deg, #f2f9ff, #fbfdff);
+    color: var(--comparison-ink);
+    font-size: calc(13 * var(--comparison-card-unit));
+    font-weight: 400;
+    line-height: 1.2;
   }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:last-child { border-right: 0; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(3) { border-radius: 7px 0 0 7px; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:last-child { border-radius: 0 7px 7px 0; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(3)::before { content: "A社"; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(4)::before { content: "B社"; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(5)::before { content: "C社"; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(6)::before { content: "D社"; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(7)::before { content: "E社"; }
   body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(n+3)::before {
-    color: #53708e;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: calc(12 * var(--comparison-card-unit));
+    font-weight: 600;
+    line-height: 1.2;
   }
 }
 @media (max-width: 620px) {
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody { grid-template-columns: 1fr; gap: 12px; }
-}
-@media (max-width: 350px) {
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(n+3) { font-size: 10px; letter-spacing: -.04em; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1867 / 278;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art img { width: 100%; }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody tr { --comparison-card-unit: calc(100cqw / 352); }
 }
