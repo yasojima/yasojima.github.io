@@ -843,7 +843,7 @@ body.c-beginner-lp #cch-first-lp .lp-closing-services .lp-services {
 }
 
 body.c-beginner-lp #cch-first-lp #first-comparison-story {
-  padding: 64px 6% 0;
+  padding: 64px 6% 52px;
 }
 body.c-beginner-lp #cch-first-lp #first-comparison-story::before {
   content: "";
@@ -876,10 +876,20 @@ body.c-beginner-lp #cch-first-lp .lp-comparison-manga-art img {
   max-width: none;
   height: auto;
 }
-body.c-beginner-lp #cch-first-lp .lp-comparison-manga-intro { aspect-ratio: 814 / 1168; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-intro { aspect-ratio: 756 / 1271; }
 body.c-beginner-lp #cch-first-lp .lp-comparison-manga-intro img { top: 0; }
-body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro { aspect-ratio: 814 / 765; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro { aspect-ratio: 756 / 808; }
 body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro img { bottom: 0; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro::after {
+  content: "";
+  position: absolute;
+  left: 94.047619%;
+  top: 5.569307%;
+  width: 1.587302%;
+  height: 1.608911%;
+  background: #fafafa;
+  pointer-events: none;
+}
 body.c-beginner-lp #cch-first-lp #first-comparison.lp-comparison-manga-panel {
   position: relative;
   margin: .49% .98%;
@@ -887,9 +897,34 @@ body.c-beginner-lp #cch-first-lp #first-comparison.lp-comparison-manga-panel {
   border: max(1.5px, .34cqw) solid #0b2b79;
   background: radial-gradient(ellipse at 50% 0, #fff 30%, #eaf7ff 100%);
 }
-body.c-beginner-lp #cch-first-lp #first-services { padding-bottom: 52px; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-ending { position: relative; }
+body.c-beginner-lp #cch-first-lp #first-services.lp-comparison-manga-cta {
+  position: absolute;
+  right: 0;
+  bottom: 6cqw;
+  left: 0;
+  padding: 0 14px;
+  background: transparent;
+  text-align: center;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-cta-title {
+  margin: 0 0 2cqw;
+  color: #fff;
+  font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif !important;
+  font-size: clamp(18px, 4.6cqw, 46px);
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px #003770;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-cta .lp-reference-estimate {
+  width: min(100%, 480px);
+  min-height: 44px;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-cta .lp-reference-estimate:focus-visible {
+  outline-color: #fff;
+}
 @media (max-width: 767.98px) {
-  body.c-beginner-lp #cch-first-lp #first-comparison-story { padding: 40px 3% 0; }
+  body.c-beginner-lp #cch-first-lp #first-comparison-story { padding: 40px 3% 28px; }
   body.c-beginner-lp #cch-first-lp #first-comparison-story::before { height: 20px; }
-  body.c-beginner-lp #cch-first-lp #first-services { padding-bottom: 28px; }
 }
