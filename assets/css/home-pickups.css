@@ -23,6 +23,10 @@
 .home-pickup__carousel button:focus-visible { outline:2px solid #005bac; outline-offset:-2px; }
 .home-pickup__carousel .swiper:not(.swiper-initialized) .swiper-slide:not(:first-child) { display:none; }
 
+@media(min-width:768px) {
+ .home-pickup__carousel #js-mv-slider .home-pickup__slide { width:100% !important; max-height:432px; }
+}
+
 @media(max-width:767.98px) {
  .home-pickup { padding:30px 0; }
  .home-pickup--banner .home-pickup__banner { width:100%; }
