@@ -866,7 +866,10 @@ body.c-beginner-lp #cch-first-lp .lp-closing-services .lp-services {
   }
 }
 
-body.c-beginner-lp #cch-first-lp #first-comparison::before {
+body.c-beginner-lp #cch-first-lp #first-comparison-story {
+  padding: 64px 6% 0;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison-story::before {
   content: "";
   position: absolute;
   top: -1px;
@@ -879,96 +882,14 @@ body.c-beginner-lp #cch-first-lp #first-comparison::before {
   z-index: 1;
   pointer-events: none;
 }
-body.c-beginner-lp #cch-first-lp .lp-comparison-story {
-  width: min(100%, 1000px);
-  margin: 0 auto 32px;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-story-title {
-  margin: 0 0 28px;
-  color: #0a226c;
-  font-family: "Noto Serif JP", "Yu Mincho", serif !important;
-  font-size: clamp(26px, 2.8vw, 34px);
-  font-weight: 900;
-  line-height: 1.65;
-  text-align: center;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-story-title span { display: block; }
-body.c-beginner-lp #cch-first-lp .lp-comparison-scenes {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-scene {
-  position: relative;
-  container-type: inline-size;
-  margin: 0;
-  padding-top: 12px;
-  border: 2px solid #134a74;
-  background: #fff;
-  overflow: hidden;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-thought {
-  position: relative;
-  z-index: 1;
-  margin: 0 3% -28px;
-  padding: 10px 4px;
-  border: 1.5px solid #173a59;
-  border-radius: 45% / 24%;
-  background: #fff;
-  color: #142c40;
-  font-size: clamp(14px, 5cqw, 18px);
-  font-weight: 800;
-  line-height: 1.55;
-  text-align: center;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-thought span { display: block; }
-body.c-beginner-lp #cch-first-lp .lp-comparison-thought::after {
-  content: "";
-  position: absolute;
-  left: 38%;
-  bottom: -7px;
-  width: 12px;
-  height: 12px;
-  border-right: 1.5px solid #173a59;
-  border-bottom: 1.5px solid #173a59;
-  background: #fff;
-  transform: rotate(45deg);
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-scene-art {
-  position: relative;
-  aspect-ratio: 1;
-  overflow: hidden;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-scene-art img {
-  position: absolute;
-  top: 0;
-  left: calc(var(--scene) * -100%);
+body.c-beginner-lp #cch-first-lp #first-comparison-story > img {
   display: block;
-  width: 300%;
-  max-width: none;
+  width: 100%;
   height: auto;
 }
-body.c-beginner-lp #cch-first-lp .lp-comparison-story-lead {
-  margin: 28px 0 0;
-  color: #0a226c;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.8;
-  text-align: center;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-story-lead span { display: inline-block; }
 body.c-beginner-lp #cch-first-lp #first-services { padding-bottom: 52px; }
-@media (max-width: 900px) {
-  body.c-beginner-lp #cch-first-lp .lp-comparison-story { max-width: 736px; }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-story-title { font-size: 26px; }
-}
-@media (max-width: 620px) {
-  body.c-beginner-lp #cch-first-lp #first-comparison::before { height: 20px; }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-story { margin-bottom: 24px; }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-story-title { margin-bottom: 20px; font-size: clamp(19px, 5.8vw, 26px); }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-scenes { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-story-lead { margin-top: 24px; font-size: 17px; }
-}
 @media (max-width: 767.98px) {
+  body.c-beginner-lp #cch-first-lp #first-comparison-story { padding: 40px 3% 0; }
+  body.c-beginner-lp #cch-first-lp #first-comparison-story::before { height: 20px; }
   body.c-beginner-lp #cch-first-lp #first-services { padding-bottom: 28px; }
 }
