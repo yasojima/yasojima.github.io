@@ -472,18 +472,6 @@ body.c-beginner-lp #cch-first-lp #first-comparison {
   --comparison-serif: "Noto Serif JP", "Yu Mincho", serif;
   --comparison-sans: "Noto Sans JP", sans-serif;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art {
-  width: min(100%, 1000px);
-  height: 83px;
-  margin: 0 auto 18px;
-  overflow: hidden;
-}
-body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art img {
-  display: block;
-  width: 550px;
-  max-width: none;
-  height: auto;
-}
 body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data {
   position: relative;
   container-type: inline-size;
@@ -640,13 +628,7 @@ body.c-beginner-lp #cch-first-lp #first-comparison td:nth-child(2) .lp-compariso
     padding: 36px 16px 32px;
     scroll-margin-top: 96px;
   }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art {
-    width: min(100%, 736px);
-    height: 54px;
-    margin-bottom: 14px;
-  }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art img { width: 358px; }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data {
+      body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data {
     width: 100%;
     max-width: 736px;
     overflow: visible;
@@ -839,13 +821,7 @@ body.c-beginner-lp #cch-first-lp #first-comparison td:nth-child(2) .lp-compariso
   }
 }
 @media (max-width: 620px) {
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1867 / 278;
-  }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-title-art img { width: 100%; }
-  body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody {
+      body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody {
     grid-template-columns: minmax(0, 1fr);
     gap: 9px;
   }
@@ -882,10 +858,34 @@ body.c-beginner-lp #cch-first-lp #first-comparison-story::before {
   z-index: 1;
   pointer-events: none;
 }
-body.c-beginner-lp #cch-first-lp #first-comparison-story > img {
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga {
+  position: relative;
+  container-type: inline-size;
+  background: #fff;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-art {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-art img {
+  position: absolute;
+  left: 0;
   display: block;
   width: 100%;
+  max-width: none;
   height: auto;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-intro { aspect-ratio: 814 / 1168; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-intro img { top: 0; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro { aspect-ratio: 814 / 765; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro img { bottom: 0; }
+body.c-beginner-lp #cch-first-lp #first-comparison.lp-comparison-manga-panel {
+  position: relative;
+  margin: .49% .98%;
+  padding: 1.8%;
+  border: max(1.5px, .34cqw) solid #0b2b79;
+  background: radial-gradient(ellipse at 50% 0, #fff 30%, #eaf7ff 100%);
 }
 body.c-beginner-lp #cch-first-lp #first-services { padding-bottom: 52px; }
 @media (max-width: 767.98px) {
