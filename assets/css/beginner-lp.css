@@ -928,3 +928,28 @@ body.c-beginner-lp #cch-first-lp .lp-comparison-manga-cta .lp-reference-estimate
   body.c-beginner-lp #cch-first-lp #first-comparison-story { padding: 40px 3% 28px; }
   body.c-beginner-lp #cch-first-lp #first-comparison-story::before { height: 20px; }
 }
+
+/* Extend only source rows 1879–2079 (the blue decoration), preserving the manga above. */
+@media (max-width: 767.98px) {
+  body.c-beginner-lp #cch-first-lp #first-services.lp-comparison-manga-cta { z-index: 2; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro {
+    box-sizing: content-box;
+    padding-bottom: 8cqw;
+  }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro img { bottom: 8cqw; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 34.455026cqw;
+    background: url("/assets/images/first-lp/art/comparison-story.png?v=4baf77d9b7") center bottom / 100% 358.16cqw no-repeat;
+    pointer-events: none;
+  }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro::after {
+    top: 5.952381cqw;
+    height: 1.719577cqw;
+  }
+}
