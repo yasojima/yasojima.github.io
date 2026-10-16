@@ -866,99 +866,108 @@ body.c-beginner-lp #cch-first-lp .lp-closing-services .lp-services {
   }
 }
 
-body.c-beginner-lp #cch-first-lp .lp-comparison-intro {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  align-items: center;
-  gap: 40px;
-  width: min(100%, 1000px);
-  margin: 0 auto 40px;
-  color: #0a226c;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-question {
-  position: relative;
-  margin: 0;
-  padding: 22px 18px;
-  border: 2px solid #0a226c;
-  border-radius: 50% / 40%;
-  background: #fff;
-  color: #0a226c;
-  font-family: "Noto Sans JP", sans-serif;
-  font-size: 23px;
-  font-weight: 800;
-  line-height: 1.6;
-  text-align: center;
-}
-body.c-beginner-lp #cch-first-lp .lp-comparison-question span { display: block; }
-body.c-beginner-lp #cch-first-lp .lp-comparison-question::after {
+body.c-beginner-lp #cch-first-lp #first-comparison::before {
   content: "";
   position: absolute;
-  right: -8px;
-  top: 50%;
-  width: 14px;
-  height: 14px;
-  border-top: 2px solid #0a226c;
-  border-right: 2px solid #0a226c;
-  background: #fff;
-  transform: translateY(-50%) rotate(45deg);
+  top: -1px;
+  left: 50%;
+  width: 100vw;
+  height: 32px;
+  transform: translateX(-50%);
+  background: var(--lp-water);
+  clip-path: ellipse(78% 100% at 24% 0);
+  z-index: 1;
+  pointer-events: none;
 }
-body.c-beginner-lp #cch-first-lp .lp-comparison-intro-title {
-  margin: 0 0 12px;
+body.c-beginner-lp #cch-first-lp .lp-comparison-story {
+  width: min(100%, 1000px);
+  margin: 0 auto 32px;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-story-title {
+  margin: 0 0 28px;
+  color: #0a226c;
   font-family: "Noto Serif JP", "Yu Mincho", serif !important;
-  font-size: clamp(28px, 3.1vw, 36px);
+  font-size: clamp(26px, 2.8vw, 34px);
   font-weight: 900;
-  line-height: 1.5;
-  letter-spacing: .01em;
+  line-height: 1.65;
+  text-align: center;
 }
-body.c-beginner-lp #cch-first-lp .lp-comparison-intro-title em {
-  color: inherit;
-  background: linear-gradient(transparent 65%, #fff09c 65%);
-  font-style: normal;
-  white-space: nowrap;
+body.c-beginner-lp #cch-first-lp .lp-comparison-story-title span { display: block; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-scenes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
-body.c-beginner-lp #cch-first-lp .lp-comparison-intro-text {
+body.c-beginner-lp #cch-first-lp .lp-comparison-scene {
+  position: relative;
+  container-type: inline-size;
   margin: 0;
-  color: #244b66;
-  font-size: 16px;
-  line-height: 1.9;
+  padding-top: 12px;
+  border: 2px solid #134a74;
+  background: #fff;
+  overflow: hidden;
 }
+body.c-beginner-lp #cch-first-lp .lp-comparison-thought {
+  position: relative;
+  z-index: 1;
+  margin: 0 3% -28px;
+  padding: 10px 4px;
+  border: 1.5px solid #173a59;
+  border-radius: 45% / 24%;
+  background: #fff;
+  color: #142c40;
+  font-size: clamp(14px, 5cqw, 18px);
+  font-weight: 800;
+  line-height: 1.55;
+  text-align: center;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-thought span { display: block; }
+body.c-beginner-lp #cch-first-lp .lp-comparison-thought::after {
+  content: "";
+  position: absolute;
+  left: 38%;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  border-right: 1.5px solid #173a59;
+  border-bottom: 1.5px solid #173a59;
+  background: #fff;
+  transform: rotate(45deg);
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-scene-art {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-scene-art img {
+  position: absolute;
+  top: 0;
+  left: calc(var(--scene) * -100%);
+  display: block;
+  width: 300%;
+  max-width: none;
+  height: auto;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-story-lead {
+  margin: 28px 0 0;
+  color: #0a226c;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.8;
+  text-align: center;
+}
+body.c-beginner-lp #cch-first-lp .lp-comparison-story-lead span { display: inline-block; }
 body.c-beginner-lp #cch-first-lp #first-services { padding-bottom: 52px; }
 @media (max-width: 900px) {
-  body.c-beginner-lp #cch-first-lp .lp-comparison-intro {
-    max-width: 736px;
-    grid-template-columns: 190px minmax(0, 1fr);
-    gap: 24px;
-    margin-bottom: 32px;
-  }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-question { font-size: 20px; }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-intro-title { font-size: 28px; }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-intro-break { display: none; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-story { max-width: 736px; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-story-title { font-size: 26px; }
 }
 @media (max-width: 620px) {
-  body.c-beginner-lp #cch-first-lp .lp-comparison-intro {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    margin-bottom: 28px;
-  }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-question {
-    padding: 12px 24px;
-    border-radius: 50% / 45%;
-    font-size: 18px;
-  }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-question span { display: inline-block; white-space: nowrap; }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-question::after {
-    top: auto;
-    right: calc(50% - 7px);
-    bottom: -8px;
-    transform: rotate(135deg);
-  }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-intro-title {
-    margin-bottom: 10px;
-    font-size: clamp(21px, 6.3vw, 28px);
-    text-align: center;
-  }
-  body.c-beginner-lp #cch-first-lp .lp-comparison-intro-text { font-size: 14px; line-height: 1.85; }
+  body.c-beginner-lp #cch-first-lp #first-comparison::before { height: 20px; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-story { margin-bottom: 24px; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-story-title { margin-bottom: 20px; font-size: clamp(19px, 5.8vw, 26px); }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-scenes { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  body.c-beginner-lp #cch-first-lp .lp-comparison-story-lead { margin-top: 24px; font-size: 17px; }
 }
 @media (max-width: 767.98px) {
   body.c-beginner-lp #cch-first-lp #first-services { padding-bottom: 28px; }
