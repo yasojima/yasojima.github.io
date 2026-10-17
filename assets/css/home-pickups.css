@@ -1,8 +1,6 @@
 .home-pickup { padding:44px 0 48px; background:#fff; color:#06408c; scroll-margin-top:var(--aircon-header-height); }
 .home-pickup__inner { width:min(1120px, calc(100% - 48px)); margin-inline:auto; }
-.home-pickup__heading { display:flex; align-items:baseline; gap:15px; margin-bottom:22px; }
-.home-pickup__heading>span { font-size:12px; letter-spacing:.12em; }
-.home-pickup__heading h2 { margin:0; font-size:22px; font-weight:700; }
+.home-pickup__heading { margin-bottom:40px; }
 .home-pickup__banner { position:relative; overflow:hidden; border-radius:8px; }
 .home-pickup--banner { padding:32px 0 36px; }
 .home-pickup--banner .home-pickup__banner { width:90%; max-width:1000px; margin-inline:auto; }
@@ -31,8 +29,7 @@
  .home-pickup { padding:30px 0; }
  .home-pickup--banner .home-pickup__banner { width:100%; }
  .home-pickup__inner { width:calc(100% - 32px); }
- .home-pickup__heading { gap:9px; flex-wrap:wrap; margin-bottom:16px; }
- .home-pickup__heading h2 { font-size:19px; }
+ .home-pickup__heading { margin-bottom:24px; }
  .home-pickup--features { padding-top:calc(28px + var(--section-curve-depth,28px)); }
 }
 
