@@ -16,8 +16,8 @@
 .home-pickup__carousel .mv__inner { padding-bottom:32px; background:transparent; }
 .home-pickup__slide { aspect-ratio:1024 / 432; overflow:hidden; background:#eee; }
 .home-pickup__slide img { display:block; width:100%; height:100%; object-fit:cover; user-select:none; }
-.home-pickup__story-link { display:flex; align-items:center; justify-content:center; width:100%; height:100%; padding:32px 56px; background:#e7e6e5; color:#555; text-align:center; text-decoration:none; font-size:clamp(22px,3.2vw,42px); font-weight:700; line-height:1.65; }
-.home-pickup__story-link span { word-break:keep-all; overflow-wrap:normal; }
+.home-pickup__story-link { display:block; width:100%; height:100%; background:#fff; text-decoration:none; }
+.home-pickup__story-link img { object-fit:contain; }
 .home-pickup__story-link:focus-visible { outline:3px solid #005bac; outline-offset:-6px; }
 .home-pickup__carousel .swiper-pagination { bottom:0; height:32px; display:flex; align-items:center; justify-content:center; background:transparent; }
 .home-pickup__carousel button:focus-visible { outline:2px solid #005bac; outline-offset:-2px; }
@@ -34,8 +34,7 @@
  .home-pickup__heading { gap:9px; flex-wrap:wrap; margin-bottom:16px; }
  .home-pickup__heading h2 { font-size:19px; }
  .home-pickup--features { padding-top:calc(28px + var(--section-curve-depth,28px)); }
- .home-pickup__slide { aspect-ratio:375 / 320; }
- .home-pickup__story-link { padding:24px 20px; font-size:clamp(20px,5.4vw,32px); }
+ .home-pickup__slide { aspect-ratio:1930 / 815; }
 }
 
 @media(min-width:768px) and (max-height:650px) {
