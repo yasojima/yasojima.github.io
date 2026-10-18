@@ -1,0 +1,75 @@
+:root[data-home-design="four-groups"] .c-home main > :is(
+  .home-first-guide-section,
+  #home-reasons,
+  #home-pickup,
+  .c-featured-cleaning
+) {
+  background-color: #e3f1fc;
+}
+
+:root[data-home-design="four-groups"] .c-home main > #tab-panel_02 {
+  padding-top: var(--home-section-space);
+  background-color: #fff;
+}
+
+:root[data-home-design="four-groups"] .c-home main > :is(
+  .home-first-guide-section,
+  #home-pickup
+) {
+  padding-bottom: calc(var(--home-section-space) / 2);
+}
+
+:root[data-home-design="four-groups"] .c-home main > :is(
+  #home-reasons,
+  .c-featured-cleaning
+) {
+  padding-top: calc(var(--home-section-space) / 2);
+}
+
+:root[data-home-design="four-groups"] .c-home :is(
+  #home-reasons,
+  .c-featured-cleaning
+)::before {
+  content: none;
+}
+
+:root[data-home-design="four-groups"] .c-home :is(
+  #home-reasons,
+  .c-featured-cleaning
+) > .c-section-curve {
+  display: none;
+}
+
+:root[data-home-design="four-groups"] .c-home #tab-panel_02 > .c-section-curve {
+  background-color: #e3f1fc;
+  -webkit-mask-image: url('/assets/images/common-parts/decoration/section-curve-up.svg');
+  mask-image: url('/assets/images/common-parts/decoration/section-curve-up.svg');
+}
+
+:root[data-home-design="four-groups"] .c-home #tab-panel_02::before {
+  top: -34px;
+}
+
+:root[data-home-design="four-groups"] .c-home main > #home-pickup {
+  padding-top: calc(var(--home-section-space) + var(--section-curve-depth));
+}
+
+:root[data-home-design="four-groups"] .c-home #home-pickup > .c-section-curve {
+  background-color: #fff;
+  -webkit-mask-image: url('/assets/images/common-parts/decoration/section-curve-down.svg');
+  mask-image: url('/assets/images/common-parts/decoration/section-curve-down.svg');
+}
+
+:root[data-home-design="four-groups"] .c-home #home-pickup::before {
+  top: calc(var(--section-curve-depth) - 34px);
+}
+
+@media (max-width: 767.98px) {
+  :root[data-home-design="four-groups"] .c-home #tab-panel_02::before {
+    top: -22px;
+  }
+
+  :root[data-home-design="four-groups"] .c-home #home-pickup::before {
+    top: calc(var(--section-curve-depth) - 22px);
+  }
+}
