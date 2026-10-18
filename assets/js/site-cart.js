@@ -185,8 +185,36 @@
   function renderCart(result) {
     const mount = document.querySelector('[data-cart-content]');
     if (!mount) return;
+    const empty = !result.details.length;
+    mount.closest('.cch-cart-page')?.classList.toggle('cch-cart-page--empty', empty);
+    mount.closest('section')?.setAttribute('aria-labelledby', empty ? 'cart-empty-heading' : 'cart-heading');
     if (!result.details.length) {
-      mount.innerHTML = '<div class="empty-cart cch-cart-empty"><h2 class="empty-cart__heading">カートが空です</h2><p>ご希望のサービスをお選びください。</p><a class="c-button" href="/">お買い物を続ける</a></div>';
+      mount.innerHTML = `<div class="cch-cart-empty-design">
+        <img class="cch-cart-empty-design__illustration" src="/assets/images/cart/empty-cleaning.svg" width="400" height="360" alt="" aria-hidden="true">
+        <div class="cch-cart-empty-design__copy">
+          <h1 class="cch-cart-empty-design__heading" id="cart-empty-heading">カートに商品はありません</h1>
+          <p class="cch-cart-empty-design__lead">気になるサービスを選んで、見積り内容を追加してください。</p>
+          <p class="cch-cart-empty-design__description">エアコン・水まわり・キッチンなど、各メニューからお選びいただけます。</p>
+          <a class="c-category-simple-card cch-cart-empty-design__cta" href="/"><span class="c-category-simple-card__bottom"><span class="c-category-simple-card__text">お買い物を続ける</span></span></a>
+        </div>
+        <nav class="cch-cart-empty-design__categories" aria-label="お掃除する場所から選ぶ">
+          <div class="cch-cart-empty-design__category-links">
+            <a class="cch-cart-empty-design__category" href="/house-cleaning/aircon/">
+              <svg viewBox="0 0 80 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="8" width="68" height="36" rx="6"/><path d="M7 34h66M14 39h52M17 14h43M61 21h2m4 0h1M61 26h2m4 0h1M24 49v3m0 5v2m16-10v6m0 5v1m16-12v3m0 5v2"/></svg>
+              <span>エアコン</span>
+            </a>
+            <a class="cch-cart-empty-design__category" href="/house-cleaning/water/">
+              <svg viewBox="0 0 80 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 29h63v6H9zM12 35l4 15q1 5 7 5h35q6 0 7-5l4-15M22 55l-2 5m39-5 2 5M31 28V11q0-8 6-8t6 8v8m-3 0h6M48 16v7m-4-3h8"/><path d="m59 7 2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffd05b" stroke="none"/></svg>
+              <span>水まわり</span>
+            </a>
+            <a class="cch-cart-empty-design__category" href="/house-cleaning/kitchen/">
+              <svg viewBox="0 0 80 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 34h60v5H10zM14 39v22h52V39M39 40v20M19 45h14m12 0h15M24 34v-7h8v7m-4-7v-5h9M47 6h13v8H47zM47 14l-8 9h29l-8-9M44 27h19"/><path d="M45 53h3m-18 0h3"/></svg>
+              <span>キッチン</span>
+            </a>
+          </div>
+          <p class="cch-cart-empty-design__hint">気になる場所から<br>チェックしてみましょう</p>
+        </nav>
+      </div>`;
       const recommendations = document.querySelector('[data-cart-recommendations]');
       if (recommendations) { recommendations.hidden = true; recommendations.innerHTML = ''; }
       return;
