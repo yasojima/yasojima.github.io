@@ -1,0 +1,54 @@
+.cch-estimate-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  gap: 28px;
+  margin: 0 auto;
+  padding: 20px 0;
+  list-style: none;
+  color: #88929b;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+}
+.cch-estimate-progress__item {
+  display: block;
+  position: relative;
+  flex: none;
+  padding-bottom: 10px;
+}
+.cch-estimate-progress__item + .cch-estimate-progress__item::before {
+  content: '';
+  position: absolute;
+  top: .75em;
+  left: -18px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid #88929b;
+  border-right: 1px solid #88929b;
+  transform: translateY(-50%) rotate(45deg);
+}
+.cch-estimate-progress__item[aria-current='step'] { color: #005bac; }
+.cch-estimate-progress__item[aria-current='step']::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 11px);
+  width: 22px;
+  height: 2px;
+  background: #005bac;
+}
+.cch-estimate-progress__item[aria-current='step'] + .cch-estimate-progress__item::before { border-color: #005bac; }
+@media (max-width: 767.98px) {
+  .cch-estimate-progress { gap: 20px; font-size: 14px; }
+  .cch-estimate-progress__item + .cch-estimate-progress__item::before { left: -13px; width: 6px; height: 6px; }
+}
+@media (max-width: 359.98px) {
+  .cch-estimate-progress { gap: 16px; }
+  .cch-estimate-progress__item + .cch-estimate-progress__item::before { left: -11px; }
+}

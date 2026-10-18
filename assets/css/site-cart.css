@@ -25,7 +25,6 @@ body.cch-cart-dialog-open { overflow: hidden; }
 .cch-cart-dialog__message { margin-top: 24px; line-height: 1.8; }
 #cart-modal .cart-table th, #cart-modal .cart-table td { padding: 10px; border-bottom: 1px solid #d9e6ef; }
 #cart-modal .cart-table td:last-child { text-align: right; white-space: nowrap; }
-.cch-estimate .c-step-nav { max-width: 640px; margin-inline: auto; }
 .cch-estimate-notice { text-align: center; font-size: 14px; padding: 16px; margin: 0; background: #e3f1fc; }
 .cch-estimate [hidden] { display: none !important; }
 .cch-estimate fieldset { min-width: 0; }
@@ -133,8 +132,6 @@ body.cch-cart-dialog-open { overflow: hidden; }
   .cch-cart-page .cart { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .cch-cart-page .cart__price-info { position: static; }
   .cch-cart-page .price-info-card { width: calc(100% + 30px); margin-left: -15px; }
-  .cch-cart-page .c-step-nav__item_new { font-size: 14px; }
-  .cch-cart-page .c-step-nav__item_new + .c-step-nav__item_new::before { margin-inline: 9px 6px; }
   .cch-cart-extra__cards { grid-template-columns: 1fr; padding-inline: 8px; }
   .cch-cart-recommendations { padding-block: 40px; }
   .cch-cart-recommendations h2 { font-size: 22px; line-height: 1.6; margin-bottom: 32px; }
