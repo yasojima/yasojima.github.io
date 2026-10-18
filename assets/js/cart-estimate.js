@@ -364,8 +364,6 @@
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
       form.querySelector('.cch-estimate-local-notice').textContent = '入力内容は確認画面へ進むためにこの端末へ一時保存します。確認画面で送信に同意して依頼すると、店舗への通知と受付内容の自動返信メールを送信します。訪問日時・最終料金はこの操作では確定しません。端末の保存内容は最後のサイト利用から24時間経過後の次回利用時に削除されます。';
     }
-    const finalStep = document.querySelector('.c-step-nav__item:last-child');
-    if (finalStep) finalStep.textContent = '受付完了';
     if (complete) document.querySelector('.c-page-heading').textContent = '見積もり依頼の受付内容';
   }
   renderReview();

@@ -40,12 +40,14 @@
 <link rel="stylesheet" href="/assets/css/aircon-header.css?v=2026100705">
 <link rel="stylesheet" href="/assets/css/site-footer.css?v=2026100701">
 <script src="/assets/js/aircon-header.js?v=2026100701" defer></script>
-<link rel="stylesheet" href="/assets/css/site-cart.css?v=2026101903">
+<link rel="stylesheet" href="/assets/css/site-cart.css?v=2026101911">
 <script src="/assets/js/cart-storage.js?v=2026101903" defer></script>
 <script src="/assets/js/cart-catalogue.js?v=2026100603" defer></script>
 <script src="/assets/js/cart-core.js?v=2026100528" defer></script>
 <script src="/assets/js/site-cart.js?v=2026101904" defer></script>
-<link rel="stylesheet" href="/assets/css/cart-empty.css?v=2026101907">
+<link rel="stylesheet" href="/assets/css/cart-empty.css?v=2026101911">
+<link rel="stylesheet" href="/assets/css/estimate-progress.css?v=2026101911">
+<link rel="stylesheet" href="/assets/css/howto-timeline.css?v=2026101911">
 </head>
 
   <body>
@@ -185,34 +187,56 @@
 
     <main class="cch-cart-page">
       <section class="cch-cart-page__main" aria-labelledby="cart-heading">
-        <ol class="c-step-nav_new" aria-label="お見積りのステップ"><li class="c-step-nav__item_new" aria-current="step">見積り確認</li><li class="c-step-nav__item_new">情報入力</li><li class="c-step-nav__item_new">入力確認</li><li class="c-step-nav__item_new">完了</li></ol>
+        <ol class="cch-estimate-progress" data-estimate-progress aria-label="お見積りのステップ"><li class="cch-estimate-progress__item" aria-current="step">見積り確認</li><li class="cch-estimate-progress__item">情報入力</li><li class="cch-estimate-progress__item">入力確認</li><li class="cch-estimate-progress__item">完了</li></ol>
         <h1 id="cart-heading" class="cch-cart-heading">お見積り依頼一覧</h1>
         <p class="free-estimates__summary">お見積りは無料です</p>
         <div class="cch-cart-content" data-cart-content></div>
         <p class="cch-cart-status" role="status" data-cart-status></p>
       </section>
       <section class="cch-cart-recommendations" data-cart-recommendations hidden aria-labelledby="cart-options-heading"></section>
-      <section class="l-section l-section--cart l-section--limited l-section--blue-bubbles">
-        <div class="l-section-inner l-section-inner--limited">
-          <div class="u-width-pc-1024">
-          <h2 class="c-double-line-heading">お見積り後の流れ</h2>
-            <ol class="estimate-flow u-mt-40_24" style="--bg-color: #fff;">
-              <li class="estimate-flow__item estimate-flow-item" style="background: #e3f1fc;"><img class="c-flex-image c-flex-image--stretched estimate-flow-item__image" src="/assets/images/cart/complete/estimate-flow_01_01.webp" alt="" width="253" height="169" loading="lazy">
-                <h3 class="estimate-flow-item__heading">作業内容の確認</h3>
-                <p class="c-text estimate-flow-item__text">選択したサービスと数量・合計金額をご確認のうえ、お客様情報の入力へお進みください。</p>
-              </li>
-              <li class="estimate-flow__item estimate-flow-item" style="background: #e3f1fc;"><img class="c-flex-image c-flex-image--stretched estimate-flow-item__image" src="/assets/images/cart/complete/estimate-flow_02_01.webp" alt="" width="253" height="169" loading="lazy">
-                <h3 class="estimate-flow-item__heading">日時や料金のご案内</h3>
-                <p class="c-text estimate-flow-item__text">通常のご依頼では、作業範囲や訪問可能な日時を事前に確認する流れです。</p>
-              </li>
-              <li class="estimate-flow__item estimate-flow-item" style="background: #e3f1fc;"><img class="c-flex-image c-flex-image--stretched estimate-flow-item__image" src="/assets/images/cart/complete/estimate-flow_03_01.webp" alt="" width="253" height="169" loading="lazy">
-                <h3 class="estimate-flow-item__heading">サービスの実施</h3>
-                <p class="c-text estimate-flow-item__text">作業前に対象箇所と料金を確認し、内容に応じて清掃を進める流れです。</p>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </section>
+      <section class="l-section l-section--cart l-section--limited l-section--blue-bubbles" id="service-flow">
+<div class="l-section-inner l-section-inner--limited">
+<div class="c-howto-timeline-container">
+<h2 class="c-howto-timeline-title"><span class="c-howto-timeline-title__english" lang="en">HOW TO <span class="c-howto-timeline-title__emphasis">USE</span></span><span class="c-howto-timeline-title__japanese">ご利用の流れ</span></h2>
+<ol class="c-howto-timeline">
+<li class="c-howto-timeline__item">
+<div aria-hidden="true" class="c-howto-timeline__visual"><span class="c-howto-timeline__icon" style="--howto-icon: url('/assets/images/common-parts/howto-timeline/consultation.svg');"></span></div>
+<p class="c-howto-timeline__step"><span aria-label="ステップ1" class="c-howto-timeline__number">01</span></p>
+<h3 class="c-howto-timeline__heading"><span class="c-howto-timeline__label"><span class="c-howto-timeline__phrase">お見積りのご相談</span></span></h3>
+<p class="c-howto-timeline__description">お見積り依頼内容のご確認メールがお客様に届きます。内容をご確認ください。</p>
+<span aria-hidden="true" class="c-howto-timeline__connector"></span>
+</li>
+<li class="c-howto-timeline__item">
+<div aria-hidden="true" class="c-howto-timeline__visual"><span class="c-howto-timeline__icon" style="--howto-icon: url('/assets/images/common-parts/howto-timeline/schedule.svg');"></span></div>
+<p class="c-howto-timeline__step"><span aria-label="ステップ2" class="c-howto-timeline__number">02</span></p>
+<h3 class="c-howto-timeline__heading"><span class="c-howto-timeline__label"><span class="c-howto-timeline__phrase">内容と日時の調整</span></span></h3>
+<p class="c-howto-timeline__description">担当者がお客様と作業内容と料金を確認のうえ、訪問日時をご案内いたします。</p>
+<span aria-hidden="true" class="c-howto-timeline__connector"></span>
+</li>
+<li class="c-howto-timeline__item">
+<div aria-hidden="true" class="c-howto-timeline__visual"><span class="c-howto-timeline__icon" style="--howto-icon: url('/assets/images/common-parts/howto-timeline/visit.svg');"></span></div>
+<p class="c-howto-timeline__step"><span aria-label="ステップ3" class="c-howto-timeline__number">03</span></p>
+<h3 class="c-howto-timeline__heading"><span class="c-howto-timeline__label"><span class="c-howto-timeline__phrase">訪問・</span><span class="c-howto-timeline__phrase">作業前確認</span></span></h3>
+<p class="c-howto-timeline__description">ご訪問時に作業内容と料金を最終確認のうえ、ご了承後に作業を開始いたします。</p>
+<span aria-hidden="true" class="c-howto-timeline__connector"></span>
+</li>
+<li class="c-howto-timeline__item">
+<div aria-hidden="true" class="c-howto-timeline__visual"><span class="c-howto-timeline__icon" style="--howto-icon: url('/assets/images/common-parts/howto-timeline/cleaning.svg');"></span></div>
+<p class="c-howto-timeline__step"><span aria-label="ステップ4" class="c-howto-timeline__number">04</span></p>
+<h3 class="c-howto-timeline__heading"><span class="c-howto-timeline__label"><span class="c-howto-timeline__phrase">清掃・</span><span class="c-howto-timeline__phrase">仕上がり確認</span></span></h3>
+<p class="c-howto-timeline__description">お客様に仕上がりをご確認いただき、やり残しがあった場合は再度清掃いたします。</p>
+<span aria-hidden="true" class="c-howto-timeline__connector"></span>
+</li>
+<li class="c-howto-timeline__item">
+<div aria-hidden="true" class="c-howto-timeline__visual"><span class="c-howto-timeline__icon" style="--howto-icon: url('/assets/images/common-parts/howto-timeline/payment.svg');"></span></div>
+<p class="c-howto-timeline__step"><span aria-label="ステップ5" class="c-howto-timeline__number">05</span></p>
+<h3 class="c-howto-timeline__heading"><span class="c-howto-timeline__label"><span class="c-howto-timeline__phrase">お支払い</span></span></h3>
+<p class="c-howto-timeline__description">現金・VISAまたはMasterカードでお支払い可能。決済が完了しましたら全ての作業が終了いたします。</p>
+</li>
+</ol>
+</div>
+</div>
+</section>
     </main>
 
       <footer class="c-footer c-footer--aircon" id="footer"><a aria-label="ファーストビューへ戻る" class="c-footer__page-top aircon-footer-page-top--desktop" href="#first-view"></a>
