@@ -23,6 +23,8 @@
     if (!control) return;
     if (control.hasAttribute('data-demo-dialog')) return show(event);
     if (control.matches('button, input[type="submit"]')) {
+      if (location.pathname.replace(/index\.html$/, '') === '/cart/estimate/confirm/' &&
+          control.matches('button[type="button"][data-estimate-save]') && control.closest('[data-estimate-confirm]')) return;
       if (isEstimatePreview(control.closest('form'))) return;
       if (control.closest('form') || submitLabel.test(control.textContent || control.value || '')) show(event);
       return;
