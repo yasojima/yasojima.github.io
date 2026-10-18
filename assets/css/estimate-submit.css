@@ -1,0 +1,34 @@
+.cch-estimate-local-notice {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #edf7fd;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.cch-estimate-error {
+  margin-top: 20px;
+  color: #b5203b;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.cch-estimate [data-estimate-save] {
+  width: 100%;
+  white-space: normal;
+  text-align: center;
+}
+
+.cch-estimate [data-estimate-save-status] {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.cch-estimate [data-estimate-complete] { padding-block: 40px; }
+
+@media print {
+  .cch-estimate .action-buttons,
+  .c-header,
+  .c-footer,
+  #js-floating { display: none !important; }
+}
