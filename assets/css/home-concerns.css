@@ -148,15 +148,14 @@
 @media (min-width: 768px) {
   .home-concerns { padding-inline: 0; }
   .home-concerns > .l-section-inner {
-    width: min(var(--home-feature-inner-width), calc(100% - 48px));
+    width: min(var(--home-feature-inner-width), calc(100% - 80px));
     max-width: none;
   }
   .home-concerns__mobile { display: none; }
   .concern-selector {
     display: grid;
     grid-template-rows: 20% minmax(0, 1fr);
-    width: 90%;
-    max-width: var(--home-feature-max-width);
+    width: var(--home-feature-width);
     aspect-ratio: var(--home-feature-ratio);
     margin: 28px auto 0;
     overflow: hidden;
