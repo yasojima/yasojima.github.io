@@ -1,0 +1,40 @@
+.c-home {
+  --home-section-space: 72px;
+}
+
+:root .c-home main > .home-section {
+  padding-block: var(--home-section-space);
+  background-color: var(--bg-color);
+}
+
+:root .c-home main > .home-section.c-curved-section--down {
+  padding-top: calc(var(--home-section-space) + var(--section-curve-depth));
+}
+
+:root .c-home main > .home-pickup--banner {
+  padding-block: 48px;
+}
+
+:root .c-home main > .home-cleaning-selector {
+  padding-top: 24px;
+}
+
+@media (min-width: 768px) {
+  .c-home .concern-selector {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .c-home {
+    --home-section-space: 56px;
+  }
+
+  :root .c-home main > .home-pickup--banner {
+    padding-block: 32px 24px;
+  }
+
+  .c-home .home-pickup__heading {
+    margin-bottom: 40px;
+  }
+}
