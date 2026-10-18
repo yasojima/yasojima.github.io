@@ -1,10 +1,11 @@
+.c-home { --home-feature-inner-width:1120px; --home-feature-max-width:1000px; --home-feature-ratio:1930 / 815; }
 .home-pickup { padding:44px 0 48px; background:#fff; color:#06408c; scroll-margin-top:var(--aircon-header-height); }
-.home-pickup__inner { width:min(1120px, calc(100% - 48px)); margin-inline:auto; }
+.home-pickup__inner { width:min(var(--home-feature-inner-width), calc(100% - 48px)); margin-inline:auto; }
 .home-pickup__heading { margin-bottom:40px; }
 .home-pickup__banner { position:relative; overflow:hidden; border-radius:8px; }
 .home-pickup--banner { padding:32px 0 36px; }
 .home-pickup--banner .home-pickup__banner,
-.home-pickup__carousel { width:90%; max-width:1000px; margin-inline:auto; }
+.home-pickup__carousel { width:90%; max-width:var(--home-feature-max-width); margin-inline:auto; }
 .home-pickup__banner-image { display:block; width:100%; height:auto; pointer-events:none; }
 .home-pickup__banner-cta { position:absolute; left:var(--home-pickup-cta-x); top:var(--home-pickup-cta-y); width:var(--home-pickup-cta-width); height:var(--home-pickup-cta-height); border-radius:999px; background:transparent; cursor:pointer; transition:background .15s,box-shadow .15s; }
 .home-pickup__banner-cta:hover { background:#fff2; box-shadow:inset 0 0 0 2px #fff9; }
@@ -13,7 +14,7 @@
 .home-pickup--features>.home-pickup__inner { position:relative; z-index:2; }
 .home-pickup__carousel { position:relative; z-index:2; }
 .home-pickup__carousel .mv__inner { padding-bottom:32px; background:transparent; }
-.home-pickup__slide { aspect-ratio:1930 / 815; overflow:hidden; background:#eee; }
+.home-pickup__slide { aspect-ratio:var(--home-feature-ratio); overflow:hidden; background:#eee; }
 .home-pickup__slide img { display:block; width:100%; height:100%; object-fit:cover; user-select:none; }
 .home-pickup__story-link { display:block; width:100%; height:100%; background:#fff; text-decoration:none; }
 .home-pickup__story-link img { object-fit:contain; }
@@ -36,9 +37,8 @@
 }
 
 @media(min-width:768px) and (max-height:650px) {
+ .c-home { --home-feature-max-width:760px; }
  .home-pickup--banner { padding:24px 0 28px; }
- .home-pickup--banner .home-pickup__banner,
- .home-pickup__carousel { max-width:760px; }
 }
 
 @media(prefers-reduced-motion:reduce) { .home-pickup__banner-cta { transition:none; } }
