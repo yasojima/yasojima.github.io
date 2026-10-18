@@ -17,15 +17,37 @@
 }
 
 .c-service-page #service-flow .c-howto-timeline-title__english {
-  color: #0757a3;
-  background: linear-gradient(100deg, #376a9c, #00509e 70%);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  position: relative;
+  color: #26476f;
   font-family: Arial, sans-serif;
   font-size: clamp(42px, 5.4cqw, 64px);
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: .025em;
+}
+
+.c-service-page #service-flow .c-howto-timeline-title__emphasis {
+  color: #006db9;
+}
+
+.c-service-page #service-flow .c-howto-timeline-title__english::before,
+.c-service-page #service-flow .c-howto-timeline-title__english::after {
+  position: absolute;
+  top: 50%;
+  width: .5em;
+  height: .65em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 34'%3E%3Cpath d='M12 3l10 10M2 29h11' fill='none' stroke='%238dbce7' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  content: "";
+  transform: translateY(-50%);
+}
+
+.c-service-page #service-flow .c-howto-timeline-title__english::before {
+  right: calc(100% + .65em);
+}
+
+.c-service-page #service-flow .c-howto-timeline-title__english::after {
+  left: calc(100% + .65em);
+  transform: translateY(-50%) scaleX(-1);
 }
 
 .c-service-page #service-flow .c-howto-timeline-title__japanese {
@@ -183,7 +205,7 @@
   }
 
   .c-service-page #service-flow .c-howto-timeline-title__english {
-    font-size: clamp(34px, 10cqw, 44px);
+    font-size: clamp(27px, 8.9cqw, 44px);
   }
 
   .c-service-page #service-flow .c-howto-timeline-title__japanese {
