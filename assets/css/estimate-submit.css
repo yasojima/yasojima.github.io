@@ -32,3 +32,9 @@
   .c-footer,
   #js-floating { display: none !important; }
 }
+
+.cch-estimate-review dd { white-space: pre-wrap; overflow-wrap: anywhere; }
+.cch-estimate-mail-consent { margin-top: 24px; line-height: 1.8; }
+.cch-estimate-challenge { margin-top: 24px; }
+.cch-estimate [data-estimate-challenge-status] { font-size: 14px; line-height: 1.7; }
+.cch-estimate textarea.c-text-field { width: 100%; resize: vertical; }
