@@ -165,6 +165,20 @@
   }
 }
 
+@media (min-width: 768px) {
+  :is(.c-service-page[data-service-layout="shared-v2"], .c-home) .l-section--blue-bubbles::before {
+    top: -34px;
+    width: 20px;
+    height: 60px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+
+  :is(.c-service-page[data-service-layout="shared-v2"], .c-home) .c-curved-section--down.l-section--blue-bubbles::before {
+    top: calc(var(--section-curve-depth) - 34px);
+  }
+}
+
 :is(.c-service-page, .c-home) .c-reasons__navy {
   background-color: #264574;
 }

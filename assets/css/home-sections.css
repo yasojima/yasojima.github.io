@@ -20,18 +20,6 @@
 }
 
 @media (min-width: 768px) {
-  .c-home .home-section.l-section--blue-bubbles::before {
-    top: -34px;
-    width: 20px;
-    height: 60px;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-  }
-
-  .c-home .home-section.c-curved-section--down.l-section--blue-bubbles::before {
-    top: calc(var(--section-curve-depth) - 34px);
-  }
-
   .c-home .concern-selector {
     margin-top: 40px;
   }
