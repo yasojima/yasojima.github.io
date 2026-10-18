@@ -1,0 +1,56 @@
+@media (min-width: 768px) {
+  :root main :is(.p-reasons__heading, .p-page-anchors__heading, .recommend-plan__heading) {
+    font-size: 28px;
+    line-height: 1.5;
+  }
+
+  :root main :is(.p-reasons__heading, .p-page-anchors__heading) :is(.c-cleaning-menu-heading__brand, .c-cleaning-menu-heading__title) {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  :root main :is(.p-reasons__heading, .p-page-anchors__heading) {
+    position: relative;
+    width: fit-content;
+    max-width: calc(100% - 48px);
+    margin-inline: auto;
+    padding-inline: 12px;
+  }
+
+  :root main :is(.p-reasons__heading, .p-page-anchors__heading)::after {
+    position: absolute;
+    content: "";
+    left: -24px;
+    right: -24px;
+    bottom: -18px;
+    width: auto;
+    height: 32px;
+    border: 2px solid currentColor;
+    border-top: 0;
+    background: none;
+    transform: none;
+    border-radius: 0 0 26px 26px;
+  }
+
+  :root main .recommend-plan__heading {
+    gap: 24px;
+  }
+
+  :root main .recommend-plan__heading::before,
+  :root main .recommend-plan__heading::after {
+    flex-basis: 20px;
+    height: 56px;
+    font-size: 52px;
+  }
+
+  .c-home main .cleaning-guide-tab,
+  :root main .p-page-anchors__cards,
+  :root main .p-reasons__contents,
+  :root main .c-featured-cleaning__heading + .c-house-cleaning-links {
+    margin-top: 48px;
+  }
+
+  .c-home main .home-pickup__heading {
+    margin-bottom: 48px;
+  }
+}
