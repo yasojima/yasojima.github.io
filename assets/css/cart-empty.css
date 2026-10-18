@@ -48,8 +48,8 @@
 .cch-cart-empty-design__heading { margin: 0 0 20px; font-size: clamp(23px, 2.2vw, 30px); line-height: 1.5; font-weight: 700; letter-spacing: .025em; }
 .cch-cart-empty-design__lead { margin: 0; font-size: 14px; line-height: 1.9; font-weight: 700; }
 .cch-cart-empty-design__description { margin: 8px 0 0; font-size: 12px; line-height: 1.9; color: #4a6688; }
-.cch-cart-empty-design__cta { width: min(290px, 90%); margin-top: 30px; text-decoration: none; }
-.cch-cart-empty-design__cta .c-category-simple-card__bottom { display: grid; place-items: center; min-height: 56px; padding: 10px 20px; }
+.cch-cart-empty-design__cta { width: min(290px, 90%); margin-top: 30px; border-radius: 0; text-decoration: none; }
+.cch-cart-empty-design__cta .c-category-simple-card__bottom { display: grid; place-items: center; min-height: 56px; padding: 10px 20px; border-radius: 0; }
 .cch-cart-empty-design__cta .c-category-simple-card__text { color: #fff; font-size: 16px; line-height: 1.5; }
 .cch-cart-empty-design__cta:focus-visible,
 .cch-cart-empty-design__category:focus-visible { outline: 3px solid #0878d9; outline-offset: 5px; }
