@@ -1,0 +1,240 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap");
+
+.c-service-page #service-flow .c-howto-timeline-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+.c-service-page #service-flow .c-howto-timeline-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 0 34px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.c-service-page #service-flow .c-howto-timeline-title__english {
+  color: #0757a3;
+  background: linear-gradient(100deg, #376a9c, #00509e 70%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: Arial, sans-serif;
+  font-size: clamp(42px, 5.4cqw, 64px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: .025em;
+}
+
+.c-service-page #service-flow .c-howto-timeline-title__japanese {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 8px;
+  color: #404b59;
+  font-size: clamp(20px, 2.2cqw, 26px);
+  line-height: 1.5;
+}
+
+.c-service-page #service-flow .c-howto-timeline-title__japanese::before,
+.c-service-page #service-flow .c-howto-timeline-title__japanese::after {
+  width: 60px;
+  height: 1px;
+  background: #b7c7d8;
+  content: "";
+}
+
+.c-service-page #service-flow .c-howto-timeline {
+  --flow-gap: clamp(12px, 2cqw, 24px);
+  --flow-disc-size: clamp(96px, 12.2cqw, 144px);
+  --flow-number-size: clamp(54px, 6cqw, 70px);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0 var(--flow-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-service-page #service-flow .c-howto-timeline__item {
+  --flow-accent: #0757a3;
+  --flow-disc: #e6f4ff;
+  --flow-number-start: #2b6fb1;
+  --flow-number-end: #247fc1;
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.c-service-page #service-flow .c-howto-timeline__item:nth-child(even) {
+  --flow-accent: #2d8b9d;
+  --flow-disc: #e6f6f7;
+  --flow-number-start: #347e8c;
+  --flow-number-end: #3b9aaa;
+}
+
+.c-service-page #service-flow .c-howto-timeline__visual {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--flow-disc-size);
+  height: var(--flow-disc-size);
+  margin-inline: auto;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 35% 25%, #ffffff59, #ffffff00 75%), var(--flow-disc);
+}
+
+.c-service-page #service-flow .c-howto-timeline__icon {
+  display: block;
+  width: 72%;
+  height: 72%;
+  background: var(--flow-accent);
+  -webkit-mask: var(--howto-icon) center / contain no-repeat;
+  mask: var(--howto-icon) center / contain no-repeat;
+}
+
+.c-service-page #service-flow .c-howto-timeline__step {
+  position: relative;
+  z-index: 2;
+  width: var(--flow-number-size);
+  height: var(--flow-number-size);
+  margin: calc(var(--flow-number-size) / -4) auto 0;
+}
+
+.c-service-page #service-flow .c-howto-timeline__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(140deg, var(--flow-number-start), var(--flow-number-end));
+  font-family: Oswald, Arial, sans-serif;
+  font-size: calc(var(--flow-number-size) * .48);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.c-service-page #service-flow .c-howto-timeline__connector {
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--flow-disc-size) + var(--flow-number-size) / 4 - 8px);
+  left: 50%;
+  width: calc(100% + var(--flow-gap));
+  height: 16px;
+  pointer-events: none;
+}
+
+.c-service-page #service-flow .c-howto-timeline__connector::before {
+  position: absolute;
+  top: 6px;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: radial-gradient(circle, #becbd7 1.2px, transparent 1.5px) left center / 8px 3px repeat-x;
+  content: "";
+}
+
+.c-service-page #service-flow .c-howto-timeline__connector::after {
+  position: absolute;
+  top: 1px;
+  left: calc(50% - 5px);
+  width: 10px;
+  height: 14px;
+  background: #0795ce;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  content: "";
+}
+
+.c-service-page #service-flow .c-howto-timeline__heading {
+  margin: 16px 0 0;
+  color: var(--flow-accent);
+  font-size: clamp(14px, 1.84cqw, 22px);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.c-service-page #service-flow .c-howto-timeline__heading::after {
+  display: block;
+  width: 30px;
+  height: 1px;
+  margin: 16px auto 18px;
+  background: var(--flow-accent);
+  content: "";
+}
+
+.c-service-page #service-flow .c-howto-timeline__description {
+  margin: 0;
+  color: #404b59;
+  font-size: clamp(13px, 1.44cqw, 17px);
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+@media (max-width: 767.98px) {
+  .c-service-page #service-flow .c-howto-timeline-title {
+    margin-bottom: 32px;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline-title__english {
+    font-size: clamp(34px, 10cqw, 44px);
+  }
+
+  .c-service-page #service-flow .c-howto-timeline-title__japanese {
+    gap: 16px;
+    font-size: 20px;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline-title__japanese::before,
+  .c-service-page #service-flow .c-howto-timeline-title__japanese::after {
+    width: 36px;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline {
+    --flow-disc-size: 144px;
+    --flow-number-size: 70px;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 64px;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline__heading {
+    font-size: 22px;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline__description {
+    font-size: 16px;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline__connector {
+    top: auto;
+    bottom: -52px;
+    left: calc(50% - 8px);
+    width: 16px;
+    height: 40px;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline__connector::before {
+    top: 0;
+    right: auto;
+    bottom: 0;
+    left: 6px;
+    width: 3px;
+    height: auto;
+    background-size: 3px 8px;
+    background-repeat: repeat-y;
+  }
+
+  .c-service-page #service-flow .c-howto-timeline__connector::after {
+    top: calc(50% - 5px);
+    left: 1px;
+    width: 14px;
+    height: 10px;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+}
