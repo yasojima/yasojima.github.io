@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 440" preserveAspectRatio="none" fill="none">
+  <defs>
+    <linearGradient id="base" x2="1600" y2="440" gradientUnits="userSpaceOnUse"><stop stop-color="#f1f9ff"/><stop offset=".45" stop-color="#f7fcff"/><stop offset="1" stop-color="#eaf6ff"/></linearGradient>
+    <linearGradient id="light" x1="0" x2="780" y2="370" gradientUnits="userSpaceOnUse"><stop stop-color="white" stop-opacity=".9"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient>
+    <linearGradient id="wave" x1="800" x2="800" y1="300" y2="440" gradientUnits="userSpaceOnUse"><stop stop-color="#dff1ff" stop-opacity=".45"/><stop offset="1" stop-color="#d8eeff" stop-opacity=".8"/></linearGradient>
+  </defs>
+  <path fill="url(#base)" d="M0 0h1600v440H0z"/>
+  <path fill="url(#light)" d="M70 0h36v296l540 144H475L70 286zM130 0h30l681 440H679L130 103zM0 286l492 154H311L0 336z"/>
+  <path fill="white" fill-opacity=".75" d="M0 0h30v337H0zM78 0h20v303H78zM0 315h173v14H0z"/>
+  <path fill="url(#wave)" d="M0 366c182-29 325 59 550 51s292-82 488-59 250-79 562-112v194H0z"/>
+  <path fill="white" fill-opacity=".45" d="M0 382c245 40 339 8 492 22s271-19 439-12 378 64 669-48v96H0z"/>
+</svg>
