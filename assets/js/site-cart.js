@@ -2,7 +2,8 @@
   'use strict';
   const catalogue = window.CCH_CART_CATALOGUE;
   const core = window.CCHCartCore;
-  if (!catalogue || !core) return;
+  const storage = window.CCHCartStorage;
+  if (!catalogue || !core || !storage) return;
   const STORAGE_KEY = 'cch-cart-v1';
   const format = value => value.toLocaleString('ja-JP');
   const escape = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -22,7 +23,7 @@
   let triggerBeforeDialog;
 
   function load() {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = storage.getItem(STORAGE_KEY);
     if (!saved) return [];
     const parsed = JSON.parse(saved);
     if (parsed.version !== 1) throw new Error('保存済みカートの形式を確認できません。');
@@ -37,7 +38,7 @@
 
   function commit(next) {
     core.calculate(next, catalogue);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({version: 1, lines: next})); }
+    try { storage.setItem(STORAGE_KEY, JSON.stringify({version: 1, lines: next})); }
     catch { throw new Error('カートを保存できませんでした。ブラウザの保存設定をご確認ください。'); }
     lines = next;
     refresh();
@@ -74,25 +75,45 @@
     if (dialog?.open) dialog.close();
   }
 
-  function show(message, success = false) {
+  function addedItemMarkup(entry, result) {
+    const line = result.details.find(line => line.key === entry.key);
+    const item = line.item;
+    const unit = escape(item.unit);
+    const discount = item.quote ? 0 : item.tiers[0].price - line.unitPrice;
+    return `<div class="c-add-cart__item c-add-cart-item">
+      <h3 class="c-bullet-heading c-add-cart-item__name">${escape(item.name)}</h3>
+      <dl class="c-add-cart-item__details">
+        <div class="c-add-cart-item__detail"><dt class="c-add-cart-item__term">価格:</dt><dd class="c-add-cart-item__price">${item.quote ? '<p class="c-add-cart-item-price-text">別途見積り</p>' : `<p class="c-add-cart-item-price${item.approximate ? '-text' : ''}" data-unit="${unit}">${item.approximate ? '¥' : ''}${format(item.tiers[0].price)}${item.approximate ? `〜（税込）／${unit}` : ''}</p>`}</dd></div>
+        ${discount ? `<div class="c-add-cart-item__detail"><dt class="c-add-cart-item__term c-add-cart-item__term--discount">数量割引:</dt><dd class="c-add-cart-item__discount">−¥${format(discount)}（税込）／${unit}</dd></div>` : ''}
+        <div class="c-add-cart-item__detail"><dt class="c-add-cart-item__term">数量：</dt><dd class="c-add-cart-item__quantity">${entry.quantity}</dd></div>
+      </dl></div>`;
+  }
+
+  function show(message, added = []) {
     let dialog = document.getElementById('cch-cart-dialog');
     if (!dialog) {
       dialog = document.createElement('dialog');
       dialog.id = 'cch-cart-dialog';
-      dialog.className = 'cch-cart-dialog';
+      dialog.className = 'c-modal cch-cart-dialog';
       dialog.setAttribute('aria-labelledby', 'cch-cart-dialog-title');
       dialog.addEventListener('click', event => {
         if (event.target === dialog || event.target.closest('[data-cart-close]')) closeDialog();
       });
-      dialog.addEventListener('close', () => triggerBeforeDialog?.focus({preventScroll: true}));
+      dialog.addEventListener('close', () => {
+        document.body.classList.remove('cch-cart-dialog-open');
+        triggerBeforeDialog?.focus({preventScroll: true});
+      });
       document.body.append(dialog);
     }
     triggerBeforeDialog = document.activeElement;
     const result = core.calculate(lines, catalogue);
-    dialog.innerHTML = `<h2 id="cch-cart-dialog-title">${success ? 'カートに追加しました' : 'ご確認ください'}</h2>
-      <p>${escape(message)}</p>${success ? `<p class="cch-cart-dialog__total">合計金額（税込）：${totalLabel(result)}円</p>
-      <a class="c-button c-button--fill-red" href="/cart/">カートを確認する</a>` : ''}
-      <button type="button" class="cch-cart-close" data-cart-close>閉じる</button>`;
+    dialog.innerHTML = `<div class="c-modal__backdrop" data-cart-close></div><div class="c-modal__main">
+      <button class="c-modal-closer" type="button" data-cart-close aria-label="モーダルを閉じる">モーダルを閉じる</button>
+      <div class="c-add-cart"><h2 class="c-add-cart__heading" id="cch-cart-dialog-title">${added.length ? 'カートに追加しました！' : 'ご確認ください'}</h2>
+      ${added.length ? `<div class="c-add-cart__items">${added.map(entry => addedItemMarkup(entry, result)).join('')}</div>
+      <a class="c-cart-confirm-button c-add-cart__button" href="/cart/" aria-label="カートを見る（${result.count}点）"><span class="c-cart-confirm-button__text" data-cart-count="${result.count}">カートを見る</span></a>` : `<p class="cch-cart-dialog__message">${escape(message)}</p>`}
+      <button type="button" class="c-add-cart__close-button" data-cart-close>閉じる</button></div></div>`;
+    document.body.classList.add('cch-cart-dialog-open');
     if (!dialog.open) dialog.showModal();
   }
 
@@ -299,7 +320,7 @@
     const count = countFor(card);
     if (!count) throw new Error('数量を選択してください。');
     update(key, count, true);
-    show(`${catalogue.items[key].name} × ${count}`, true);
+    show('', [{key, quantity: count}]);
   }
 
   function addOffice() {
@@ -312,7 +333,7 @@
     entries.sort((a, b) => Number(Boolean(catalogue.items[a.key].parentKey)) - Number(Boolean(catalogue.items[b.key].parentKey)));
     for (const entry of entries) next = core.change(next, entry.key, entry.quantity, catalogue, true);
     commit(next);
-    show(entries.map(line => `${catalogue.items[line.key].name} × ${line.quantity}`).join('、'), true);
+    show('', entries);
   }
 
   for (const button of document.querySelectorAll('.js-add-cart, #js-add-cart')) {
@@ -341,7 +362,7 @@
     const button = event.target.closest('.js-add-cart, #js-add-cart, .js-counter-button, [data-cart-remove], [data-cart-step], [data-cart-add-option], #js-next-button');
     if (!button) return;
     if (button.id === 'js-next-button') {
-      if (!lines.length) event.preventDefault();
+      if (!read().length) { event.preventDefault(); refresh(); }
       return;
     }
     event.preventDefault();
@@ -350,6 +371,7 @@
       if (button.hasAttribute('data-cart-step')) {
         const line = read().find(line => line.key === button.dataset.cartStep);
         if (line) update(line.key, line.quantity + Number(button.dataset.delta));
+        else refresh();
       } else if (button.hasAttribute('data-cart-add-option')) {
         const key = button.dataset.cartAddOption;
         const count = button.closest('.cch-cart-option-card').querySelector('select').value;
@@ -358,11 +380,12 @@
       } else if (button.hasAttribute('data-cart-remove')) update(button.dataset.cartRemove, 0);
       else if (button.matches('.js-counter-button')) {
         const input = document.getElementById(button.getAttribute('aria-controls'));
-        const count = Number(input.value) + (button.dataset.type === 'decrement' ? -1 : 1);
-        if (count < Number(input.min || 0) || count > Number(input.max || 30)) return;
         const card = input.closest('.js-product-card');
+        const index = [...card.querySelectorAll('.c-counter__input')].indexOf(input);
+        const current = quick ? (read().find(line => line.key === bindings.get(card)[index])?.quantity || 0) : Number(input.value);
+        const count = current + (button.dataset.type === 'decrement' ? -1 : 1);
+        if (count < Number(input.min || 0) || count > Number(input.max || 30)) return;
         if (quick) {
-          const index = [...card.querySelectorAll('.c-counter__input')].indexOf(input);
           update(bindings.get(card)[index], count);
         } else { input.value = String(count); syncCounters(); }
       } else if (button.id === 'js-add-cart') addOffice();

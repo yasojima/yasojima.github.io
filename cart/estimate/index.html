@@ -33,19 +33,21 @@
     <script src="/assets/js/common.js?v=2026100602" defer=""></script>
     <script src="/assets/js/viewport-hud.js" defer></script>
 <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon/crystal-clean-home.svg">
-<script src="/assets/js/demo-contact.js?v=2026100601" defer></script>
+<script src="/assets/js/demo-contact.js?v=2026101903" defer></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;display=swap">
 <link rel="stylesheet" href="/assets/css/site-typography.css?v=2026100601">
 <script type="module" src="/assets/js/shared-translation-control.js"></script>
 <link rel="stylesheet" href="/assets/css/form/common.css">
+<link rel="stylesheet" href="/assets/css/estimate-submit.css?v=2026101903">
 <link rel="stylesheet" href="/assets/css/aircon-header.css?v=2026100705">
 <link rel="stylesheet" href="/assets/css/site-footer.css?v=2026100701">
 <script src="/assets/js/aircon-header.js?v=2026100701" defer></script>
-<link rel="stylesheet" href="/assets/css/site-cart.css?v=2026100604">
+<link rel="stylesheet" href="/assets/css/site-cart.css?v=2026101903">
+<script src="/assets/js/cart-storage.js?v=2026101903" defer></script>
 <script src="/assets/js/cart-catalogue.js?v=2026100603" defer></script>
 <script src="/assets/js/cart-core.js?v=2026100528" defer></script>
-<script src="/assets/js/site-cart.js?v=2026100603" defer></script>
-<script src="/assets/js/cart-estimate.js?v=2026100601" defer></script>
+<script src="/assets/js/site-cart.js?v=2026101903" defer></script>
+<script src="/assets/js/cart-estimate.js?v=2026101903" defer></script>
 </head>
 
   <body>
@@ -183,13 +185,14 @@
 </header>
 <span class="c-site-page-top" id="first-view" aria-hidden="true"></span>
 
-    <main class="cch-estimate"><h1 class="c-page-heading" style="--bg-color:#f5f8fa;">お客様情報のご入力</h1><ol class="c-step-nav" aria-label="お見積りのステップ"><li class="c-step-nav__item">見積り確認</li><li class="c-step-nav__item" aria-current="step">情報入力</li><li class="c-step-nav__item">入力確認</li><li class="c-step-nav__item">完了</li></ol><p class="cch-estimate-notice">確認用画面です。お申し込みは送信されません。</p><form action="/cart/estimate/confirm/" id="cch-estimate-form" method="get">
+    <main class="cch-estimate"><h1 class="c-page-heading" style="--bg-color:#f5f8fa;">お客様情報のご入力</h1><ol class="c-step-nav" aria-label="お見積りのステップ"><li class="c-step-nav__item">見積り確認</li><li class="c-step-nav__item" aria-current="step">情報入力</li><li class="c-step-nav__item">入力確認</li><li class="c-step-nav__item">保存完了</li></ol><p class="cch-estimate-notice">この端末だけに保存します。店舗への送信・予約の確定は行われません。</p><form action="/cart/estimate/confirm/" id="cch-estimate-form" method="get">
 <section class="l-section l-section--limited l-section--cart l-section--blue-bubbles u-pb-96_80" style="--bg-color:#e3f1fc;">
 <div class="l-section-inner l-section-inner--limited">
 <div class="u-width-pc-640">
 <div class="c-form-announce">
 <h2 class="c-bullet-heading c-form-announce__heading">ハウスクリーニングをご希望の方</h2>
-<p class="c-text c-form-announce__text">ご希望のサービスとお客様情報をご確認ください。</p>
+<p class="c-text c-form-announce__text" tabindex="-1">ご希望のサービスとお客様情報をご確認ください。</p>
+<p class="cch-estimate-local-notice">入力内容はこの端末のブラウザに保存します。店舗への送信・予約の確定は行われません。このサイトを最後に利用してから24時間経過後、次にサイトを利用した際に、保存内容は削除されます。</p>
 </div>
 <div class="form">
 <fieldset class="form__fieldset form-fieldset">

@@ -20,12 +20,9 @@
 .cch-cart-options-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .cch-cart-option { display: flex; flex-direction: column; gap: 12px; padding: 20px; background: #fff; border: 1px solid #d9e6ef; border-radius: 8px; }
 .cch-cart-option .cch-cart-quantity { margin-top: auto; }
-.cch-cart-dialog { width: min(480px, calc(100% - 32px)); box-sizing: border-box; max-height: calc(100dvh - 40px); padding: 28px; border: 0; border-radius: 12px; color: #003c70; }
-.cch-cart-dialog::backdrop { background: rgba(0, 30, 60, .4); }
-.cch-cart-dialog h2 { font-size: 22px; margin: 0 0 20px; }
-.cch-cart-dialog p { line-height: 1.8; margin-bottom: 20px; }
-.cch-cart-dialog__total { font-weight: bold; }
-.cch-cart-close { display: block; width: 100%; margin-top: 16px; min-height: 44px; padding: 10px; border: 1px solid #005bac; color: #005bac; border-radius: 4px; background: #fff; cursor: pointer; }
+body.cch-cart-dialog-open { overflow: hidden; }
+.cch-cart-dialog { color: #212529; }
+.cch-cart-dialog__message { margin-top: 24px; line-height: 1.8; }
 #cart-modal .cart-table th, #cart-modal .cart-table td { padding: 10px; border-bottom: 1px solid #d9e6ef; }
 #cart-modal .cart-table td:last-child { text-align: right; white-space: nowrap; }
 .cch-estimate .c-step-nav { max-width: 640px; margin-inline: auto; }
@@ -48,7 +45,6 @@
   .cch-cart-summary__total { font-size: 17px; }
   .cch-cart-options-grid { grid-template-columns: 1fr; }
   .cch-cart-actions .c-button { width: 100%; }
-  .cch-cart-dialog { padding: 24px 20px; }
   .cch-estimate-items li { flex-wrap: wrap; }
   .cch-estimate .action-buttons .c-button { width: 100%; padding-inline: 12px; }
 }
@@ -58,7 +54,7 @@
 .cch-cart-page__main { background: #e3f1fc; padding: 0 0 24px; }
 .cch-cart-heading { font-size: 28px; font-weight: 700; text-align: center; margin: 20px 16px 0; }
 .cch-cart-page .cch-cart-content { width: min(1200px, calc(100% - 48px)); margin: 24px auto 0; color: inherit; }
-.cch-cart-page .cart { display: grid; grid-template-columns: minmax(0, 795px) 340px; gap: 64px; }
+.cch-cart-page .cart { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 64px; }
 .cch-cart-page .cart__contents { min-width: 0; max-width: none; margin: 0; }
 .cch-cart-page .cart__price-info { width: auto; max-width: none; margin: 0; padding: 0; position: sticky; top: calc(var(--aircon-header-height, 140px) + 24px); }
 .cch-cart-page .price-info-card { box-sizing: border-box; width: 100%; margin: 0; }
