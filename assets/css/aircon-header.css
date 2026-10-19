@@ -128,7 +128,7 @@ html {
   height: 22px;
   background-repeat: no-repeat;
   background-position: left center;
-  background-size: 400px auto;
+  background-size: contain;
 }
 
 .c-header-contact__hours {
@@ -175,7 +175,10 @@ html {
 
 @media (min-width: 901px) {
   .c-header-contact {
+    --aircon-phone-inset: 52px;
     grid-template-columns: clamp(138px, 14.6vw, 204px) max-content max-content;
+    grid-template-rows: auto auto;
+    row-gap: 0;
     column-gap: clamp(24px, 2.5vw, 40px);
   }
 
@@ -183,16 +186,38 @@ html {
     display: flex;
     grid-column: 1;
     grid-row: 1 / 3;
+    align-self: end;
     height: clamp(40px, 3.4vw, 48px);
     width: 100%;
   }
 
   .c-header-contact__payments {
     grid-column: 2;
+    grid-row: 2;
+    align-self: end;
   }
 
   .c-header-contact__telephone {
-    grid-column: 3;
+    grid-column: 2 / 4;
+    padding-bottom: 34px;
+  }
+
+  .c-header-contact__phone {
+    padding-left: var(--aircon-phone-inset);
+  }
+
+  .c-header-contact__number {
+    font-size: 32px;
+    letter-spacing: -.025em;
+  }
+
+  .c-header-contact__hours {
+    left: calc(var(--aircon-phone-inset) + var(--aircon-phone-mark-width) + var(--aircon-phone-gap));
+    font-size: 12px;
+  }
+
+  .c-header-contact__days {
+    font-size: 11.5px;
   }
 }
 
@@ -220,7 +245,7 @@ html {
   cursor: pointer;
   font-family: inherit;
   color: var(--aircon-menu-text);
-  font-size: clamp(12px, .92vw, 14px);
+  font-size: clamp(13px, calc(.92vw + 1px), 15px);
   font-weight: 400;
   line-height: 1;
   text-align: left;
@@ -682,11 +707,18 @@ body.aircon-menu-open .c-header__navigation {
   .c-main-menu__link {
     gap: 4px;
     padding-right: 2px;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .c-main-menu__link svg {
     width: 9px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1279px) {
+  .c-main-menu__link {
+    gap: 10px;
+    font-size: 13px;
   }
 }
 
@@ -718,19 +750,19 @@ body.aircon-menu-open .c-header__navigation {
     flex-basis: 44px;
     width: 44px;
     height: 24px;
-    background-size: 440px auto;
+    background-size: contain;
   }
 
   .c-header-contact__number {
-    font-size: 31px;
+    font-size: 36px;
   }
 
   .c-header-contact__hours {
-    font-size: 11.5px;
+    font-size: 12.5px;
   }
 
   .c-header-contact__days {
-    font-size: 10.5px;
+    font-size: 12px;
   }
 }
 
@@ -768,7 +800,7 @@ body.aircon-menu-open .c-header__navigation {
     flex-basis: 32px;
     width: 32px;
     height: 17px;
-    background-size: 320px auto;
+    background-size: contain;
   }
 
   .c-header-contact__number {
@@ -793,7 +825,37 @@ body.aircon-menu-open .c-header__navigation {
   }
 }
 
+@media (min-width: 901px) and (max-width: 1100px) {
+  .c-header-contact {
+    --aircon-phone-inset: 46px;
+    grid-template-columns: clamp(138px, 14.6vw, 160px) max-content max-content;
+    column-gap: 20px;
+  }
+
+  .c-header-contact__number {
+    font-size: 26px;
+  }
+
+  .c-header-contact__hours {
+    font-size: 11.5px;
+  }
+
+  .c-header-contact__days {
+    font-size: 11px;
+  }
+}
+
 @media (min-width: 768px) {
+  .c-header-contact__hours {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .c-header-contact__hours > span {
+    width: max-content;
+    min-width: 100%;
+    justify-self: center;
+  }
+
   .c-header {
     transition: transform .45s cubic-bezier(.4, 0, .2, 1),
                 background-color .4s var(--aircon-menu-material);
@@ -894,7 +956,7 @@ body.aircon-menu-open .c-header__navigation {
     flex-basis: var(--aircon-phone-mark-width);
     width: var(--aircon-phone-mark-width);
     height: 14px;
-    background-size: 250px auto;
+    background-size: contain;
   }
 
   .c-header-contact__number {
@@ -1001,7 +1063,7 @@ body.aircon-menu-open .c-header__navigation {
     flex-basis: var(--aircon-phone-mark-width);
     width: var(--aircon-phone-mark-width);
     height: 12px;
-    background-size: 210px auto;
+    background-size: contain;
   }
 
   .c-header-contact__number {
@@ -1075,7 +1137,7 @@ body.aircon-menu-open .c-header__navigation {
     flex-basis: var(--aircon-phone-mark-width);
     width: var(--aircon-phone-mark-width);
     height: 10px;
-    background-size: 180px auto;
+    background-size: contain;
   }
 
   .c-header-contact__hours {
