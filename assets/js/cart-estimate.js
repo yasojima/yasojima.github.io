@@ -362,7 +362,7 @@
 
   if (deliveryUnavailable) document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = '現在、見積もり依頼の送信設定を確認中です。依頼は送信されていません。'; });
   if (connected) {
-    document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = form ? 'こちらの入力フォームより無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : '内容を確認して見積もりを依頼できます。訪問日時・最終料金は担当者からの連絡で確定します。'; });
+    document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = form ? 'こちらの入力フォームより無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : review ? '無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : '内容を確認して見積もりを依頼できます。訪問日時・最終料金は担当者からの連絡で確定します。'; });
     if (form) {
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
       form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
