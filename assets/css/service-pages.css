@@ -129,6 +129,10 @@
 }
 
 @media (max-width: 767.98px) {
+  .c-service-page .c-lineup-card__image {
+    width: 100%;
+  }
+
   .c-service-page .c-voice-card__heading {
     padding-top: 28px;
   }
