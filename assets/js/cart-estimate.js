@@ -364,12 +364,12 @@
   if (connected) {
     document.querySelectorAll('.cch-estimate-notice').forEach(node => {
       if (complete) node.remove();
-      else node.textContent = form ? 'こちらの入力フォームより無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : '無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。';
+      else node.textContent = form ? '無料見積もりを依頼できます。訪問日時・最終料金は担当者より改めてご連絡いたします。' : '無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。';
     });
     if (form) {
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
       form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
-      form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金はこの操作では確定せず、担当者より改めてご連絡いたします。';
+      form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金のご案内は担当者より改めてご連絡いたします。';
     }
     if (complete) document.querySelector('.c-page-heading').textContent = '見積もり依頼の受付内容';
   }
