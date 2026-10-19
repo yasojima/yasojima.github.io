@@ -24,7 +24,12 @@
 
   .c-footer--aircon .footer-tel-pc {
     width: calc(100% - 160px);
-    padding: calc((32px + var(--footer-growth) * 2) * var(--footer-fit-space)) 0 calc((20px + var(--footer-growth)) * var(--footer-fit-space));
+    padding: calc((24px + var(--footer-growth) * 2) * var(--footer-fit-space)) 0 calc((16px + var(--footer-growth)) * var(--footer-fit-space));
+  }
+
+  .c-footer--aircon .footer-tel-pc .c-demo-phone {
+    width: 90%;
+    margin-inline: auto;
   }
 
   .c-footer--aircon .c-footer__page-top {
@@ -75,7 +80,7 @@
 
   .c-footer--aircon .c-footer-global-links__item {
     font-size: 12px;
-    line-height: calc(22.8px + var(--footer-growth) / 6);
+    line-height: calc(24px + var(--footer-growth) / 6);
   }
 
   .c-footer--aircon .c-footer-item-heading {
@@ -98,7 +103,7 @@
 
 @media (min-width: 1200px) {
   .c-footer--aircon .footer-tel-pc {
-    padding: calc((24px + var(--footer-growth) * 2) * var(--footer-fit-space)) 0 calc((12px + var(--footer-growth)) * var(--footer-fit-space));
+    padding: calc((16px + var(--footer-growth) * 2) * var(--footer-fit-space)) 0 calc((8px + var(--footer-growth)) * var(--footer-fit-space));
   }
 
   .c-footer--aircon .c-footer__top-nav {
