@@ -13,12 +13,12 @@
 .cch-cart-page--empty .cch-cart-content { width: 100%; margin-top: 18px; }
 .cch-cart-empty-design {
   display: grid;
-  grid-template-columns: minmax(0, .23fr) minmax(0, .47fr) minmax(0, .30fr);
+  grid-template-columns: minmax(0, .30fr) minmax(0, .40fr) minmax(0, .30fr);
   align-items: center;
   min-height: 245px;
   color: #153962;
 }
-.cch-cart-empty-design__illustration { display: block; width: 100%; height: auto; align-self: end; }
+.cch-cart-empty-design__illustration { display: block; width: calc(100% * 23 / 30); height: auto; align-self: end; }
 .cch-cart-empty-design__copy { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; }
 .cch-cart-empty-design__heading { margin: 0 0 20px; font-size: clamp(23px, 2.2vw, 30px); line-height: 1.5; font-weight: 700; letter-spacing: .025em; }
 .cch-cart-empty-design__lead { margin: 0; font-size: 14px; line-height: 1.9; font-weight: 700; }
@@ -56,8 +56,8 @@
 }
 @media (min-width: 768px) and (max-width: 1023.98px) {
   .cch-cart-page--empty .cch-cart-page__main { padding-inline: 14px; }
-  .cch-cart-empty-design { grid-template-columns: minmax(0, .18fr) minmax(0, .52fr) minmax(0, .30fr); }
-  .cch-cart-empty-design__heading { font-size: 23px; }
+  .cch-cart-empty-design__illustration { width: 60%; }
+  .cch-cart-empty-design__heading { font-size: clamp(20px, 2.3vw, 23px); }
   .cch-cart-empty-design__lead { font-size: 13px; }
   .cch-cart-empty-design__description { font-size: 12px; }
   .cch-cart-empty-design__categories { padding-left: 12px; }
@@ -71,7 +71,7 @@
   .cch-cart-empty-design { grid-template-columns: 94px minmax(0, 1fr); gap: 12px 10px; min-height: 0; }
   .cch-cart-empty-design__copy { display: contents; }
   .cch-cart-empty-design__heading { grid-column: 1 / -1; grid-row: 1; margin: 0 0 3px; font-size: 22px; text-align: center; }
-  .cch-cart-empty-design__illustration { grid-column: 1; grid-row: 2 / 4; align-self: center; }
+  .cch-cart-empty-design__illustration { width: 100%; grid-column: 1; grid-row: 2 / 4; align-self: center; }
   .cch-cart-empty-design__lead { grid-column: 2; grid-row: 2; font-size: 13px; line-height: 1.8; }
   .cch-cart-empty-design__description { grid-column: 2; grid-row: 3; margin: 0; font-size: 12px; line-height: 1.8; }
   .cch-cart-empty-design__cta { grid-column: 1 / -1; grid-row: 4; justify-self: center; width: min(290px, 100%); margin: 8px 0 6px; }
