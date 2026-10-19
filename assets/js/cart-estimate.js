@@ -140,7 +140,10 @@
 
   function guard() {
     if (cart?.getSummary().count) return true;
-    document.querySelector('.cch-estimate').innerHTML = '<h1 class="c-page-heading">予約内容の確認</h1><div class="cch-cart-content"><p class="cch-cart-empty">カートが空です。ご希望のサービスをお選びください。</p><a class="c-button" href="/quick_cart/">サービスを選ぶ</a></div>';
+    const main = document.querySelector('.cch-estimate');
+    const progress = main.querySelector('[data-estimate-progress]');
+    main.innerHTML = '<h1 class="c-page-heading">予約内容の確認</h1><div class="cch-cart-content"><p class="cch-cart-empty">カートが空です。ご希望のサービスをお選びください。</p><a class="c-button" href="/quick_cart/">サービスを選ぶ</a></div>';
+    main.prepend(progress);
     return false;
   }
 
@@ -359,10 +362,11 @@
 
   if (deliveryUnavailable) document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = '現在、見積もり依頼の送信設定を確認中です。依頼は送信されていません。'; });
   if (connected) {
-    document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = '内容を確認して見積もりを依頼できます。訪問日時・最終料金は担当者からの連絡で確定します。'; });
+    document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = form ? 'こちらの入力フォームより無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : '内容を確認して見積もりを依頼できます。訪問日時・最終料金は担当者からの連絡で確定します。'; });
     if (form) {
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
-      form.querySelector('.cch-estimate-local-notice').textContent = '入力内容は確認画面へ進むためにこの端末へ一時保存します。確認画面で送信に同意して依頼すると、店舗への通知と受付内容の自動返信メールを送信します。訪問日時・最終料金はこの操作では確定しません。端末の保存内容は最後のサイト利用から24時間経過後の次回利用時に削除されます。';
+      form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
+      form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金はこの操作では確定せず、追って担当者よりご連絡いたします。';
     }
     if (complete) document.querySelector('.c-page-heading').textContent = '見積もり依頼の受付内容';
   }

@@ -1,3 +1,12 @@
+.cch-cart-page,
+.cch-estimate {
+  --cch-estimate-panel-gap: 28px;
+  --cch-estimate-panel-inset: 24px;
+}
+.cch-estimate,
+.cch-cart-page:not(.cch-cart-page--empty) .cch-cart-page__main {
+  padding-top: calc(var(--cch-estimate-panel-gap) + var(--cch-estimate-panel-inset));
+}
 .cch-estimate-progress {
   display: flex;
   align-items: center;
@@ -45,6 +54,11 @@
 }
 .cch-estimate-progress__item[aria-current='step'] + .cch-estimate-progress__item::before { border-color: #005bac; }
 @media (max-width: 767.98px) {
+  .cch-cart-page,
+  .cch-estimate {
+    --cch-estimate-panel-gap: 20px;
+    --cch-estimate-panel-inset: 22px;
+  }
   .cch-estimate-progress { gap: 20px; font-size: 14px; }
   .cch-estimate-progress__item + .cch-estimate-progress__item::before { left: -13px; width: 6px; height: 6px; }
 }
