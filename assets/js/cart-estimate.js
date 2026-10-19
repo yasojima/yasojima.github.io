@@ -310,7 +310,7 @@
     }
     const pending = connected && previous?.delivery?.state === 'pending' && sameRequest(previous, draft, result.details);
     review.innerHTML = `${summaryMarkup(result)}${detailsMarkup(draft)}
-      <p class="cch-estimate-local-notice">${connected ? 'この内容を店舗へ送信し、お客様へ受付内容の自動返信メールをお送りします。この操作では訪問日時・最終料金は確定しません。' : 'この内容はこの端末のブラウザに保存されます。店舗への送信・予約の確定は行われません。'}</p>
+      <p class="cch-estimate-local-notice">${connected ? '上記の内容を送信すると、お客様に受付内容の自動応答メールが届きます。この操作では訪問日時・最終料金は確定せず、担当者より改めてご連絡いたします。' : 'この内容はこの端末のブラウザに保存されます。店舗への送信・予約の確定は行われません。'}</p>
       ${connected ? '<div class="cch-estimate-mail-consent"><label class="c-checkbox"><input class="c-checkbox__input" type="checkbox" data-estimate-mail-consent><span class="c-checkbox__icon"></span><span class="c-checkbox__content">上記の内容と連絡先を店舗へ送信し、受付メールを受け取ることに同意します。</span></label></div><div class="cch-estimate-challenge" data-estimate-challenge></div><p data-estimate-challenge-status role="status" aria-live="polite">送信前の認証を読み込んでいます。</p>' : ''}
       <p class="cch-estimate-error" data-estimate-error role="alert" tabindex="-1" hidden></p><p data-estimate-save-status role="status" aria-live="polite"></p>
       <div class="action-buttons"><button class="c-button c-button--fill-red c-button--large" type="button" data-estimate-save>${connected ? pending ? '送信結果を確認・再試行する' : 'この内容で見積もりを依頼する' : '予約内容をこの端末に保存する'}</button><a class="c-button c-button--large" href="/cart/estimate/">入力内容を修正する</a><a class="c-button" href="/cart/">カートを修正する</a></div>`;
@@ -366,7 +366,7 @@
     if (form) {
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
       form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
-      form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金はこの操作では確定せず、追って担当者よりご連絡いたします。';
+      form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金はこの操作では確定せず、担当者より改めてご連絡いたします。';
     }
     if (complete) document.querySelector('.c-page-heading').textContent = '見積もり依頼の受付内容';
   }
