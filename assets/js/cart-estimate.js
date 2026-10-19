@@ -237,7 +237,7 @@
       if (!result.count) throw new Error('カートが空です。ご希望のサービスをお選びください。');
       const receipt = makeReceipt(draft, result);
       if (connected) {
-        if (!review.querySelector('[data-estimate-mail-consent]')?.checked) throw new Error('見積もり依頼の送信内容を確認し、送信に同意してください。');
+        if (!review.querySelector('[data-estimate-mail-consent]')?.checked) throw new Error('依頼内容を確認のうえ、上記の内容に同意してください。');
         const previous = readSaved(receiptKey);
         const matches = sameRequest(previous, draft, receipt.lines);
         if (matches && previous.delivery.state === 'accepted') {
@@ -313,7 +313,7 @@
       <p class="cch-estimate-local-notice">${connected ? '上記の内容を送信すると、お客様に受付内容の自動応答メールが届きます。この操作では訪問日時・最終料金は確定せず、担当者より改めてご連絡いたします。' : 'この内容はこの端末のブラウザに保存されます。店舗への送信・予約の確定は行われません。'}</p>
       ${connected ? '<div class="cch-estimate-mail-consent"><label class="c-checkbox"><input class="c-checkbox__input" type="checkbox" data-estimate-mail-consent><span class="c-checkbox__icon"></span><span class="c-checkbox__content">上記の内容を送信することに同意します。</span></label></div><div class="cch-estimate-challenge" data-estimate-challenge></div><p data-estimate-challenge-status role="status" aria-live="polite">送信前の認証を読み込んでいます。</p>' : ''}
       <p class="cch-estimate-error" data-estimate-error role="alert" tabindex="-1" hidden></p><p data-estimate-save-status role="status" aria-live="polite"></p>
-      <div class="action-buttons"><button class="c-button c-button--fill-red c-button--large" type="button" data-estimate-save>${connected ? pending ? '送信結果を確認・再試行する' : 'この内容で見積もりを依頼する' : '予約内容をこの端末に保存する'}</button><a class="c-button c-button--large" href="/cart/estimate/">入力内容を修正する</a><a class="c-button" href="/cart/">カートを修正する</a></div>`;
+      <div class="action-buttons cch-estimate-review-actions"><button class="c-button c-button--fill-red c-button--large" type="button" data-estimate-save>${connected ? pending ? '送信結果を確認・再試行する' : 'この内容で見積もりを依頼する' : '予約内容をこの端末に保存する'}</button><a class="c-button c-button--large" href="/cart/estimate/"><span class="cch-estimate-review-actions__label">入力内容を<span>修正する</span></span></a><a class="c-button" href="/cart/"><span class="cch-estimate-review-actions__label">カートを<span>修正する</span></span></a></div>`;
     review.querySelector('[data-estimate-save]').addEventListener('click', saveReservation);
     if (connected) {
       const challengeStatus = review.querySelector('[data-estimate-challenge-status]');
@@ -362,7 +362,10 @@
 
   if (deliveryUnavailable) document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = '現在、見積もり依頼の送信設定を確認中です。依頼は送信されていません。'; });
   if (connected) {
-    document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = form ? 'こちらの入力フォームより無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : review ? '無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : '内容を確認して見積もりを依頼できます。訪問日時・最終料金は担当者からの連絡で確定します。'; });
+    document.querySelectorAll('.cch-estimate-notice').forEach(node => {
+      if (complete) node.remove();
+      else node.textContent = form ? 'こちらの入力フォームより無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。' : '無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。';
+    });
     if (form) {
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
       form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
