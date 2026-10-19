@@ -38,7 +38,7 @@
 <link rel="stylesheet" href="/assets/css/site-typography.css?v=2026100601">
 <script type="module" src="/assets/js/shared-translation-control.js"></script>
 <link rel="stylesheet" href="/assets/css/form/common.css">
-<link rel="stylesheet" href="/assets/css/estimate-submit.css?v=2026101906">
+<link rel="stylesheet" href="/assets/css/estimate-submit.css?v=2026101912">
 <link rel="stylesheet" href="/assets/css/aircon-header.css?v=2026100705">
 <link rel="stylesheet" href="/assets/css/site-footer.css?v=2026100701">
 <script src="/assets/js/aircon-header.js?v=2026100701" defer></script>
@@ -49,8 +49,8 @@
 <script src="/assets/js/site-cart.js?v=2026101903" defer></script>
 <script src="/assets/js/estimate-mail-config.js?v=2026101906" defer></script>
 <script src="/assets/js/estimate-delivery.js?v=2026101906" defer></script>
-<script src="/assets/js/cart-estimate.js?v=2026101911" defer></script>
-<link rel="stylesheet" href="/assets/css/estimate-progress.css?v=2026101911">
+<script src="/assets/js/cart-estimate.js?v=2026101912" defer></script>
+<link rel="stylesheet" href="/assets/css/estimate-progress.css?v=2026101912">
 </head>
 
   <body>
@@ -188,14 +188,19 @@
 </header>
 <span class="c-site-page-top" id="first-view" aria-hidden="true"></span>
 
-    <main class="cch-estimate"><h1 class="c-page-heading" style="--bg-color:#f5f8fa;">お客様情報のご入力</h1><ol class="cch-estimate-progress" data-estimate-progress aria-label="お見積りのステップ"><li class="cch-estimate-progress__item">見積り確認</li><li class="cch-estimate-progress__item" aria-current="step">情報入力</li><li class="cch-estimate-progress__item">入力確認</li><li class="cch-estimate-progress__item">完了</li></ol><p class="cch-estimate-notice">この端末だけに保存します。店舗への送信・予約の確定は行われません。</p><form action="/cart/estimate/confirm/" id="cch-estimate-form" method="get">
+    <main class="cch-estimate"><ol class="cch-estimate-progress" data-estimate-progress aria-label="お見積りのステップ"><li class="cch-estimate-progress__item">見積り確認</li><li class="cch-estimate-progress__item" aria-current="step">情報入力</li><li class="cch-estimate-progress__item">入力確認</li><li class="cch-estimate-progress__item">完了</li></ol><h1 class="c-page-heading" style="--bg-color:#f5f8fa;">お客様情報のご入力</h1><p class="cch-estimate-notice">この端末だけに保存します。店舗への送信・予約の確定は行われません。</p><form action="/cart/estimate/confirm/" id="cch-estimate-form" method="get">
 <section class="l-section l-section--limited l-section--cart l-section--blue-bubbles u-pb-96_80" style="--bg-color:#e3f1fc;">
 <div class="l-section-inner l-section-inner--limited">
 <div class="u-width-pc-640">
 <div class="c-form-announce">
-<h2 class="c-bullet-heading c-form-announce__heading">ハウスクリーニングをご希望の方</h2>
-<p class="c-text c-form-announce__text" tabindex="-1">ご希望のサービスとお客様情報をご確認ください。</p>
-<p class="cch-estimate-local-notice">入力内容はこの端末のブラウザに保存します。店舗への送信・予約の確定は行われません。このサイトを最後に利用してから24時間経過後、次にサイトを利用した際に、保存内容は削除されます。</p>
+<h2 class="c-bullet-heading c-form-announce__heading">確認事項</h2>
+<ul class="cch-estimate-confirmation-notes">
+<li>入力漏れがないよう、お客様情報をご確認ください。</li>
+<li data-estimate-confirmation-mail>確認画面で内容を確認のうえ、この端末に保存してください。</li>
+<li data-estimate-confirmation-contact>この端末への保存では、店舗への送信・予約の確定は行われません。</li>
+<li>入力内容はこの端末に一時保存され、最後のサイト利用から24時間経過後、次回アクセス時に削除されます。</li>
+</ul>
+<p class="c-text c-form-announce__text" tabindex="-1" hidden></p>
 </div>
 <div class="form">
 <fieldset class="form__fieldset form-fieldset">
@@ -235,7 +240,7 @@
 <p class="c-text c-text--s form-attention__emphasize" style="">
                                             電話番号のお間違いが多くなっております。</p>
 <p class="c-text c-text--s form-attention__text" style="">
-                                            今一度、ご入力頂きました電話番号にお間違いがないかご確認をお願いいたします。</p>
+                                            ご入力頂きました電話番号にお間違いがないかご確認をお願いいたします。</p>
 </div>
 </div>
 </fieldset>
@@ -363,7 +368,7 @@
 </div>
 </fieldset>
 <div class="service-address"><label class="c-checkbox service-address__checkbox"><input class="c-checkbox__input" id="js-service-address-checkbox" name="separate-address" type="checkbox" value="on"/><span class="c-checkbox__icon"></span><span class="c-checkbox__content">
-                                        上記のお客様情報に入力した住所とは別の住所でサービスを実施したい方は、左のボックスにチェックを入れてください。<br/> 【例】ハウスクリーニングのプレゼントなど
+                                        上記のお客様情報に入力した住所とは別の住所でサービスを実施したい方は、左のボックスにチェックを入れてください。
                                     </span></label>
 <div class="service-address__contents is-disabled" hidden="" id="js-service-address-contents">
 <fieldset class="form-fieldset">
