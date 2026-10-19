@@ -1,0 +1,67 @@
+.c-home {
+  --home-section-space: 96px;
+}
+
+:root .c-home main > .home-section.c-curved-section {
+  padding-top: calc(var(--home-section-space) + 13.397459621556%);
+}
+
+.c-home .home-section > .c-section-curve {
+  height: auto;
+  aspect-ratio: 1000 / 133.97459621556;
+  overflow: visible;
+  background: none;
+  -webkit-mask: none;
+  mask: none;
+}
+
+.c-home .home-section > .c-section-curve::before {
+  position: absolute;
+  inset: 0;
+  background: var(--curve-color);
+  -webkit-mask: url('/assets/images/home/section-circle-down.svg') center / contain no-repeat;
+  mask: url('/assets/images/home/section-circle-down.svg') center / contain no-repeat;
+  content: "";
+}
+
+.c-home .home-section > .c-section-curve--up::before {
+  -webkit-mask-image: url('/assets/images/home/section-circle-up.svg');
+  mask-image: url('/assets/images/home/section-circle-up.svg');
+}
+
+.c-home .home-section.c-curved-section.l-section--blue-bubbles::before {
+  display: none;
+}
+
+.c-home .home-section > .c-section-curve::after {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  width: 20px;
+  height: 60px;
+  background: url('/assets/images/common-parts/decoration/section-arrows-black.svg') center / contain no-repeat;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.c-home .home-section > .c-section-curve--down::after {
+  top: auto;
+  bottom: -26px;
+}
+
+@media (max-width: 767.98px) {
+  .c-home {
+    --home-section-space: 72px;
+  }
+
+  .c-home .home-section > .c-section-curve::after {
+    top: -22px;
+    width: 12px;
+    height: 36px;
+  }
+
+  .c-home .home-section > .c-section-curve--down::after {
+    top: auto;
+    bottom: -14px;
+  }
+}
