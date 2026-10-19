@@ -19,6 +19,10 @@
   padding-top: 24px;
 }
 
+.c-home #home-cleaning-list {
+  scroll-margin-top: var(--aircon-header-height);
+}
+
 @media (min-width: 768px) {
   .c-home .concern-selector {
     margin-top: 40px;
