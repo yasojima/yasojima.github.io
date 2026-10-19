@@ -125,7 +125,7 @@
 }
 
 .c-service-page [id] {
-  scroll-margin-top: 96px;
+  scroll-margin-top: calc(var(--aircon-header-height) + 24px);
 }
 
 @media (max-width: 767.98px) {
