@@ -35,8 +35,20 @@
 
 .cch-estimate-review dd { white-space: pre-wrap; overflow-wrap: anywhere; }
 .cch-estimate-mail-consent { margin-top: 24px; line-height: 1.8; }
-.cch-estimate-challenge { margin-top: 24px; }
-.cch-estimate [data-estimate-challenge-status] { font-size: 14px; line-height: 1.7; }
+.cch-estimate-challenge {
+  width: 300px;
+  min-height: 65px;
+  line-height: 0;
+  margin-top: 16px;
+  zoom: .88;
+}
+.cch-estimate [data-estimate-challenge-status] {
+  max-width: 264px;
+  margin: 6px 0 0;
+  color: #62717d;
+  font-size: 12px;
+  line-height: 1.6;
+}
 .cch-estimate textarea.c-text-field { width: 100%; resize: vertical; }
 
 .cch-estimate-confirmation-notes {
@@ -47,3 +59,67 @@
   line-height: 1.8;
 }
 .cch-estimate-confirmation-notes li + li { margin-top: 8px; }
+
+.cch-estimate .cch-estimate-review-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 480px;
+  margin-top: 32px;
+}
+.cch-estimate .cch-estimate-review-actions > .c-button {
+  --color: #fff;
+  --bg-color: var(--cch-action-color);
+  --border-color: var(--cch-action-color);
+  justify-content: center;
+  min-height: 56px;
+  margin: 0;
+  padding: 14px 12px;
+  border-radius: 0;
+  box-shadow: 0 3px 8px #1941641f;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+}
+.cch-estimate .cch-estimate-review-actions > [data-estimate-save] {
+  --cch-action-color: #ed0e42;
+  --cch-action-hover: #ca0b38;
+  grid-column: 1 / -1;
+  min-height: 60px;
+}
+.cch-estimate-review-actions > a[href='/cart/estimate/'] {
+  --cch-action-color: #005bac;
+  --cch-action-hover: #004887;
+}
+.cch-estimate-review-actions > a[href='/cart/'] {
+  --cch-action-color: #626d78;
+  --cch-action-hover: #4d5863;
+}
+.cch-estimate .cch-estimate-review-actions > .c-button:disabled {
+  --color: #fff;
+  --bg-color: #d7dfe8;
+  --border-color: #d7dfe8;
+}
+.cch-estimate .cch-estimate-review-actions > .c-button:focus-visible {
+  outline: 3px solid #153962;
+  outline-offset: 4px;
+}
+@media (hover: hover) {
+  .cch-estimate .cch-estimate-review-actions > .c-button:not(:disabled):hover {
+    --color: #fff;
+    --bg-color: var(--cch-action-hover);
+    --border-color: var(--cch-action-hover);
+  }
+}
+@media (max-width: 767.98px) {
+  .cch-estimate .cch-estimate-review-actions { gap: 10px; margin-top: 24px; }
+  .cch-estimate .cch-estimate-review-actions > .c-button { padding: 12px 6px; font-size: 14px; }
+}
+
+.cch-estimate-review-actions__label > span { display: inline-block; white-space: nowrap; }
+
+@media print {
+  .cch-estimate .cch-estimate-review-actions { display: none; }
+}

@@ -63,7 +63,7 @@
     return ready.then(() => {
       if (widget !== null) environment.turnstile.remove(widget);
       widget = environment.turnstile.render(mount, {
-        sitekey: active.turnstileSiteKey, action: 'estimate', language: 'ja', size: environment.innerWidth < 400 ? 'compact' : 'normal',
+        sitekey: active.turnstileSiteKey, action: 'estimate', language: 'ja', size: 'normal',
         callback: value => { token = value; onChange('ready'); },
         'expired-callback': () => { token = ''; onChange('expired'); },
         'error-callback': () => { token = ''; onChange('error'); },
