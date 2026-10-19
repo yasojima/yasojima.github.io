@@ -53,7 +53,7 @@
     const phoneMark = document.createElement('span');
     phoneMark.className = 'c-header-contact__mark';
     phoneMark.setAttribute('aria-hidden', 'true');
-    phoneMark.style.backgroundImage = `url("${footerPhone.querySelector('img').getAttribute('src')}")`;
+    phoneMark.style.backgroundImage = 'url("/assets/images/header/free-dial.svg?v=2026102007")';
     const phoneNumber = document.createElement('span');
     phoneNumber.className = 'c-header-contact__number';
     phoneNumber.textContent = contactDetails[1];
