@@ -123,3 +123,33 @@
 @media print {
   .cch-estimate .cch-estimate-review-actions { display: none; }
 }
+
+.cch-estimate .cch-estimate-accepted-actions {
+  width: min(360px, 100%);
+  margin: 32px auto 0;
+}
+.cch-estimate-accepted-home { border-radius: 0; text-decoration: none; }
+.cch-estimate-accepted-home .c-category-simple-card__bottom {
+  display: grid;
+  place-items: center;
+  min-height: 56px;
+  padding: 14px 12px;
+  border-radius: 0;
+}
+.cch-estimate-accepted-home .c-category-simple-card__text { min-height: 0; font-size: 16px; line-height: 1.5; }
+.cch-estimate-accepted-home:focus-visible { outline: 3px solid #153962; outline-offset: 4px; }
+@media (max-width: 767.98px) {
+  .cch-estimate .cch-estimate-accepted-actions { margin-top: 24px; }
+  .cch-estimate-accepted-home .c-category-simple-card__text { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cch-estimate-accepted-home .c-category-simple-card__bottom::before { animation: none !important; }
+}
+
+.cch-estimate > .l-section { padding-block-start: 20px; }
+.cch-estimate > .l-section [data-estimate-confirm],
+.cch-estimate > .l-section [data-estimate-complete] { padding-block-start: 0; }
+.cch-estimate .message-box + .c-bullet-heading { margin-top: 32px; }
+@media (max-width: 767.98px) {
+  .cch-estimate .message-box + .c-bullet-heading { margin-top: 24px; }
+}

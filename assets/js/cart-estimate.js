@@ -69,12 +69,15 @@
       ...(value.state === 'accepted' ? {acceptedAt: value.acceptedAt} : {})};
   }
 
-  function sameRequest(receipt, draft, lines) {
-    if (!receipt?.delivery) return false;
+  function sameContents(receipt, draft, lines) {
     const fields = value => Object.fromEntries(fieldNames.filter(name => name !== 'mail-consent' && value[name]).sort().map(name => [name, value[name]]));
     const orderedLines = value => value.map(line => ({key: line.key, quantity: line.quantity})).sort((a, b) => a.key.localeCompare(b.key));
     return JSON.stringify(fields(receipt.fields)) === JSON.stringify(fields(draft.fields)) &&
       JSON.stringify(orderedLines(receipt.lines)) === JSON.stringify(orderedLines(lines));
+  }
+
+  function sameRequest(receipt, draft, lines) {
+    return Boolean(receipt?.delivery) && sameContents(receipt, draft, lines);
   }
 
   if (typeof module === 'object' && module.exports) {
@@ -87,6 +90,11 @@
   const form = document.getElementById('cch-estimate-form');
   const review = document.querySelector('[data-estimate-confirm]');
   const complete = document.querySelector('[data-estimate-complete]');
+  if (complete || location.pathname?.replace(/\/?$/, '/') === '/cart/estimate/complete/') {
+    location.replace('/cart/estimate/confirm/');
+    return;
+  }
+  const topNotice = document.querySelector('.cch-estimate-notice');
   const key = 'cch-estimate-draft-v1';
   const receiptKey = 'cch-estimate-receipt-v1';
   const escape = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -96,6 +104,27 @@
   const deliveryUnavailable = !connected && Boolean(delivery?.configured || window.CCHEstimateMailConfig?.endpoint || window.CCHEstimateMailConfig?.turnstileSiteKey);
   let saving = false;
   let acceptedReceipt = null;
+
+  function setViewState(completed, local = false, focus = false) {
+    const heading = document.querySelector('.c-page-heading');
+    const title = completed ? local ? '保存内容の確認' : '見積もり依頼の受付内容' : 'ご入力内容のご確認';
+    if (heading) heading.textContent = title;
+    document.querySelectorAll('[data-estimate-progress] .cch-estimate-progress__item').forEach((item, index) => {
+      if (index === (completed ? 2 : 1)) item.setAttribute('aria-current', 'step');
+      else item.removeAttribute('aria-current');
+    });
+    if (topNotice) {
+      if (completed) topNotice.remove();
+      else if (!topNotice.isConnected && heading) heading.after(topNotice);
+    }
+    if (focus) {
+      window.scrollTo({top: 0, behavior: 'auto'});
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus({preventScroll: true});
+      }
+    }
+  }
 
   function readSaved(name) {
     if (!storage) throw new Error('このブラウザでは保存機能を利用できません。');
@@ -242,7 +271,7 @@
         const matches = sameRequest(previous, draft, receipt.lines);
         if (matches && previous.delivery.state === 'accepted') {
           acceptedReceipt = previous;
-          renderAccepted(review, previous);
+          renderAccepted(review, previous, false, true);
           return;
         }
         if (matches && Date.now() - Date.parse(previous.delivery.createdAt) >= 23 * 60 * 60 * 1000) {
@@ -266,14 +295,16 @@
         delivery.reset();
         try { saveReceipt(receipt); }
         catch {
-          renderAccepted(review, receipt, true);
+          renderAccepted(review, receipt, true, true);
           return;
         }
+        renderAccepted(review, receipt, false, true);
       } else {
         try { saveReceipt(receipt); }
         catch { throw new Error('予約内容を保存できませんでした。ブラウザの保存設定をご確認ください。'); }
+        saving = false;
+        renderLocalSaved(review, receipt, true);
       }
-      location.assign('/cart/estimate/complete/');
     } catch (error) {
       saving = false;
       button.disabled = false;
@@ -285,23 +316,36 @@
   }
 
   function renderReview() {
-    if (!review || saving || !guard()) return;
+    if (!review || saving) return;
+    setViewState(false);
     let draft;
     try { draft = readSaved(key); }
     catch {
       review.innerHTML = '<p role="alert">保存した入力内容を読み込めません。ブラウザの保存設定をご確認ください。</p><a class="c-button" href="/cart/estimate/">情報入力に戻る</a>';
       return;
     }
-    if (!validDraft(draft)) {
-      review.innerHTML = '<p>お客様情報をご入力ください。</p><a class="c-button" href="/cart/estimate/">情報入力に進む</a>';
-      return;
-    }
-    const result = cart.getSummary();
+    const result = cart?.getSummary();
     let previous;
     try { previous = readSaved(receiptKey); } catch { /* A failed read is reported again before any send. */ }
-    if (connected && previous?.delivery?.state === 'accepted' && sameRequest(previous, draft, result.details)) {
+    const hasDraft = validDraft(draft);
+    const matches = previous && hasDraft && sameContents(previous, draft, result?.details || []);
+    acceptedReceipt = null;
+    if (previous?.delivery?.state === 'accepted' && (!result?.count || matches)) {
       acceptedReceipt = previous;
       renderAccepted(review, previous);
+      return;
+    }
+    if (previous && !previous.delivery && !connected && !deliveryUnavailable && (!result?.count || matches)) {
+      renderLocalSaved(review, previous);
+      return;
+    }
+    if (previous?.delivery?.state === 'pending' && (!result?.count || !hasDraft)) {
+      review.innerHTML = '<p role="alert">送信結果の確認が完了していません。ご希望のサービスとお客様情報を確認のうえ、同じ依頼内容で再試行してください。</p><div class="action-buttons"><a class="c-button" href="/cart/estimate/">お客様情報を確認する</a><a class="c-button" href="/cart/">カートを確認する</a></div>';
+      return;
+    }
+    if (!guard()) return;
+    if (!hasDraft) {
+      review.innerHTML = '<p>お客様情報をご入力ください。</p><a class="c-button" href="/cart/estimate/">情報入力に進む</a>';
       return;
     }
     if (deliveryUnavailable) {
@@ -323,70 +367,50 @@
     }
   }
 
-  function renderAccepted(mount, receipt, saveFailed = false) {
-    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付内容の自動返信メールと店舗への通知を、メール送信サービスで受け付けました。メールの到着まで少しお時間がかかる場合があります。</p><p class="message-box__text">訪問日時・最終料金は担当者からのご連絡で確定します。受信箱と迷惑メールフォルダをご確認ください。</p><p class="message-box__text">受付日時：${escape(new Date(receipt.delivery.acceptedAt).toLocaleString('ja-JP'))}</p><p class="message-box__text">受付番号：${escape(receipt.delivery.requestId)}</p></div>
+  function renderAccepted(mount, receipt, saveFailed = false, focus = false) {
+    setViewState(true, false, focus);
+    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付内容の自動返信メールと店舗への通知を、メール送信サービスで受け付けました。メールの到着まで少しお時間がかかる場合があります。</p><p class="message-box__text">受信箱と迷惑メールフォルダをご確認ください。</p><p class="message-box__text">担当者より改めてご連絡いたします。</p><p class="message-box__text">受付日時：${escape(new Date(receipt.delivery.acceptedAt).toLocaleString('ja-JP'))}</p><p class="message-box__text">受付番号：${escape(receipt.delivery.requestId)}</p></div>
       ${saveFailed ? '<p class="cch-estimate-error" role="alert">依頼は受け付けましたが、この端末に受付結果を保存できませんでした。この画面を控え、同じ依頼を新たに送信しないでください。</p>' : ''}
       ${summaryMarkup(receipt.summary)}${detailsMarkup(receipt)}<p class="cch-estimate-local-notice">上記の送信データは24時間経過後、保存されず自動的に履歴がリセットされます。尚、お送りいただいた送信済みのメールは削除されないため何卒ご了承ください。</p>
-      <div class="action-buttons"><button class="c-button c-button--large" type="button" data-estimate-print>印刷する</button><a class="c-button" href="/">ホームへ戻る</a></div>`;
-    mount.querySelector('[data-estimate-print]').addEventListener('click', () => window.print());
+      <div class="action-buttons cch-estimate-accepted-actions"><a class="c-category-simple-card cch-estimate-accepted-home" href="/"><span class="c-category-simple-card__bottom"><span class="c-category-simple-card__text">ホームへ戻る</span></span></a></div>`;
   }
 
-  function renderComplete() {
-    if (!complete) return;
-    let receipt;
-    try { receipt = readSaved(receiptKey); }
-    catch {
-      complete.innerHTML = '<p role="alert">保存した内容を読み込めません。ブラウザの保存設定をご確認ください。</p><a class="c-button" href="/cart/">カートへ戻る</a>';
-      return;
-    }
-    if (!receipt) {
-      complete.innerHTML = '<p>この端末に保存された予約内容はありません。</p><p>カートの内容を確認して、保存へお進みください。</p><a class="c-button" href="/cart/">カートを確認する</a>';
-      return;
-    }
-    if (receipt.delivery?.state === 'accepted') { renderAccepted(complete, receipt); return; }
-    if (receipt.delivery?.state === 'pending') {
-      complete.innerHTML = '<p>送信結果の確認が完了していません。入力確認画面から同じ内容で再試行してください。</p><a class="c-button" href="/cart/estimate/confirm/">送信結果の確認に戻る</a>';
-      return;
-    }
+  function renderLocalSaved(mount, receipt, focus = false) {
+    setViewState(true, true, focus);
     const result = receipt.summary;
-    complete.innerHTML = `<div class="message-box"><h2 class="message-box__heading">予約内容をこの端末に保存しました</h2><p class="message-box__text">この内容は、この端末のブラウザに保存されています。店舗への送信や予約の確定は行われていません。</p><p class="message-box__text">保存日時：${escape(new Date(receipt.savedAt).toLocaleString('ja-JP'))}</p></div>
+    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">予約内容をこの端末に保存しました</h2><p class="message-box__text">この内容は、この端末のブラウザに保存されています。店舗への送信や予約の確定は行われていません。</p><p class="message-box__text">保存日時：${escape(new Date(receipt.savedAt).toLocaleString('ja-JP'))}</p></div>
       ${summaryMarkup(result)}${detailsMarkup(receipt)}<p class="cch-estimate-local-notice">このサイトを最後に利用してから24時間経過後、次にサイトを利用した際に、カート・入力内容・保存した予約内容は削除されます。</p>
-      <div class="action-buttons"><a class="c-button c-button--large" href="/cart/estimate/confirm/">予約内容を確認・修正する</a><button class="c-button c-button--large" type="button" data-estimate-print>印刷する</button><a class="c-button" href="/">ホームへ戻る</a></div>`;
-    complete.querySelector('[data-estimate-print]').addEventListener('click', () => {
+      <div class="action-buttons"><a class="c-button c-button--large" href="/cart/estimate/">予約内容を確認・修正する</a><button class="c-button c-button--large" type="button" data-estimate-print>印刷する</button><a class="c-button" href="/">ホームへ戻る</a></div>`;
+    mount.querySelector('[data-estimate-print]').addEventListener('click', () => {
       try {
         if (readSaved(receiptKey)) window.print();
-        else renderComplete();
-      } catch { renderComplete(); }
+        else renderReview();
+      } catch { renderReview(); }
     });
   }
 
   if (deliveryUnavailable) document.querySelectorAll('.cch-estimate-notice').forEach(node => { node.textContent = '現在、見積もり依頼の送信設定を確認中です。依頼は送信されていません。'; });
   if (connected) {
-    document.querySelectorAll('.cch-estimate-notice').forEach(node => {
-      if (complete) node.remove();
-      else node.textContent = form ? '無料見積もりを依頼できます。訪問日時・最終料金は担当者より改めてご連絡いたします。' : '無料見積もりを依頼できます。訪問日時・料金案内は折り返し担当者からご連絡いたします。';
-    });
     if (form) {
+      document.querySelectorAll('.cch-estimate-notice').forEach(node => {
+        node.textContent = '無料見積もりを依頼できます。訪問日時・最終料金は担当者より改めてご連絡いたします。';
+      });
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
       form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
       form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金のご案内は担当者より改めてご連絡いたします。';
     }
-    if (complete) document.querySelector('.c-page-heading').textContent = '見積もり依頼の受付内容';
   }
   renderReview();
-  renderComplete();
   window.addEventListener('cch:cart-updated', renderReview);
   window.addEventListener('pageshow', event => {
     if (!event.persisted) return;
     if (connected && acceptedReceipt) {
       if (review) renderAccepted(review, acceptedReceipt);
-      renderComplete();
       return;
     }
     if (connected && saving) return;
     saving = false;
     if (form) guard();
     renderReview();
-    renderComplete();
   });
 })();
