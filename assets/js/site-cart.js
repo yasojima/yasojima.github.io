@@ -195,7 +195,7 @@
           <h1 class="cch-cart-empty-design__heading" id="cart-empty-heading">カートに商品はありません</h1>
           <p class="cch-cart-empty-design__lead">気になるサービスを選んで、見積り内容を追加してください。</p>
           <p class="cch-cart-empty-design__description">エアコン・水まわり・キッチンなど、各メニューからお選びいただけます。</p>
-          <a class="c-category-simple-card cch-cart-empty-design__cta" href="/"><span class="c-category-simple-card__bottom"><span class="c-category-simple-card__text">お買い物を続ける</span></span></a>
+          <a class="c-category-simple-card cch-cart-empty-design__cta" href="/#home-cleaning-list"><span class="c-category-simple-card__bottom"><span class="c-category-simple-card__text">メニューに戻る</span></span></a>
         </div>
         <nav class="cch-cart-empty-design__categories" aria-label="お掃除する場所から選ぶ">
           <div class="cch-cart-empty-design__category-links">
@@ -292,7 +292,7 @@
         return `<article class="cch-cart-option"><h3>${escape(item.name)}</h3><p>${priceLabel(item)}</p>${quantityInput(line)}</article>`;
       }).join('')}</div></section>`;
     }).join('');
-    mount.innerHTML = result.count ? `${groups || '<p>選択中のサービスに追加オプションはありません。</p>'}${summaryMarkup(result)}<a class="c-button c-button--fill-red" href="/cart/">カートを確認する</a>` : '<p class="cch-cart-empty">サービスを選ぶと、対応するオプションを選択できます。</p><a class="c-button" href="/quick_cart/">サービスを選ぶ</a>';
+    mount.innerHTML = result.count ? `${groups || '<p>選択中のサービスに追加オプションはありません。</p>'}${summaryMarkup(result)}<a class="c-button c-button--fill-red" href="/cart/">カートを確認する</a>` : '<p class="cch-cart-empty">サービスを選ぶと、対応するオプションを選択できます。</p><a class="c-button" href="/#home-cleaning-list">サービスを選ぶ</a>';
   }
 
   function syncCounters() {

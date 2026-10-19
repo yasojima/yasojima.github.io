@@ -171,7 +171,7 @@
     if (cart?.getSummary().count) return true;
     const main = document.querySelector('.cch-estimate');
     const progress = main.querySelector('[data-estimate-progress]');
-    main.innerHTML = '<h1 class="c-page-heading">予約内容の確認</h1><div class="cch-cart-content"><p class="cch-cart-empty">カートが空です。ご希望のサービスをお選びください。</p><a class="c-button" href="/quick_cart/">サービスを選ぶ</a></div>';
+    main.innerHTML = '<h1 class="c-page-heading">予約内容の確認</h1><div class="cch-cart-content"><p class="cch-cart-empty">カートが空です。ご希望のサービスをお選びください。</p><a class="c-button" href="/#home-cleaning-list">サービスを選ぶ</a></div>';
     main.prepend(progress);
     return false;
   }
