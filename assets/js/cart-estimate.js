@@ -326,7 +326,7 @@
   function renderAccepted(mount, receipt, saveFailed = false) {
     mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付内容の自動返信メールと店舗への通知を、メール送信サービスで受け付けました。メールの到着まで少しお時間がかかる場合があります。</p><p class="message-box__text">訪問日時・最終料金は担当者からのご連絡で確定します。受信箱と迷惑メールフォルダをご確認ください。</p><p class="message-box__text">受付日時：${escape(new Date(receipt.delivery.acceptedAt).toLocaleString('ja-JP'))}</p><p class="message-box__text">受付番号：${escape(receipt.delivery.requestId)}</p></div>
       ${saveFailed ? '<p class="cch-estimate-error" role="alert">依頼は受け付けましたが、この端末に受付結果を保存できませんでした。この画面を控え、同じ依頼を新たに送信しないでください。</p>' : ''}
-      ${summaryMarkup(receipt.summary)}${detailsMarkup(receipt)}<p class="cch-estimate-local-notice">この端末の表示用データは、最後のサイト利用から24時間経過後の次回利用時に削除されます。送信済みメールの内容は削除されません。</p>
+      ${summaryMarkup(receipt.summary)}${detailsMarkup(receipt)}<p class="cch-estimate-local-notice">上記の送信データは24時間経過後、保存されず自動的に履歴がリセットされます。尚、お送りいただいた送信済みのメールは削除されないため何卒ご了承ください。</p>
       <div class="action-buttons"><button class="c-button c-button--large" type="button" data-estimate-print>印刷する</button><a class="c-button" href="/">ホームへ戻る</a></div>`;
     mount.querySelector('[data-estimate-print]').addEventListener('click', () => window.print());
   }
