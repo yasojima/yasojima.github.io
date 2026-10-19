@@ -54,11 +54,6 @@
   border: 0;
 }
 
-.c-service-page #lineup01,
-.c-service-page #lineup02 {
-  scroll-margin-top: 108px;
-}
-
 .c-service-page .c-house-cleaning-mv--check {
   --hero-circle: clamp(112px, 14vw, 180px);
   --hero-projection: 32px;
