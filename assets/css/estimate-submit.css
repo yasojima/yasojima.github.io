@@ -13,12 +13,6 @@
   line-height: 1.7;
 }
 
-.cch-estimate [data-estimate-save] {
-  width: 100%;
-  white-space: normal;
-  text-align: center;
-}
-
 .cch-estimate [data-estimate-save-status] {
   margin-top: 16px;
   text-align: center;
@@ -60,90 +54,48 @@
 }
 .cch-estimate-confirmation-notes li + li { margin-top: 8px; }
 
-.cch-estimate .cch-estimate-review-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  max-width: 480px;
-  margin-top: 32px;
+main.cch-estimate {
+  --cch-estimate-button-width: 360px;
+  --cch-estimate-button-height: 60px;
+  --cch-estimate-button-font-size: 15px;
 }
-.cch-estimate .cch-estimate-review-actions > .c-button {
-  --color: #fff;
-  --bg-color: var(--cch-action-color);
-  --border-color: var(--cch-action-color);
+main.cch-estimate .action-buttons {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: var(--cch-estimate-button-width);
+  margin-inline: auto;
+}
+main.cch-estimate .c-button {
+  box-sizing: border-box;
   justify-content: center;
-  min-height: 56px;
-  margin: 0;
-  padding: 14px 12px;
+  width: 100%;
+  max-width: var(--cch-estimate-button-width);
+  height: var(--cch-estimate-button-height);
+  min-height: var(--cch-estimate-button-height);
+  margin-inline: auto;
+  padding: 4px 12px;
   border-radius: 0;
-  box-shadow: 0 3px 8px #1941641f;
-  font-size: 16px;
+  font-size: var(--cch-estimate-button-font-size);
   font-weight: 700;
   line-height: 1.5;
+  white-space: normal;
   text-align: center;
   text-decoration: none;
 }
-.cch-estimate .cch-estimate-review-actions > [data-estimate-save] {
-  --cch-action-color: #ed0e42;
-  --cch-action-hover: #ca0b38;
-  grid-column: 1 / -1;
-  min-height: 60px;
-}
-.cch-estimate-review-actions > a[href='/cart/estimate/'] {
-  --cch-action-color: #005bac;
-  --cch-action-hover: #004887;
-}
-.cch-estimate-review-actions > a[href='/cart/'] {
-  --cch-action-color: #626d78;
-  --cch-action-hover: #4d5863;
-}
-.cch-estimate .cch-estimate-review-actions > .c-button:disabled {
-  --color: #fff;
-  --bg-color: #d7dfe8;
-  --border-color: #d7dfe8;
-}
-.cch-estimate .cch-estimate-review-actions > .c-button:focus-visible {
-  outline: 3px solid #153962;
-  outline-offset: 4px;
-}
-@media (hover: hover) {
-  .cch-estimate .cch-estimate-review-actions > .c-button:not(:disabled):hover {
-    --color: #fff;
-    --bg-color: var(--cch-action-hover);
-    --border-color: var(--cch-action-hover);
+main.cch-estimate .action-buttons > .c-button { margin-block: 0; }
+main.cch-estimate .c-button__text { font-size: inherit; line-height: inherit; }
+main.cch-estimate .c-button__text:only-child { padding-inline: 0; }
+main.cch-estimate .c-button:focus-visible { outline: 3px solid #153962; outline-offset: 4px; }
+main.cch-estimate :is(.cch-estimate-review-actions, .cch-estimate-accepted-actions) { margin-top: 32px; }
+@media (max-width: 767.98px) {
+  main.cch-estimate {
+    --cch-estimate-button-height: 56px;
+    --cch-estimate-button-font-size: 14px;
   }
-}
-@media (max-width: 767.98px) {
-  .cch-estimate .cch-estimate-review-actions { gap: 10px; margin-top: 24px; }
-  .cch-estimate .cch-estimate-review-actions > .c-button { padding: 12px 6px; font-size: 14px; }
-}
-
-.cch-estimate-review-actions__label > span { display: inline-block; white-space: nowrap; }
-
-@media print {
-  .cch-estimate .cch-estimate-review-actions { display: none; }
-}
-
-.cch-estimate .cch-estimate-accepted-actions {
-  width: min(360px, 100%);
-  margin: 32px auto 0;
-}
-.cch-estimate-accepted-home { border-radius: 0; text-decoration: none; }
-.cch-estimate-accepted-home .c-category-simple-card__bottom {
-  display: grid;
-  place-items: center;
-  min-height: 56px;
-  padding: 14px 12px;
-  border-radius: 0;
-}
-.cch-estimate-accepted-home .c-category-simple-card__text { min-height: 0; font-size: 16px; line-height: 1.5; }
-.cch-estimate-accepted-home:focus-visible { outline: 3px solid #153962; outline-offset: 4px; }
-@media (max-width: 767.98px) {
-  .cch-estimate .cch-estimate-accepted-actions { margin-top: 24px; }
-  .cch-estimate-accepted-home .c-category-simple-card__text { font-size: 14px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cch-estimate-accepted-home .c-category-simple-card__bottom::before { animation: none !important; }
+  main.cch-estimate .action-buttons { gap: 10px; }
+  main.cch-estimate :is(.cch-estimate-review-actions, .cch-estimate-accepted-actions) { margin-top: 24px; }
 }
 
 .cch-estimate > .l-section { padding-block-start: 20px; }
