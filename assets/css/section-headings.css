@@ -58,3 +58,23 @@
     margin-bottom: 48px;
   }
 }
+
+
+/* Approved semantic section titles share the adopted menu-heading size. */
+@media (min-width: 768px) {
+  :root main h2[data-cch-section-heading="true"],
+  :root main h2#cart-options-heading {
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  :root main h2[data-cch-section-heading="true"],
+  :root main h2#cart-options-heading {
+    font-size: 17px !important;
+  }
+}
+
+:root main h2[data-cch-section-heading="true"] [data-cch-section-heading-text="true"] {
+  font-size: inherit !important;
+}
