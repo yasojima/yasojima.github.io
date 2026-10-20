@@ -13606,32 +13606,11 @@ screen and (min-width: 768px) {
   }
 }
 
-.c-related-services__heading-text::after {
-  content: "";
-  background-image: url(/assets/images/guide/article/guide-woman.webp);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 100%;
-  position: absolute;
-  right: 0
-}
 
-@media print,
-screen and (min-width: 768px) {
-  .c-related-services__heading-text::after {
-    width: 110px;
-    height: 100px;
-    bottom: -24px
-  }
-}
 
-@media screen and (max-width: 767.98px) {
-  .c-related-services__heading-text::after {
-    width: 96px;
-    height: 86px;
-    bottom: -16px
-  }
-}
+
+
+
 
 .c-related-services__contents {
   margin-top: 8px;
