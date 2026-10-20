@@ -386,7 +386,7 @@
       <p class="cch-estimate-local-notice">${connected ? '上記の内容を送信すると、お客様に受付内容の自動応答メールが届きます。この操作では訪問日時・最終料金は確定せず、担当者より改めてご連絡いたします。' : 'この内容はこの端末のブラウザに保存されます。店舗への送信・予約の確定は行われません。'}</p>
       ${connected ? '<div class="cch-estimate-mail-consent"><label class="c-checkbox"><input class="c-checkbox__input" type="checkbox" data-estimate-mail-consent><span class="c-checkbox__icon"></span><span class="c-checkbox__content">上記の内容を送信することに同意します。</span></label></div><div class="cch-estimate-challenge" data-estimate-challenge></div><p data-estimate-challenge-status role="status" aria-live="polite">送信前の認証を読み込んでいます。</p>' : ''}
       <p class="cch-estimate-error" data-estimate-error role="alert" tabindex="-1" hidden></p><p data-estimate-save-status role="status" aria-live="polite"></p>
-      <div class="action-buttons cch-estimate-review-actions"><button class="c-button c-button--fill-red c-button--large" type="button" data-estimate-save>${connected ? pending ? '送信結果を確認・再試行する' : 'この内容で見積もりを依頼する' : '予約内容をこの端末に保存する'}</button><a class="c-button c-button--large" href="/cart/estimate/"><span class="cch-estimate-review-actions__label">入力内容を<span>修正する</span></span></a><a class="c-button" href="/cart/"><span class="cch-estimate-review-actions__label">カートを<span>修正する</span></span></a></div>`;
+      <div class="action-buttons cch-estimate-review-actions"><button class="c-button c-button--fill-red c-button--large" type="button" data-estimate-save><span class="c-button__text">${connected ? pending ? '送信結果を確認・再試行する' : 'この内容で見積もりを依頼する' : '予約内容をこの端末に保存する'}</span><span class="c-icon c-icon--circle-caret-right c-button__icon" aria-hidden="true"></span></button><a class="c-button c-button--large" href="/cart/estimate/"><span class="c-button__text">入力内容を修正する</span><span class="c-icon c-icon--circle-caret-right c-button__icon" aria-hidden="true"></span></a><a class="c-button c-button--large" href="/cart/"><span class="c-button__text">カートを修正する</span><span class="c-icon c-icon--circle-caret-right c-button__icon" aria-hidden="true"></span></a></div>`;
     review.querySelector('[data-estimate-save]').addEventListener('click', saveReservation);
     if (connected) {
       const challengeStatus = review.querySelector('[data-estimate-challenge-status]');
@@ -401,12 +401,12 @@
     mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付内容の自動返信メールと店舗への通知を、メール送信サービスで受け付けました。メールの到着まで少しお時間がかかる場合があります。</p><p class="message-box__text">受信箱と迷惑メールフォルダをご確認ください。</p><p class="message-box__text">担当者より改めてご連絡いたします。</p><p class="message-box__text">受付日時：${escape(new Date(receipt.delivery.acceptedAt).toLocaleString('ja-JP'))}</p><p class="message-box__text">受付番号：${escape(receipt.delivery.receiptNumber || receipt.delivery.requestId)}</p></div>
       ${saveFailed ? '<p class="cch-estimate-error" role="alert">依頼は受け付けましたが、この端末に受付結果を保存できませんでした。この画面を控え、同じ依頼を新たに送信しないでください。</p>' : ''}
       ${summaryMarkup(receipt.summary)}${detailsMarkup(receipt)}<p class="cch-estimate-local-notice">上記の送信データは24時間経過後、保存されず自動的に履歴がリセットされます。尚、お送りいただいた送信済みのメールは削除されないため何卒ご了承ください。</p>
-      <div class="action-buttons cch-estimate-accepted-actions"><a class="c-category-simple-card cch-estimate-accepted-home" href="/"><span class="c-category-simple-card__bottom"><span class="c-category-simple-card__text">ホームへ戻る</span></span></a></div>`;
+      <div class="action-buttons cch-estimate-accepted-actions"><a class="c-button c-button--fill-blue cch-estimate-accepted-home is-disabled-hover" href="/"><span class="c-button__text">ホームへ戻る</span></a></div>`;
   }
 
   function renderAcceptedWithoutDetails(mount, metadata) {
     setViewState(true);
-    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付番号：${escape(metadata.receiptNumber || metadata.requestId)}</p><p class="message-box__text">この画面では保存した受付内容を表示できません。受付メールをご確認ください。同じ依頼を新たに送信しないでください。</p></div><div class="action-buttons"><a class="c-button" href="/">ホームへ戻る</a></div>`;
+    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付番号：${escape(metadata.receiptNumber || metadata.requestId)}</p><p class="message-box__text">この画面では保存した受付内容を表示できません。受付メールをご確認ください。同じ依頼を新たに送信しないでください。</p></div><div class="action-buttons"><a class="c-button c-button--fill-blue cch-estimate-accepted-home is-disabled-hover" href="/"><span class="c-button__text">ホームへ戻る</span></a></div>`;
   }
 
   function renderLocalSaved(mount, receipt, focus = false) {
