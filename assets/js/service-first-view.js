@@ -17,6 +17,17 @@
       if (!hero) return;
       const budget = Math.max(0, Math.min(window.innerHeight, 800) - headerHeight - 16);
       const style = getComputedStyle(frame);
+      const naturalFlow = frame.closest('main[data-service-layout="shared-v2"]') &&
+        style.getPropertyValue('--first-view-natural-flow').trim() === '1';
+      if (naturalFlow) {
+        frame.style.removeProperty('--banner-height');
+        set(frame, '--first-view-height', px(budget));
+        if (selector && cards) {
+          set(frame, '--selector-cards-height', 'none');
+          set(frame, '--first-view-selector-space', px(36));
+        }
+        return;
+      }
       const minimum = parseFloat(style.getPropertyValue('--banner-min-height'));
       const maximum = parseFloat(style.getPropertyValue('--banner-preferred-height'));
       const reserved = parseFloat(style.getPropertyValue('--first-view-selector-reserve'));
