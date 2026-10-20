@@ -51,7 +51,9 @@
   max-width: clamp(860px, calc(132vh + 68px), 1124px);
   max-width: clamp(860px, calc(132svh + 68px), 1124px);
  }
+}
 
+@media screen and (min-width: 768px) and (max-height: 799.98px) {
  .c-home #home-guides .home-first-guide-frame {
   container: home-guide / inline-size;
  }
