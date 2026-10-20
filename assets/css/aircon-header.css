@@ -207,8 +207,9 @@ html {
   }
 
   .c-header-contact__number {
+    font-family: Arial, sans-serif;
     font-size: 32px;
-    letter-spacing: -.025em;
+    letter-spacing: 0;
   }
 
   .c-header-contact__hours {
