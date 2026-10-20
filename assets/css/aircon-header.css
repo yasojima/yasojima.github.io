@@ -1203,3 +1203,23 @@ body.aircon-menu-open .c-header__navigation {
   html { --aircon-header-base-height: 76px; --aircon-header-height: 120px; }
   .c-header__navigation { top: 80px; }
 }
+
+
+/* Extra row gaps use card padding without increasing the outer grid track. */
+@media (min-width: 768px) {
+  .aircon-full-menu__body {
+    --aircon-full-menu-row-count: var(--aircon-full-menu-rows-wide, 1);
+    --aircon-full-menu-row-gap: 8px;
+    margin-block: calc((var(--aircon-full-menu-row-count) - 1) * var(--aircon-full-menu-row-gap) / -2);
+  }
+
+  .aircon-full-menu__body > ul {
+    row-gap: var(--aircon-full-menu-row-gap);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .aircon-full-menu__body {
+    --aircon-full-menu-row-count: var(--aircon-full-menu-rows-medium, 1);
+  }
+}

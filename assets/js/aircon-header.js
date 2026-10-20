@@ -111,6 +111,9 @@
     head.className = 'aircon-full-menu__head';
     const body = document.createElement('div');
     body.className = 'aircon-full-menu__body';
+    const detailCount = content.querySelectorAll('a[href]').length;
+    body.style.setProperty('--aircon-full-menu-rows-wide', Math.max(1, Math.ceil(detailCount / 3)));
+    body.style.setProperty('--aircon-full-menu-rows-medium', Math.max(1, Math.ceil(detailCount / 2)));
     const english = menuEnglish[heading.getAttribute('href')] ||
       ({ guide: 'User Guide', business: 'Business' }[name]);
     headingContent(heading, heading.textContent.trim(), english, 'aircon-full-menu');
@@ -492,8 +495,9 @@
       setMenuOpen(false);
       button.focus();
     } else if (event.key === 'Escape' && mega.classList.contains('is-open')) {
+      const activeLink = navigation.querySelector('.c-main-menu__item.is-open .c-main-menu__link');
+      activeLink?.focus({preventScroll: true});
       closeMega();
-      navigation.querySelector('.c-main-menu__item .c-main-menu__link')?.focus();
     }
   });
   showHeader();
