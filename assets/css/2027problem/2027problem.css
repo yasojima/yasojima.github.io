@@ -676,11 +676,6 @@ sec05
   margin: 0 auto;
 }
 
-/* 尾崎 */
-.sec05-ozaki{
-  max-width: 1000px;
-  margin: 30px auto 0;
-}
 
 @media print,screen and (min-width: 768px) {
   .sec05-box{
