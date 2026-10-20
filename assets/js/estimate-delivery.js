@@ -21,9 +21,10 @@
   const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
   const receiptNumber = value => typeof value === 'string' && value.length <= 128 && value === value.trim() &&
     /^CCH-[0-9]{12,}$/.test(value) && /[1-9]/.test(value.slice(4));
-  function validResponse(value, requestId) {
+  function validResponse(value, requestId, requestVersion = 1) {
     return value && value.ok === true && value.requestId === requestId && value.mailStatus === 'accepted' &&
       typeof value.acceptedAt === 'string' && Number.isFinite(Date.parse(value.acceptedAt)) &&
+      (requestVersion !== 2 || Object.hasOwn(value, 'receiptNumber')) &&
       (!Object.hasOwn(value, 'receiptNumber') || receiptNumber(value.receiptNumber));
   }
   async function submit(payload) {
@@ -37,7 +38,7 @@
         referrerPolicy: 'no-referrer', signal: controller.signal, body: JSON.stringify(payload),
       });
       const body = await response.json().catch(() => null);
-      if (!response.ok || !validResponse(body, payload.requestId)) {
+      if (!response.ok || !validResponse(body, payload.requestId, payload.version)) {
         const error = new Error(body && typeof body.message === 'string' ? body.message :
           '送信結果を確認できませんでした。内容を変更せず、認証をやり直して再試行してください。');
         error.code = typeof body?.code === 'string' ? body.code : 'unconfirmed';

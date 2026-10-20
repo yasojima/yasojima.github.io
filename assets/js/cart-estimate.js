@@ -68,6 +68,7 @@
     const hasReceiptNumber = Object.hasOwn(value, 'receiptNumber');
     const hasRequestVersion = Object.hasOwn(value, 'requestVersion');
     if (hasRequestVersion && value.requestVersion !== 2) return null;
+    if (value.state === 'accepted' && value.requestVersion === 2 && !hasReceiptNumber) return null;
     if (hasReceiptNumber && (value.state !== 'accepted' || typeof value.receiptNumber !== 'string' || value.receiptNumber.length > 128 ||
         value.receiptNumber !== value.receiptNumber.trim() || !/^CCH-[0-9]{12,}$/.test(value.receiptNumber) || !/[1-9]/.test(value.receiptNumber.slice(4)))) return null;
     return {requestId: value.requestId, state: value.state, createdAt: value.createdAt,
@@ -111,6 +112,9 @@
   const deliveryUnavailable = !connected && Boolean(delivery?.configured || window.CCHEstimateMailConfig?.endpoint || window.CCHEstimateMailConfig?.turnstileSiteKey);
   let saving = false;
   let acceptedReceipt = null;
+  let acceptedSaveFailed = false;
+  let acceptedWithoutDetails = null;
+  const receiptReadError = '保存した受付状況を確認できません。重複する依頼を防ぐため送信を停止しています。受付メールをご確認のうえ店舗へお問い合わせください。';
 
   function setViewState(completed, local = false, focus = false) {
     const heading = document.querySelector('.c-page-heading');
@@ -136,11 +140,16 @@
   function readSaved(name) {
     if (!storage) throw new Error('このブラウザでは保存機能を利用できません。');
     const value = storage.getItem(name);
-    if (!value) return null;
+    if (value === null) return null;
     try {
       const parsed = JSON.parse(value);
-      return name === receiptKey ? normalizeReceipt(parsed) : normalizeDraft(parsed);
-    } catch { return null; }
+      const normalized = name === receiptKey ? normalizeReceipt(parsed) : normalizeDraft(parsed);
+      if (name === receiptKey && !normalized) throw new Error(receiptReadError);
+      return normalized;
+    } catch {
+      if (name === receiptKey) throw new Error(receiptReadError);
+      return null;
+    }
   }
 
   function summaryMarkup(result) {
@@ -259,7 +268,7 @@
   }
 
   async function saveReservation() {
-    if (saving || acceptedReceipt || deliveryUnavailable) return;
+    if (saving || acceptedReceipt || acceptedWithoutDetails || deliveryUnavailable) return;
     const button = review.querySelector('[data-estimate-save]');
     const status = review.querySelector('[data-estimate-save-status]');
     saving = true;
@@ -301,9 +310,11 @@
         receipt.lines = serverReceipt.lines;
         receipt.delivery = serverReceipt.delivery;
         acceptedReceipt = receipt;
+        acceptedSaveFailed = false;
         delivery.reset();
         try { saveReceipt(receipt); }
         catch {
+          acceptedSaveFailed = true;
           renderAccepted(review, receipt, true, true);
           return;
         }
@@ -326,6 +337,10 @@
 
   function renderReview() {
     if (!review || saving) return;
+    if (acceptedWithoutDetails) {
+      renderAcceptedWithoutDetails(review, acceptedWithoutDetails);
+      return;
+    }
     setViewState(false);
     let draft;
     try { draft = readSaved(key); }
@@ -335,10 +350,15 @@
     }
     const result = cart?.getSummary();
     let previous;
-    try { previous = readSaved(receiptKey); } catch { /* A failed read is reported again before any send. */ }
+    try { previous = readSaved(receiptKey); }
+    catch {
+      review.innerHTML = `<p role="alert">${receiptReadError}</p><a class="c-button" href="/">ホームへ戻る</a>`;
+      return;
+    }
     const hasDraft = validDraft(draft);
     const matches = previous && hasDraft && sameContents(previous, draft, result?.details || []);
     acceptedReceipt = null;
+    acceptedSaveFailed = false;
     if (previous?.delivery?.state === 'accepted' && (!result?.count || matches)) {
       acceptedReceipt = previous;
       renderAccepted(review, previous);
@@ -384,6 +404,11 @@
       <div class="action-buttons cch-estimate-accepted-actions"><a class="c-category-simple-card cch-estimate-accepted-home" href="/"><span class="c-category-simple-card__bottom"><span class="c-category-simple-card__text">ホームへ戻る</span></span></a></div>`;
   }
 
+  function renderAcceptedWithoutDetails(mount, metadata) {
+    setViewState(true);
+    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付番号：${escape(metadata.receiptNumber || metadata.requestId)}</p><p class="message-box__text">この画面では保存した受付内容を表示できません。受付メールをご確認ください。同じ依頼を新たに送信しないでください。</p></div><div class="action-buttons"><a class="c-button" href="/">ホームへ戻る</a></div>`;
+  }
+
   function renderLocalSaved(mount, receipt, focus = false) {
     setViewState(true, true, focus);
     const result = receipt.summary;
@@ -413,8 +438,27 @@
   window.addEventListener('cch:cart-updated', renderReview);
   window.addEventListener('pageshow', event => {
     if (!event.persisted) return;
+    if (acceptedWithoutDetails) {
+      if (review) renderAcceptedWithoutDetails(review, acceptedWithoutDetails);
+      return;
+    }
     if (connected && acceptedReceipt) {
-      if (review) renderAccepted(review, acceptedReceipt);
+      let saved;
+      try { saved = readSaved(receiptKey); } catch { /* Keep the known acceptance without redisplaying unreadable personal data. */ }
+      const matches = saved?.delivery?.requestId === acceptedReceipt.delivery.requestId && sameRequest(saved, acceptedReceipt, acceptedReceipt.lines);
+      if (matches && saved.delivery.state === 'accepted' && saved.delivery.receiptNumber === acceptedReceipt.delivery.receiptNumber) {
+        acceptedReceipt = saved;
+        acceptedSaveFailed = false;
+        if (review) renderAccepted(review, saved);
+      } else if (matches && acceptedSaveFailed && saved.delivery.state === 'pending') {
+        if (review) renderAccepted(review, acceptedReceipt, true);
+      } else {
+        acceptedWithoutDetails = {...acceptedReceipt.delivery};
+        acceptedReceipt = null;
+        acceptedSaveFailed = false;
+        saving = false;
+        if (review) renderAcceptedWithoutDetails(review, acceptedWithoutDetails);
+      }
       return;
     }
     if (connected && saving) return;
