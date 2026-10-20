@@ -9,6 +9,10 @@
     line-height: inherit;
   }
 
+  :root main h2:has(> .c-cleaning-menu-heading__brand):has(> .c-cleaning-menu-heading__title) {
+    font-size: 20px;
+  }
+
   :root main :is(.p-reasons__heading, .p-page-anchors__heading) {
     position: relative;
     width: fit-content;
