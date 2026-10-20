@@ -182,6 +182,22 @@ body.c-beginner-lp #cch-first-lp #first-voices .lp-voice {
   box-shadow: 0 8px 24px #0c739b0b;
   background: #fff;
 }
+body.c-beginner-lp #cch-first-lp #first-comparison h2 { color: #134a74; }
+body.c-beginner-lp #cch-first-lp #first-comparison h2 strong {
+  color: #073a6a;
+  background: none;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-table-scroll {
+  border-radius: 16px;
+  outline: 1px solid var(--lp-border);
+  background: #fff;
+  filter: none;
+  box-shadow: 0 8px 26px #0c739b0c;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison :is(th, td) { border-bottom-color: #c3e5f3; }
+body.c-beginner-lp #cch-first-lp #first-comparison thead th { background: #dcf3fd; color: #134a74; }
+body.c-beginner-lp #cch-first-lp #first-comparison tr > :nth-child(2) { border-color: #41abd4; background: #f0faff; }
+body.c-beginner-lp #cch-first-lp #first-comparison thead th:nth-child(2) { background: #087db8; color: #fff; }
 body.c-beginner-lp #cch-first-lp #first-services .lp-services {
   position: relative;
   isolation: isolate;
@@ -397,11 +413,48 @@ body.c-beginner-lp #cch-first-lp .lp-estimate-art > img {
 }
 body.c-beginner-lp #cch-first-lp .lp-reference-estimate:focus-visible { outline: 3px solid #005bac; outline-offset: 4px; }
 
+body.c-beginner-lp #cch-first-lp .cta-menu > .lp-menu-mobile-art,
+body.c-beginner-lp #cch-first-lp .cta-menu > .lp-menu-mobile-title { display: none; }
+
 @media (max-width: 767.98px) {
   body.c-beginner-lp #cch-first-lp .cta-final .lp-reference-estimate {
     width: calc(100% - 30px);
   }
-  body.c-beginner-lp #cch-first-lp :is(.cta-menu, .cta-assurance) .lp-cta-action {
+  body.c-beginner-lp #cch-first-lp .cta-menu > .lp-menu-desktop-art { display: none; }
+  body.c-beginner-lp #cch-first-lp .cta-menu > .lp-menu-mobile-art {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  body.c-beginner-lp #cch-first-lp .cta-menu > .lp-menu-mobile-title {
+    position: absolute;
+    inset: 2.5% 2% auto;
+    display: block;
+    margin: 0;
+    color: #061e61;
+    font-family: "Yu Mincho", YuMincho, "Hiragino Mincho ProN", serif;
+    font-size: clamp(24px, 7.3cqw, 32px);
+    font-weight: 900;
+    line-height: 1.12;
+    letter-spacing: -.055em;
+    text-align: center;
+    text-shadow: 0 1px 1px #fff, 1px 2px 1px #fff;
+  }
+  body.c-beginner-lp #cch-first-lp .cta-menu > .lp-menu-mobile-title span { display: block; }
+  body.c-beginner-lp #cch-first-lp .cta-menu > .lp-menu-mobile-title em {
+    color: #ffe552;
+    font-style: normal;
+    -webkit-text-stroke: .5px #061e61;
+    text-shadow: 1px 1px 0 #061e61;
+  }
+  body.c-beginner-lp #cch-first-lp .cta-menu .lp-cta-action {
+    position: absolute;
+    inset: auto 6% 2.5%;
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+  body.c-beginner-lp #cch-first-lp .cta-assurance .lp-cta-action {
     position: absolute;
     inset: auto 3% 7% 46%;
     width: auto;
@@ -951,5 +1004,46 @@ body.c-beginner-lp #cch-first-lp .lp-comparison-manga-cta .lp-reference-estimate
   body.c-beginner-lp #cch-first-lp .lp-comparison-manga-outro::after {
     top: 5.952381cqw;
     height: 1.719577cqw;
+  }
+}
+
+/* Keep keyboard focus on the visible handle rather than its full-height hit area. */
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control {
+  outline: 0;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control-line:first-child {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  transform: translateX(-50%);
+  z-index: 0;
+  box-shadow: none !important;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control-line:last-child {
+  display: none;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__theme-wrapper {
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 56px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, .2);
+  transform: translate(-50%, -50%);
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control:focus-visible .icv__theme-wrapper {
+  outline: 3px solid #005bac;
+  outline-offset: 3px;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__arrow-wrapper::before {
+  background-color: #005bac;
+}
+@media (max-width: 767.98px) {
+  body.c-beginner-lp #cch-first-lp [data-before-after] .icv__theme-wrapper {
+    width: 36px;
+    height: 28px;
+    border-radius: 14px;
   }
 }
