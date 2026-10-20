@@ -1223,3 +1223,73 @@ body.aircon-menu-open .c-header__navigation {
     --aircon-full-menu-row-count: var(--aircon-full-menu-rows-medium, 1);
   }
 }
+
+/* Expanded top-navigation panel; 80% at550px tall, original scale at800px. */
+@media screen and (min-width: 1024px) {
+  .aircon-mega {
+    --aircon-mega-unit: clamp(.8px, calc(.08vh + .36px), 1px);
+    padding: calc(8 * var(--aircon-mega-unit)) calc(32 * var(--aircon-mega-unit)) calc(48 * var(--aircon-mega-unit));
+    border-bottom-right-radius: calc(10 * var(--aircon-mega-unit));
+  }
+  .aircon-mega__heading { flex-basis: calc(273 * var(--aircon-mega-unit)); padding-top: calc(16 * var(--aircon-mega-unit)); }
+  .aircon-mega__en { font-size: calc(16 * var(--aircon-mega-unit)); }
+  .aircon-mega__title { gap: calc(16 * var(--aircon-mega-unit)); padding-top: calc(8 * var(--aircon-mega-unit)); font-size: calc(24 * var(--aircon-mega-unit)); }
+  .aircon-mega__title svg, .aircon-mega__link svg { width: calc(7 * var(--aircon-mega-unit)); height: calc(8 * var(--aircon-mega-unit)); }
+  .aircon-mega__links { column-gap: calc(24 * var(--aircon-mega-unit)); }
+  .aircon-mega__link {
+    gap: calc(10 * var(--aircon-mega-unit));
+    padding: calc(16 * var(--aircon-mega-unit)) calc(9 * var(--aircon-mega-unit)) calc(16 * var(--aircon-mega-unit)) 0;
+    font-size: calc(14 * var(--aircon-mega-unit));
+    border-bottom-width: var(--aircon-mega-unit);
+  }
+  .aircon-mega__link::after { bottom: calc(-1 * var(--aircon-mega-unit)); height: calc(2 * var(--aircon-mega-unit)); }
+  @supports (height: 1svh) {
+    .aircon-mega { --aircon-mega-unit: clamp(.8px, calc(.08svh + .36px), 1px); }
+  }
+}
+
+/* Expanded MENU modal; 90% at550px tall, original scale at800px. */
+@media screen and (min-width: 768px) {
+  .c-menu-modal { --aircon-full-unit: clamp(.9px, calc(.04vh + .68px), 1px); }
+  .c-menu-modal__main-content { padding: 0 calc(64 * var(--aircon-full-unit)) calc(64 * var(--aircon-full-unit)) 0; }
+  .aircon-full-menu__section {
+    grid-template-columns: calc(273 * var(--aircon-full-unit)) minmax(0, 1fr);
+    gap: calc(48 * var(--aircon-full-unit));
+    margin-bottom: calc(8 * var(--aircon-full-unit));
+    padding: calc(24 * var(--aircon-full-unit)) calc(32 * var(--aircon-full-unit)) calc(48 * var(--aircon-full-unit));
+    border-radius: 0 calc(10 * var(--aircon-full-unit)) calc(10 * var(--aircon-full-unit)) 0;
+  }
+  .aircon-full-menu__head { padding-top: calc(16 * var(--aircon-full-unit)); }
+  .aircon-full-menu__en { font-size: calc(16 * var(--aircon-full-unit)); }
+  .aircon-full-menu__title { gap: calc(16 * var(--aircon-full-unit)); padding-top: calc(8 * var(--aircon-full-unit)); font-size: calc(24 * var(--aircon-full-unit)); }
+  .aircon-full-menu__head .aircon-full-menu__category,
+  .aircon-full-menu__head .c-site-menu__category { font-size: calc(24 * var(--aircon-full-unit)); }
+  .aircon-full-menu__title svg { width: calc(7 * var(--aircon-full-unit)); height: calc(8 * var(--aircon-full-unit)); }
+  .aircon-full-menu__body { --aircon-full-menu-row-gap: calc(8 * var(--aircon-full-unit)); }
+  .aircon-full-menu__body > ul { column-gap: calc(24 * var(--aircon-full-unit)); }
+  .aircon-full-menu__body a,
+  .aircon-full-menu__body .c-site-menu-link:last-child {
+    min-height: calc(44 * var(--aircon-full-unit));
+    padding: calc(11 * var(--aircon-full-unit)) calc(22 * var(--aircon-full-unit)) calc(11 * var(--aircon-full-unit)) 0;
+    font-size: calc(14 * var(--aircon-full-unit));
+    border-bottom-width: var(--aircon-full-unit);
+  }
+  .aircon-full-menu__body .c-site-menu-link { gap: calc(10 * var(--aircon-full-unit)); }
+  .aircon-full-menu__body .c-aircon-details__link { gap: calc(8 * var(--aircon-full-unit)); }
+  .aircon-full-menu__body a[href]::before { bottom: calc(-1 * var(--aircon-full-unit)); height: calc(2 * var(--aircon-full-unit)); }
+  .aircon-full-menu__body a[href] svg { right: calc(9 * var(--aircon-full-unit)); width: calc(7 * var(--aircon-full-unit)); height: calc(8 * var(--aircon-full-unit)); }
+  @supports (height: 1svh) {
+    .c-menu-modal { --aircon-full-unit: clamp(.9px, calc(.04svh + .68px), 1px); }
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1100px) {
+  .aircon-full-menu__section { grid-template-columns: calc(180 * var(--aircon-full-unit)) minmax(0, 1fr); gap: calc(24 * var(--aircon-full-unit)); }
+}
+
+/* Normal and wide desktop views retain the original pixel values exactly. */
+@media screen and (min-width: 768px) and (min-height: 800px) {
+  .c-menu-modal { --aircon-full-unit: 1px; }
+}
+@media screen and (min-width: 1024px) and (min-height: 800px) {
+  .aircon-mega { --aircon-mega-unit: 1px; }
+}
