@@ -41,3 +41,62 @@
 }
 
 @media(prefers-reduced-motion:reduce) { .home-pickup__banner-cta { transition:none; } }
+
+/* HOME feature panels keep the compact desktop scale in short windows. */
+@media screen and (min-width: 768px) {
+ .c-home #home-pickup-banner .home-pickup__banner,
+ .c-home #home-guides .home-first-guide-frame,
+ .c-home #home-pickup .home-pickup__carousel,
+ .c-home #tab-panel_02 .concern-selector {
+  max-width: clamp(860px, calc(132vh + 68px), 1124px);
+  max-width: clamp(860px, calc(132svh + 68px), 1124px);
+ }
+
+ .c-home #home-guides .home-first-guide-frame {
+  container: home-guide / inline-size;
+ }
+
+ /* Convert the existing viewport scale to the guide's available width. */
+ .c-home #home-guides .home-first-guide {
+  gap: clamp(16px, calc(2.562832cqw + 1.92px), 32px);
+  min-height: clamp(180px, calc(21.356932cqw + 16px), 250px);
+  padding: clamp(18px, calc(2.669617cqw + 2px), 32px);
+  border-radius: clamp(6px, calc(1.922124cqw + 1.44px), 24px);
+ }
+
+ .c-home #home-guides .home-first-guide__logo {
+  padding-right: clamp(12px, calc(2.135693cqw + 1.6px), 24px);
+ }
+
+ .c-home #home-guides .home-first-guide__tagline {
+  font-size: clamp(9px, calc(1.067847cqw + .8px), 12px);
+ }
+
+ .c-home #home-guides .home-first-guide__copy {
+  gap: clamp(8px, calc(1.067847cqw + .8px), 14px);
+ }
+
+ .c-home #home-guides .home-first-guide__eyebrow {
+  font-size: clamp(11px, calc(1.228024cqw + .92px), 14px);
+ }
+
+ .c-home #home-guides .home-first-guide__features {
+  font-size: clamp(10px, calc(1.228024cqw + .92px), 14px);
+ }
+
+ .c-home #home-guides .home-first-guide__title {
+  font-size: clamp(22px, calc(2.989971cqw + 2.24px), 35px);
+ }
+
+ .c-home #home-guides .home-first-guide__description {
+  font-size: clamp(11px, calc(1.388201cqw + 1.04px), 16px);
+ }
+
+ .c-home #home-guides .home-first-guide__arrow {
+  width: clamp(32px, calc(4.805310cqw + 3.6px), 54px);
+ }
+
+ .c-home #home-guides .home-first-guide::before {
+  width: clamp(60px, calc(8.542773cqw + 6.4px), 120px);
+ }
+}
