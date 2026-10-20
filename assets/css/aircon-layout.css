@@ -557,6 +557,12 @@
 }
 
 @media (max-width: 767.98px) {
+  /* Keep the adopted 17px voice title inside narrow mobile service frames. */
+  .c-service-page .c-voice-section--bubble-preview .c-section-heading__subtitle::before,
+  .c-service-page .c-voice-section--bubble-preview .c-section-heading__subtitle::after {
+    content: '・';
+  }
+
   .c-section-heading__subtitle {
     gap: 4px;
     font-size: clamp(12px, 3.4vw, 16px);
