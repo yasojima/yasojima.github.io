@@ -44,8 +44,27 @@
     refresh();
   }
 
+  function parentQuantityLabel(unit) {
+    switch (unit) {
+      case '台': return '台数';
+      case '帖': return '広さ（帖）';
+      case '基': return '基数';
+      case '外壁1面（40㎡以下）': return '面数';
+      default: return '数量';
+    }
+  }
+
   function update(key, count, additive = false) {
-    commit(core.change(read(), key, count, catalogue, additive));
+    try {
+      commit(core.change(read(), key, count, catalogue, additive));
+    } catch (error) {
+      const parent = catalogue.items[catalogue.items[key]?.parentKey];
+      // Translate only the existing core rejection; validation remains in the core.
+      if (error.message !== 'このオプションの対象サービスを先にカートに追加してください。' || !parent) throw error;
+      const notice = new Error(`先に「${parent.name}」の${parentQuantityLabel(parent.unit)}を指定してカートに追加してください。`);
+      notice.code = 'parent_service_required';
+      throw notice;
+    }
   }
 
   function keyFor(card) {
@@ -89,7 +108,7 @@
       </dl></div>`;
   }
 
-  function show(message, added = []) {
+  function show(message, added = [], parentRequired = false) {
     let dialog = document.getElementById('cch-cart-dialog');
     if (!dialog) {
       dialog = document.createElement('dialog');
@@ -111,10 +130,14 @@
       <button class="c-modal-closer" type="button" data-cart-close aria-label="モーダルを閉じる">モーダルを閉じる</button>
       <div class="c-add-cart"><h2 class="c-add-cart__heading" id="cch-cart-dialog-title">${added.length ? 'カートに追加しました！' : 'ご確認ください'}</h2>
       ${added.length ? `<div class="c-add-cart__items">${added.map(entry => addedItemMarkup(entry, result)).join('')}</div>
-      <a class="c-cart-confirm-button c-add-cart__button" href="/cart/" aria-label="カートを見る（${result.count}点）"><span class="c-cart-confirm-button__text" data-cart-count="${result.count}">カートを見る</span></a>` : `<p class="cch-cart-dialog__message">${escape(message)}</p>`}
+      <a class="c-cart-confirm-button c-add-cart__button" href="/cart/" aria-label="カートを見る（${result.count}点）"><span class="c-cart-confirm-button__text" data-cart-count="${result.count}">カートを見る</span></a>` : `<p class="cch-cart-dialog__message${parentRequired ? ' cch-cart-dialog__message--parent-required' : ''}">${escape(message)}</p>`}
       <button type="button" class="c-add-cart__close-button" data-cart-close>閉じる</button></div></div>`;
     document.body.classList.add('cch-cart-dialog-open');
     if (!dialog.open) dialog.showModal();
+  }
+
+  function showError(error) {
+    show(error.message, [], error.code === 'parent_service_required');
   }
 
   function quantityInput(line, removable = true) {
@@ -418,7 +441,7 @@
         } else { input.value = String(count); syncCounters(); }
       } else if (button.id === 'js-add-cart') addOffice();
       else addCard(button.closest('.js-product-card'));
-    } catch (error) { show(error.message); }
+    } catch (error) { showError(error); }
   }, true);
 
   document.addEventListener('change', event => {
@@ -426,7 +449,7 @@
     try {
       if (input.matches('.js-room-types')) switchVariant(input);
       if (input.hasAttribute('data-cart-set')) update(input.dataset.cartSet, input.value);
-    } catch (error) { refresh(); show(error.message); }
+    } catch (error) { refresh(); showError(error); }
   });
   window.addEventListener('storage', event => { if (event.key === STORAGE_KEY || event.key === null) { read(); refresh(); } });
   window.addEventListener('resize', () => document.querySelectorAll('[data-cart-carousel]').forEach(syncCarousel));
