@@ -65,8 +65,15 @@
     if (!record(value) || typeof value.requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.requestId) ||
         !['pending', 'accepted'].includes(value.state) || typeof value.createdAt !== 'string' || value.createdAt.length > 40 || !Number.isFinite(Date.parse(value.createdAt))) return null;
     if (value.state === 'accepted' && (typeof value.acceptedAt !== 'string' || value.acceptedAt.length > 40 || !Number.isFinite(Date.parse(value.acceptedAt)))) return null;
+    const hasReceiptNumber = Object.hasOwn(value, 'receiptNumber');
+    const hasRequestVersion = Object.hasOwn(value, 'requestVersion');
+    if (hasRequestVersion && value.requestVersion !== 2) return null;
+    if (hasReceiptNumber && (value.state !== 'accepted' || typeof value.receiptNumber !== 'string' || value.receiptNumber.length > 128 ||
+        value.receiptNumber !== value.receiptNumber.trim() || !/^CCH-[0-9]{12,}$/.test(value.receiptNumber) || !/[1-9]/.test(value.receiptNumber.slice(4)))) return null;
     return {requestId: value.requestId, state: value.state, createdAt: value.createdAt,
-      ...(value.state === 'accepted' ? {acceptedAt: value.acceptedAt} : {})};
+      ...(hasRequestVersion ? {requestVersion: value.requestVersion} : {}),
+      ...(value.state === 'accepted' ? {acceptedAt: value.acceptedAt} : {}),
+      ...(hasReceiptNumber ? {receiptNumber: value.receiptNumber} : {})};
   }
 
   function sameContents(receipt, draft, lines) {
@@ -280,17 +287,19 @@
         const token = delivery.getToken();
         if (!token) throw new Error('送信前の認証を完了してください。期限切れの場合は認証をやり直してください。');
         receipt.fields['mail-consent'] = 'on';
-        receipt.delivery = matches ? previous.delivery : {requestId: crypto.randomUUID(), state: 'pending', createdAt: new Date().toISOString()};
+        receipt.delivery = matches ? previous.delivery : {requestId: crypto.randomUUID(), requestVersion: 2, state: 'pending', createdAt: new Date().toISOString()};
         try { saveReceipt(receipt); }
         catch { throw new Error('送信準備の内容を保存できませんでした。依頼は送信していません。ブラウザの保存設定をご確認ください。'); }
-        const response = await delivery.submit({version: 1, requestId: receipt.delivery.requestId,
+        const response = await delivery.submit({version: receipt.delivery.requestVersion ?? 1, requestId: receipt.delivery.requestId,
           fields: receipt.fields, lines: receipt.lines, turnstileToken: token});
         const serverLines = Array.isArray(response.summary?.details) ? response.summary.details.map(line => ({key: line?.key, quantity: line?.quantity})) : [];
-        const serverReceipt = normalizeReceipt({...receipt, lines: serverLines, summary: response.summary});
-        if (!serverReceipt || !sameRequest(serverReceipt, draft, receipt.lines)) throw new Error('送信受付の詳細を確認できませんでした。内容を変更せず、同じ内容で再試行してください。');
+        const serverDelivery = {...receipt.delivery, requestId: response.requestId, state: 'accepted', acceptedAt: response.acceptedAt,
+          ...(Object.hasOwn(response, 'receiptNumber') ? {receiptNumber: response.receiptNumber} : {})};
+        const serverReceipt = normalizeReceipt({...receipt, delivery: serverDelivery, lines: serverLines, summary: response.summary});
+        if (!serverReceipt || serverReceipt.delivery.requestId !== receipt.delivery.requestId || !sameRequest(serverReceipt, draft, receipt.lines)) throw new Error('送信受付の詳細を確認できませんでした。内容を変更せず、同じ内容で再試行してください。');
         receipt.summary = serverReceipt.summary;
         receipt.lines = serverReceipt.lines;
-        receipt.delivery = {...receipt.delivery, state: 'accepted', acceptedAt: response.acceptedAt};
+        receipt.delivery = serverReceipt.delivery;
         acceptedReceipt = receipt;
         delivery.reset();
         try { saveReceipt(receipt); }
@@ -369,7 +378,7 @@
 
   function renderAccepted(mount, receipt, saveFailed = false, focus = false) {
     setViewState(true, false, focus);
-    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付内容の自動返信メールと店舗への通知を、メール送信サービスで受け付けました。メールの到着まで少しお時間がかかる場合があります。</p><p class="message-box__text">受信箱と迷惑メールフォルダをご確認ください。</p><p class="message-box__text">担当者より改めてご連絡いたします。</p><p class="message-box__text">受付日時：${escape(new Date(receipt.delivery.acceptedAt).toLocaleString('ja-JP'))}</p><p class="message-box__text">受付番号：${escape(receipt.delivery.requestId)}</p></div>
+    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付内容の自動返信メールと店舗への通知を、メール送信サービスで受け付けました。メールの到着まで少しお時間がかかる場合があります。</p><p class="message-box__text">受信箱と迷惑メールフォルダをご確認ください。</p><p class="message-box__text">担当者より改めてご連絡いたします。</p><p class="message-box__text">受付日時：${escape(new Date(receipt.delivery.acceptedAt).toLocaleString('ja-JP'))}</p><p class="message-box__text">受付番号：${escape(receipt.delivery.receiptNumber || receipt.delivery.requestId)}</p></div>
       ${saveFailed ? '<p class="cch-estimate-error" role="alert">依頼は受け付けましたが、この端末に受付結果を保存できませんでした。この画面を控え、同じ依頼を新たに送信しないでください。</p>' : ''}
       ${summaryMarkup(receipt.summary)}${detailsMarkup(receipt)}<p class="cch-estimate-local-notice">上記の送信データは24時間経過後、保存されず自動的に履歴がリセットされます。尚、お送りいただいた送信済みのメールは削除されないため何卒ご了承ください。</p>
       <div class="action-buttons cch-estimate-accepted-actions"><a class="c-category-simple-card cch-estimate-accepted-home" href="/"><span class="c-category-simple-card__bottom"><span class="c-category-simple-card__text">ホームへ戻る</span></span></a></div>`;
