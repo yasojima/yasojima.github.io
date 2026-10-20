@@ -156,3 +156,26 @@
   .c-lineup-heading--round { padding-block: 56px calc(56px + var(--hero-projection)); }
   .c-lineup-heading--round > .c-lineup-heading__sub-text { font-size: 18px; }
 }
+
+/* Compact category first views prioritize readable artwork and natural page flow. */
+@media screen and (min-width: 768px) and (max-height: 799.98px) {
+  main[data-service-layout="shared-v2"] .c-first-view {
+    --first-view-natural-flow: 1;
+    --banner-min-height: 240px;
+    --banner-preferred-height: clamp(240px, calc(25vh + 115px), 315px);
+    --banner-height: var(--banner-preferred-height);
+  }
+  @supports (height: 1svh) {
+    main[data-service-layout="shared-v2"] .c-first-view {
+      --banner-preferred-height: clamp(240px, calc(25svh + 115px), 315px);
+    }
+  }
+  main[data-service-layout="shared-v2"] .c-first-view .c-house-cleaning-mv--check {
+    min-height: var(--banner-min-height);
+  }
+  main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards {
+    max-height: none;
+    overflow: visible;
+    overscroll-behavior-y: auto;
+  }
+}
