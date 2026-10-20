@@ -19,12 +19,15 @@
   const active = config(settings);
   const configured = Boolean(settings && (settings.endpoint || settings.turnstileSiteKey));
   const uuid = value => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+  const receiptNumber = value => typeof value === 'string' && value.length <= 128 && value === value.trim() &&
+    /^CCH-[0-9]{12,}$/.test(value) && /[1-9]/.test(value.slice(4));
   function validResponse(value, requestId) {
     return value && value.ok === true && value.requestId === requestId && value.mailStatus === 'accepted' &&
-      typeof value.acceptedAt === 'string' && Number.isFinite(Date.parse(value.acceptedAt));
+      typeof value.acceptedAt === 'string' && Number.isFinite(Date.parse(value.acceptedAt)) &&
+      (!Object.hasOwn(value, 'receiptNumber') || receiptNumber(value.receiptNumber));
   }
   async function submit(payload) {
-    if (!active || !payload || payload.version !== 1 || !uuid(payload.requestId) ||
+    if (!active || !payload || ![1, 2].includes(payload.version) || !uuid(payload.requestId) ||
         typeof payload.turnstileToken !== 'string' || !payload.turnstileToken) throw new Error('送信設定または認証をご確認ください。');
     const controller = new environment.AbortController();
     const timer = environment.setTimeout(() => controller.abort(), 45000);
