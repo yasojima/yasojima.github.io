@@ -107,8 +107,8 @@ body.cch-cart-dialog-open { overflow: hidden; }
 .cch-cart-option-card .c-product-additional-card__description { display: block; color: #212529; line-height: 1.5; }
 .cch-cart-option-card .c-product-additional-card__cart-button { min-width: 0; }
 .cch-cart-carousel-arrow { border: 0; cursor: pointer; }
-.cch-cart-carousel-arrow--prev { left: -28px; }
-.cch-cart-carousel-arrow--next { right: -28px; }
+.cch-cart-carousel-arrow--prev { left: -24px; }
+.cch-cart-carousel-arrow--next { right: -24px; }
 .cch-cart-carousel-arrow:disabled { visibility: hidden; }
 @media (hover: hover) {
   .cch-cart-carousel-arrow:hover::after { background-color: #000; }
