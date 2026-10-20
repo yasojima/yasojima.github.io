@@ -822,4 +822,12 @@ screen and (min-width: 768px) {
     object-fit: cover !important;
   }
 
+  #js-mv-slider #Top_Slide_bn4.swiper-slide {
+    width: 100% !important;
+  }
+
+  #js-mv-slider #Top_Slide_bn4 .cch-corporate-picture > img {
+    height: 100% !important;
+  }
+
 }
