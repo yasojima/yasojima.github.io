@@ -199,8 +199,13 @@
   border-radius: 50%;
   color: #fff;
   background: #0068bd;
-  font-size: clamp(24px, 3vw, 36px);
-  line-height: 1;
+}
+.home-first-guide__arrow svg {
+  display: block;
+  width: 50%;
+  height: 50%;
+  min-width: 16px;
+  min-height: 16px;
 }
 .home-first-guide::before {
   z-index: 1;
@@ -590,6 +595,5 @@
     right: 8px;
     bottom: 10px;
     width: 24px;
-    font-size: 20px;
   }
 }
