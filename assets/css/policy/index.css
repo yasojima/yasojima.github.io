@@ -288,3 +288,107 @@ table tr td .policy-link {
     /* テーブルの最小幅。必要に応じて調整 */
   }
 }
+
+/* Policy content only; shared header, breadcrumbs and footer retain their styles. */
+main.cch-policy-page {
+  padding: 32px 40px 80px;
+  color: #212529;
+  background: #fff;
+  font-size: 1rem;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+main.cch-policy-page .cch-policy-page__inner {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+main.cch-policy-page .cch-policy-page__title {
+  margin: 0 0 28px;
+  color: #005bac;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+}
+
+main.cch-policy-page .cch-policy-page__section {
+  margin-top: 36px;
+}
+
+main.cch-policy-page .cch-policy-page__heading {
+  margin: 0 0 12px;
+  color: #005bac;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+main.cch-policy-page p {
+  margin: 0;
+}
+
+main.cch-policy-page p + p,
+main.cch-policy-page p + :is(ol, ul),
+main.cch-policy-page :is(ol, ul) + p {
+  margin-top: 16px;
+}
+
+main.cch-policy-page ol,
+main.cch-policy-page ul {
+  margin: 0;
+  padding-left: 1.6em;
+}
+
+main.cch-policy-page ol {
+  list-style: decimal outside;
+}
+
+main.cch-policy-page ul {
+  list-style: disc outside;
+}
+
+main.cch-policy-page li + li {
+  margin-top: 8px;
+}
+
+main.cch-policy-page li > ul {
+  margin-top: 8px;
+}
+
+main.cch-policy-page strong {
+  font-weight: 700;
+}
+
+main.cch-policy-page a {
+  color: #005bac;
+  text-decoration: underline;
+  text-underline-offset: .18em;
+}
+
+main.cch-policy-page a:focus-visible {
+  outline: 2px solid #005bac;
+  outline-offset: 3px;
+}
+
+@media screen and (max-width: 767.98px) {
+  main.cch-policy-page {
+    padding: 24px 20px 56px;
+    font-size: .9375rem;
+  }
+
+  main.cch-policy-page .cch-policy-page__title {
+    margin-bottom: 24px;
+    font-size: 1.25rem;
+  }
+
+  main.cch-policy-page .cch-policy-page__section {
+    margin-top: 28px;
+  }
+
+  main.cch-policy-page .cch-policy-page__heading {
+    font-size: 1.0625rem;
+  }
+}
