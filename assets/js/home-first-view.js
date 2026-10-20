@@ -12,7 +12,7 @@
   const estimateToggle = estimate?.querySelector('.home-quick-estimate__toggle');
   const estimateLinks = estimate?.querySelector('.home-quick-estimate__links');
   const canHover = matchMedia('(hover: hover) and (pointer: fine)');
-  const mobileEstimate = matchMedia('(max-width: 768px)');
+  const mobileEstimate = matchMedia('(max-width: 767.98px)');
   let pinned = false;
   let frame = 0;
 
@@ -52,24 +52,13 @@
     setEstimateOpen(!estimate.classList.contains('is-open'));
   });
 
-  // Reuse the reference's one-time reveal after 500px and manual fix/open state.
-  function revealEstimate() {
-    if (!estimate || !mobileEstimate.matches) return;
-    if (scrollY > 500 && !estimate.classList.contains('fixed')) {
-      estimate.classList.add('fixed');
-      if (!estimate.classList.contains('fix')) setEstimateOpen(true);
-    }
-  }
+  // Mobile estimate opens only through the existing explicit toggle.
   mobileEstimate.addEventListener('change', () => {
     estimate?.classList.remove('fixed', 'fix');
     setEstimateOpen(!mobileEstimate.matches);
-    revealEstimate();
   });
-  window.addEventListener('scroll', revealEstimate, {passive: true});
-  window.addEventListener('load', revealEstimate);
   if (mobileEstimate.matches) {
     setEstimateOpen(false);
-    revealEstimate();
   }
 
   function setSocialOpen(open) {
