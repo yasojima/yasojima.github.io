@@ -1,0 +1,239 @@
+.problem-navlist .problem-nav__own-service {
+  position: relative;
+  display: flex;
+  align-items: center;
+  aspect-ratio: 230 / 84;
+  margin: 0 2px;
+  padding: 6px 34px 6px 18px;
+  border: 4px solid #333;
+  border-left-style: dotted;
+  border-radius: 19px;
+  background: #ffe780;
+  color: #111;
+  font-size: clamp(11px, 1.05vw, 16px);
+  font-weight: 700;
+  line-height: 1.25;
+  text-decoration: none;
+}
+.problem-nav__own-service::after {
+  position: absolute;
+  right: 9px;
+  content: "↓";
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #524e2d;
+  color: #fff;
+  font-size: 20px;
+}
+.problem-sec05 .sec05-box::before,
+.problem-sec05 .sec05-box::after {
+  content: none;
+}
+.energy-saving-title {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1440 / 320;
+  margin: 0;
+  padding: 24px;
+  color: #005bac;
+  background: linear-gradient(180deg, #78c7e3, #d9f3fb);
+  text-align: center;
+}
+.energy-saving-title__panel {
+  display: grid;
+  gap: 10px;
+  width: min(740px, 88%);
+  padding: clamp(18px, 3vw, 44px) 20px;
+  border-radius: 34px;
+  background: #fff;
+}
+.energy-saving-title__lead {
+  font-size: clamp(14px, 1.5vw, 22px);
+  font-weight: 700;
+}
+.energy-saving-title__brand {
+  font-size: clamp(16px, 1.8vw, 26px);
+}
+.energy-saving-title__main {
+  font-size: clamp(28px, 4.2vw, 60px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.summer-energy-summary {
+  flex-shrink: 0;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 20px;
+  border: 1px solid #b9e3f1;
+  background: #f0faff;
+  color: #005b80;
+}
+.summer-energy-summary .summer-energy-summary__title {
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 700;
+  line-height: 1.4;
+}
+.summer-energy-summary__times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-weight: 700;
+}
+.summer-energy-summary__times span {
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: #fff1a5;
+}
+.summer-energy-summary p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.business-scheme-flow {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  min-height: 100%;
+  aspect-ratio: 618 / 491;
+  margin: 0;
+  padding: 16px;
+  list-style: none;
+  counter-reset: scheme-step;
+}
+.business-scheme-flow li {
+  counter-increment: scheme-step;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  color: #06408c;
+  line-height: 1.5;
+}
+.business-scheme-flow li::before {
+  content: counter(scheme-step);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #005bac;
+  color: #fff;
+  font-size: 13px;
+}
+.business-scheme-flow__parties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 5px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.business-scheme-flow__action {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+}
+.reassurance-spot--information .reassurance-spot__detail {
+  width: 100%;
+  max-width: 750px;
+}
+.reassurance-spot--information .reassurance-spot__detail::before {
+  content: none;
+}
+.cch-service-photo {
+  object-fit: cover;
+  aspect-ratio: var(--service-photo-ratio);
+  height: auto;
+}
+@media screen and (max-width: 767.98px) {
+  .problem-navlist .problem-nav__own-service {
+    aspect-ratio: 694 / 135;
+    padding-inline: 18px 46px;
+    font-size: clamp(13px, 3.6vw, 22px);
+    border-width: 3px;
+  }
+  .energy-saving-title {
+    aspect-ratio: 375 / 200;
+    padding: 16px;
+  }
+  .energy-saving-title__panel {
+    width: 100%;
+    gap: 7px;
+    padding: 18px 10px;
+    border-radius: 22px;
+  }
+  .energy-saving-title__brand {
+    font-size: clamp(13px, 3.7vw, 20px);
+  }
+  .energy-saving-title__main {
+    font-size: clamp(27px, 7.4vw, 38px);
+  }
+  .summer-energy-summary {
+    width: 100%;
+  }
+  .business-scheme-flow {
+    gap: 10px;
+    padding: 10px;
+  }
+  .business-scheme-flow li {
+    padding: 10px;
+  }
+}
+
+
+.cch-service-photo.cch-service-illustration {
+  object-fit: contain;
+  background: #fff;
+}
+.cch-corporate-picture {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5.3 / 1;
+  overflow: hidden;
+}
+.cch-corporate-picture > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+@media screen and (max-width: 767.98px) {
+  .cch-corporate-picture {
+    aspect-ratio: 3 / 1;
+  }
+}
+
+.cch-company-mark {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 496 / 210;
+  object-fit: contain;
+}
+
+.cch-energy-service-cta {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 341px;
+  max-width: 100%;
+  min-height: 89px;
+  padding: 10px 8px;
+  border: 1px solid #c8e1ef;
+  border-radius: 8px;
+  color: #005bac;
+  background: #edf7fc;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+.cch-energy-service-cta strong { font-size: 16px; }
+.cch-energy-service-cta__detail { font-size: 12px; }
