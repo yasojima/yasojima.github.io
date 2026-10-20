@@ -23,6 +23,7 @@
 body.cch-cart-dialog-open { overflow: hidden; }
 .cch-cart-dialog { color: #212529; }
 .cch-cart-dialog__message { margin-top: 24px; line-height: 1.8; }
+.cch-cart-dialog__message--parent-required { text-align: center; }
 #cart-modal .cart-table th, #cart-modal .cart-table td { padding: 10px; border-bottom: 1px solid #d9e6ef; }
 #cart-modal .cart-table td:last-child { text-align: right; white-space: nowrap; }
 .cch-estimate-notice { text-align: center; font-size: 14px; padding: 16px; margin: 0; background: #e3f1fc; }
