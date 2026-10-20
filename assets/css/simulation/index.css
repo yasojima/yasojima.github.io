@@ -897,7 +897,10 @@ screen and (min-width: 768px) {
   .cart-info__price-info .total-amount__price { overflow-wrap: anywhere; }
 }
 @media screen and (max-width: 359.98px) {
-  .cart-info__price-info .total-amount__price { font-size: 1.75rem; }
+  .cart-info__price-info .total-amount__price {
+    font-size: 1.5rem;
+    white-space: nowrap;
+  }
   .cart-info__price-info .total-amount__price::before { font-size: 1.25rem; }
   .cart-info__price-info .total-amount__price::after { display: block; }
 }
