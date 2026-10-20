@@ -1,11 +1,25 @@
-.cch-cart-page,
-.cch-estimate {
+main.cch-cart-page,
+main.cch-estimate {
   --cch-estimate-panel-gap: 28px;
   --cch-estimate-panel-inset: 24px;
+  --cch-estimate-heading-size: 28px;
+  --cch-estimate-heading-gap: 20px;
+  background-color: #e3f1fc;
 }
-.cch-estimate,
-.cch-cart-page:not(.cch-cart-page--empty) .cch-cart-page__main {
+main.cch-estimate,
+main.cch-cart-page:not(.cch-cart-page--empty) .cch-cart-page__main {
   padding-top: calc(var(--cch-estimate-panel-gap) + var(--cch-estimate-panel-inset));
+}
+main.cch-cart-page .cch-cart-heading,
+main.cch-estimate > .c-page-heading {
+  margin: var(--cch-estimate-heading-gap) 16px 0;
+  padding: 0;
+  color: #212529;
+  background: transparent;
+  font-size: var(--cch-estimate-heading-size);
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
 }
 .cch-estimate-progress {
   box-sizing: border-box;
@@ -55,10 +69,12 @@
 }
 .cch-estimate-progress__item[aria-current='step'] + .cch-estimate-progress__item::before { border-color: #005bac; }
 @media (max-width: 767.98px) {
-  .cch-cart-page,
-  .cch-estimate {
+  main.cch-cart-page,
+  main.cch-estimate {
     --cch-estimate-panel-gap: 20px;
     --cch-estimate-panel-inset: 22px;
+    --cch-estimate-heading-size: 22px;
+    --cch-estimate-heading-gap: 8px;
   }
   .cch-estimate-progress { gap: 20px; font-size: 14px; }
   .cch-estimate-progress__item + .cch-estimate-progress__item::before { left: -13px; width: 6px; height: 6px; }

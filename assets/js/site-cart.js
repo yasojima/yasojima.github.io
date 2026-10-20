@@ -267,7 +267,7 @@
       <dl class="price-info-card__total-amount total-amount"><dt class="c-label-tag c-label-tag--pill-shape total-amount__term">合計金額（税込）</dt><dd class="total-amount__price" data-cart-total>${totalLabel(result)}</dd></dl>
       ${result.approximate ? '<p class="cch-cart-note">「〜」の付いたサービスは表示料金をもとにした概算です。</p>' : ''}
       ${result.quoteCount ? '<p class="cch-cart-note">別途見積りの商品は上記の合計金額に含まれていません。</p>' : ''}</div>
-      <div class="action-buttons u-mt-32_36 cch-cart-sidebar-actions">${checkoutButton()}<a class="c-button c-button--large action-buttons__button" href="/"><span class="c-button__text">お買い物を続ける</span><span class="c-icon c-icon--circle-caret-right c-button__icon"></span></a></div></aside></div>`;
+      <div class="action-buttons u-mt-32_36 cch-cart-sidebar-actions">${checkoutButton()}<a class="c-button c-button--large action-buttons__button" href="/#home-cleaning-list"><span class="c-button__text">メニューに戻る</span><span class="c-icon c-icon--circle-caret-right c-button__icon"></span></a></div></aside></div>`;
     renderRecommendations(parentGroups);
     for (const node of document.querySelectorAll('[data-cart-disclosure]')) node.open = open.has(node.dataset.cartDisclosure);
     for (const node of document.querySelectorAll('.cch-cart-option-card select')) if (selections.has(node.id)) node.value = selections.get(node.id);
