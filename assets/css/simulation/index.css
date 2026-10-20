@@ -888,3 +888,16 @@ screen and (min-width: 768px) {
   .cart-info__button { min-width: 80px; padding-inline: 8px; }
   .cart-info__button .c-button__text { padding-inline: 0 8px; white-space: nowrap; }
 }
+
+/* Reserve the next action while letting variable totals fit on narrow phones. */
+@media screen and (max-width: 767.98px) {
+  .c-page-heading { font-size: clamp(17px, 4.5vw, 22px); }
+  .cart-info__price-info { flex: 1 1 0%; min-width: 0; }
+  .cart-info__button { flex: 0 0 80px; }
+  .cart-info__price-info .total-amount__price { overflow-wrap: anywhere; }
+}
+@media screen and (max-width: 359.98px) {
+  .cart-info__price-info .total-amount__price { font-size: 1.75rem; }
+  .cart-info__price-info .total-amount__price::before { font-size: 1.25rem; }
+  .cart-info__price-info .total-amount__price::after { display: block; }
+}
