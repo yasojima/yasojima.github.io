@@ -1,3 +1,7 @@
+.c-contact .c-header-contact__cta {
+  display: none;
+}
+
 main.cch-contact {
   padding: 48px 24px 80px;
   color: #243c50;
@@ -224,6 +228,10 @@ main.cch-contact {
 }
 
 @media (max-width: 767.98px) {
+  body.c-contact {
+    --aircon-header-height: 96px;
+  }
+
   main.cch-contact {
     padding: 28px 16px 48px;
     font-size: 14px;
