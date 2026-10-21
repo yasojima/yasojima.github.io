@@ -1130,12 +1130,21 @@ body.aircon-menu-open .c-header__navigation {
     height: 22px;
   }
 
+  .c-header-contact__telephone {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   .c-header-contact__phone {
+    justify-content: flex-start;
     gap: var(--aircon-phone-gap);
+    min-width: 0;
+    width: 100%;
   }
 
   .c-header-contact__number {
-    font-size: clamp(24px, calc(10vw - 12px), 30px);
+    flex: 0 0 auto;
+    font-size: var(--aircon-fitted-number-size, clamp(24px, calc(10vw - 12px), 30px));
   }
 
   .c-header-contact__mark {
