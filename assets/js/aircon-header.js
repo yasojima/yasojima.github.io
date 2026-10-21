@@ -74,6 +74,25 @@
     telephone.append(phone, hours);
     contact.append(telephone);
     header.append(contact);
+
+    const singleRowPhone = window.matchMedia('(min-width: 375px) and (max-width: 767.98px)');
+    function fitPhoneNumber() {
+      phoneNumber.style.removeProperty('--aircon-fitted-number-size');
+      if (!singleRowPhone.matches) return;
+      const gap = parseFloat(getComputedStyle(phone).columnGap) || 0;
+      const available = phone.clientWidth - phoneMark.getBoundingClientRect().width - gap - 2;
+      const textWidth = phoneNumber.getBoundingClientRect().width;
+      if (available > 0 && textWidth > available) {
+        const size = parseFloat(getComputedStyle(phoneNumber).fontSize);
+        phoneNumber.style.setProperty('--aircon-fitted-number-size',
+          `${Math.floor(size * available / textWidth * 100) / 100}px`);
+      }
+    }
+    new ResizeObserver(fitPhoneNumber).observe(telephone);
+    singleRowPhone.addEventListener('change', fitPhoneNumber);
+    document.fonts?.ready.then(fitPhoneNumber);
+    document.fonts?.addEventListener('loadingdone', fitPhoneNumber);
+    fitPhoneNumber();
   }
 
   const menuEnglish = {
