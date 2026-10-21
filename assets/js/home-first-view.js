@@ -16,6 +16,21 @@
   let pinned = false;
   let frame = 0;
 
+  function setUpInquiry() {
+    const inquiry = header.querySelector('.c-header-contact__cta');
+    const contact = inquiry?.parentElement;
+    if (!inquiry || !contact) return;
+    function placeInquiry() {
+      inquiry.className = mobileEstimate.matches ? 'home-first-view__inquiry' : 'c-header-contact__cta';
+      if (mobileEstimate.matches) hero.append(inquiry);
+      else contact.prepend(inquiry);
+    }
+    mobileEstimate.addEventListener('change', placeInquiry);
+    placeInquiry();
+  }
+  if (document.readyState === 'complete') setUpInquiry();
+  else document.addEventListener('DOMContentLoaded', setUpInquiry, { once: true });
+
   function alignActions() {
     if (!actions || !menuButton) return;
     const menu = menuButton.getBoundingClientRect();
