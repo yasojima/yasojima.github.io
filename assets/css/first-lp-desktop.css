@@ -617,11 +617,11 @@ screen and (min-width: 768px) {#cch-first-lp .c-voice-card__text{
   display: inline-flex;
   font-weight: bold;
   line-height: 1.8;
-  color: #fff;
+  color: #005bac;
   white-space: nowrap;
-  background-color: rgba(0, 91, 172, .3);
+  background-color: transparent;
   padding-inline: 12px;
-  border-radius: 9999px;
+  border-radius: 0;
   transition: opacity .3s
 }
 @media   print,
