@@ -48,7 +48,7 @@
       payments.append(logo);
     }
     contact.append(payments);
-    const phone = footerPhone.querySelector('button, a[href]').cloneNode(false);
+    const phone = document.createElement('span');
     phone.className = 'c-header-contact__phone';
     const phoneMark = document.createElement('span');
     phoneMark.className = 'c-header-contact__mark';
