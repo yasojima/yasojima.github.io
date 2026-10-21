@@ -460,60 +460,40 @@
 .aircon-menu-open .home-quick-estimate { visibility: hidden; }
 
 @media (max-width: 767.98px) {
-  .c-home { --aircon-header-height: 154px; }
+  .c-home { --aircon-header-height: 96px; }
   .home-first-view__inquiry {
     position: absolute;
     z-index: 100;
     left: 4.17%;
-    bottom: clamp(13px, 3.6vw, 28px);
+    top: calc(var(--home-social-top) + var(--home-action-size) / 2);
+    bottom: auto;
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    width: 46.1%;
-    height: clamp(30px, 8.6vw, 40px);
+    width: clamp(172px, 46vw, 216px);
+    height: 44px;
+    padding: 0 16px;
     border: 1px solid #fff;
     border-radius: 0;
     background: transparent;
     color: #fff;
-    font: 400 clamp(10px, 2.8vw, 13px)/1.4 "Noto Sans JP", sans-serif;
+    font: 400 clamp(12px, 3vw, 14px)/1.4 "Noto Sans JP", sans-serif;
     letter-spacing: .1em;
     text-decoration: none;
     white-space: nowrap;
     overflow: visible;
   }
-  .home-first-view__inquiry::before,
-  .home-first-view__inquiry::after {
-    content: "";
-    position: absolute;
-    right: -18px;
-    pointer-events: none;
-  }
-  .home-first-view__inquiry::before {
-    top: 50%;
-    width: 36px;
-    border-top: 1px solid currentColor;
-  }
-  .home-first-view__inquiry::after {
-    top: calc(50% - 3px);
-    width: 6px;
-    height: 6px;
-    border-top: 1px solid currentColor;
-    border-right: 1px solid currentColor;
-    transform: rotate(45deg);
-  }
   .home-first-view__inquiry:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 4px;
   }
-  .aircon-menu-open .home-first-view__inquiry { visibility: hidden; }
+  .aircon-menu-open .home-first-view__inquiry,
+  .home-first-view:has(.home-socials.is-open) .home-first-view__inquiry { visibility: hidden; }
   .home-actions { gap: 12px; }
   .home-socials__rail,
   .home-socials__links .c-footer-sns__link { transition: none; }
-}
-
-@media (min-width: 375px) and (max-width: 767.98px) {
-  .c-home { --aircon-header-height: 96px; }
 }
 
 /* HOME mobile estimate: compact horizontal panel, opened only by its toggle. */
@@ -593,7 +573,7 @@
 }
 
 @media (max-width: 767.98px) {
-  .home-first-view { min-height: calc(var(--aircon-header-height) + 160px); }
+  .home-first-view { min-height: calc(var(--aircon-header-height) + 192px); }
   .home-first-guide-section { padding-bottom: 32px; }
   .home-first-guide-frame { width: 100%; }
   .home-business-guide-frame { margin-top: 16px; }
