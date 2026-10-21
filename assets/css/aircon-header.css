@@ -957,13 +957,15 @@ body.aircon-menu-open .c-header__navigation {
     background-size: contain;
   }
   .c-header-contact__payments {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 2;
     align-self: center;
+    justify-self: start;
     justify-content: center;
     flex-direction: row;
+    margin-left: max(0px, calc(20% - 25.6px), calc(50% - 96px));
   }
-  .c-header-contact__payment { width: calc(var(--aircon-payment-column) / 2); height: 18px; }
+  .c-header-contact__payment { flex: 0 0 auto; width: clamp(21px, calc(10vw - 11px), 32px); height: 22px; }
   .c-header-contact__hours {
     left: calc(var(--aircon-payment-column) + 4px);
     right: 0;
