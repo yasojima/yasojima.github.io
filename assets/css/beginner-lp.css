@@ -1105,3 +1105,20 @@ body.c-beginner-lp #cch-first-lp .lp-opening-tail .lp-opening-actions {
     top: calc((2078 * .894 - 1450) / 757 * 100cqw);
   }
 }
+
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-data tbody td:nth-child(2) { position: relative; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-price-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-price-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-price-link:focus-visible { outline: none; }
+body.c-beginner-lp #cch-first-lp #first-comparison .lp-comparison-price-link:focus-visible::after {
+  outline: 2px solid #0057c4;
+  outline-offset: -2px;
+}
