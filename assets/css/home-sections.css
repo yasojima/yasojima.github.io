@@ -103,3 +103,58 @@
     line-height: 1.7;
   }
 }
+
+@media screen and (max-width: 767.98px) {
+  .c-home #home-reasons { --home-reason-scale: .9; }
+
+  .c-home #home-reasons .c-reasons {
+    row-gap: calc(24px * var(--home-reason-scale));
+  }
+
+  .c-home #home-reasons .c-reasons__item {
+    --reason-diameter: min(calc(320px * var(--home-reason-scale)), calc((100cqw - 48px) * var(--home-reason-scale)));
+    --reason-bottom-space: calc(60px * var(--home-reason-scale));
+  }
+
+  .c-home #home-reasons .c-reasons__card {
+    padding: calc(20px * var(--home-reason-scale));
+    margin-top: calc(30px * var(--home-reason-scale));
+    box-shadow: 0 calc(8px * var(--home-reason-scale)) calc(20px * var(--home-reason-scale)) 0 rgba(31, 114, 208, .2);
+  }
+
+  .c-home #home-reasons .c-reason-card__heading {
+    font-size: calc(16px * var(--home-reason-scale));
+  }
+
+  .c-home #home-reasons .c-reason-card__description {
+    margin-top: calc(16px * var(--home-reason-scale));
+    font-size: calc(clamp(14px, 4.1cqw, 16px) * var(--home-reason-scale));
+  }
+
+  .c-home #home-reasons .c-reasons__point {
+    top: calc(-24px * var(--home-reason-scale));
+    height: calc(48px * var(--home-reason-scale));
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .c-home #home-reasons .c-reasons__card {
+    padding: calc(16px * var(--home-reason-scale));
+  }
+
+  .c-home #home-reasons .c-reason-card__heading {
+    font-size: calc(14px * var(--home-reason-scale));
+  }
+
+  .c-home #home-reasons .c-reason-card__description {
+    margin-top: calc(12px * var(--home-reason-scale));
+    font-size: calc(13px * var(--home-reason-scale));
+  }
+}
+
+@media screen and (max-width: 767.98px) {
+  /* Count the pagination's lower half and the following white curve in the visible outer gap. */
+  :root .c-home main > #home-pickup {
+    padding-bottom: calc(var(--home-section-space) - var(--section-curve-depth) - 14px);
+  }
+}
