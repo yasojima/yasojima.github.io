@@ -34,7 +34,7 @@
   if (contactDetails) {
     const contact = document.createElement('div');
     contact.className = 'c-header-contact';
-    const inquiry = siteMenu.querySelector('a[data-demo-dialog]').cloneNode(false);
+    const inquiry = siteMenu.querySelector('a[data-contact-link]').cloneNode(false);
     inquiry.className = 'c-header-contact__cta';
     inquiry.textContent = 'お問い合わせはこちら';
     contact.append(inquiry);

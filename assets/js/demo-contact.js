@@ -13,6 +13,11 @@
     return form.method === 'get' && target.origin === location.origin && target.pathname === '/cart/estimate/confirm/';
   }
 
+  function isContactForm(form) {
+    return location.pathname.replace(/index\.html$/, '') === '/contact/' &&
+      form?.id === 'cch-contact-form' && form.method === 'post';
+  }
+
   function show(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -22,6 +27,9 @@
   document.addEventListener('click', (event) => {
     const control = event.target.closest('a, button, input[type="submit"], [data-demo-dialog]');
     if (!control) return;
+    if (control.matches('a[data-contact-link]') && new URL(control.href, location.href).origin === location.origin &&
+        new URL(control.href, location.href).pathname === '/contact/') return;
+    if (isContactForm(control.closest('form'))) return;
     if (control.hasAttribute('data-demo-dialog')) return show(event);
     if (control.matches('button, input[type="submit"]')) {
       if (location.pathname.replace(/index\.html$/, '') === '/cart/estimate/confirm/' &&
@@ -40,6 +48,7 @@
   }, true);
 
   document.addEventListener('submit', (event) => {
+    if (isContactForm(event.target)) return;
     if (isEstimatePreview(event.target)) event.preventDefault();
     else show(event);
   }, true);
