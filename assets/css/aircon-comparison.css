@@ -169,4 +169,16 @@
     outline: 2px solid #005bac;
     outline-offset: 2px;
   }
+
+  body .c-tab__buttons:has(> .c-tab__button:nth-child(3):last-child),
+  body #cch-first-lp .c-tab > .c-tab__buttons:has(> .c-tab__button:nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  body .c-tab__buttons:has(> .c-tab__button:nth-child(3):last-child) > .c-tab__button,
+  body #cch-first-lp .c-tab > .c-tab__buttons:has(> .c-tab__button:nth-child(3):last-child) > .c-tab__button {
+    min-height: 64px;
+    padding: 8px 2px;
+  }
 }
