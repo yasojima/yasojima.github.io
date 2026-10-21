@@ -761,7 +761,7 @@ body:has(#cch-first-lp){background:#f4f5f5;padding-bottom:0!important}
 #cch-first-lp picture,#cch-first-lp img{display:block}
 #cch-first-lp img{max-width:100%;height:auto}
 #cch-first-lp a{opacity:1}
-#cch-first-lp :is(a,button,summary,[tabindex]):focus-visible{outline:3px solid #096ba1;outline-offset:4px}
+#cch-first-lp :is(a,button,summary,[tabindex]):not(.c-aircon-compare__handle):focus-visible{outline:3px solid #096ba1;outline-offset:4px}
 #cch-first-lp .lp-canvas{width:min(1040px,100%);margin:0 auto;box-shadow:0 0 70px #06408c12;background:#fff}
 #cch-first-lp .lp-cover{position:relative}
 #cch-first-lp .lp-cover h1{line-height:0;background:none}
