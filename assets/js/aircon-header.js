@@ -75,7 +75,7 @@
     contact.append(telephone);
     header.append(contact);
 
-    const singleRowPhone = window.matchMedia('(min-width: 375px) and (max-width: 767.98px)');
+    const singleRowPhone = window.matchMedia('(max-width: 767.98px)');
     function fitPhoneNumber() {
       phoneNumber.style.removeProperty('--aircon-fitted-number-size');
       if (!singleRowPhone.matches) return;
