@@ -1007,7 +1007,43 @@ body.c-beginner-lp #cch-first-lp .lp-comparison-manga-cta .lp-reference-estimate
   }
 }
 
-/* Preserve the adopted beginner image ratio with the shared comparison component. */
-body.c-beginner-lp #cch-first-lp [data-before-after].c-aircon-compare {
-  aspect-ratio: 750 / 433;
+/* Keep keyboard focus on the visible handle rather than its full-height hit area. */
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control {
+  outline: 0;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control-line:first-child {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  transform: translateX(-50%);
+  z-index: 0;
+  box-shadow: none !important;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control-line:last-child {
+  display: none;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__theme-wrapper {
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 56px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, .2);
+  transform: translate(-50%, -50%);
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control:focus-visible .icv__theme-wrapper {
+  outline: 3px solid #005bac;
+  outline-offset: 3px;
+}
+body.c-beginner-lp #cch-first-lp [data-before-after] .icv__arrow-wrapper::before {
+  background-color: #005bac;
+}
+@media (max-width: 767.98px) {
+  body.c-beginner-lp #cch-first-lp [data-before-after] .icv__theme-wrapper {
+    width: 36px;
+    height: 28px;
+    border-radius: 14px;
+  }
 }
