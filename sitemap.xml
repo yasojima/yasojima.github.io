@@ -1,221 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://yasojima.github.io/beginner/</loc>
-    <lastmod>2026-09-14</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/policy/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/contact/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/</loc>
-    <lastmod>2026-09-18</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/contact/house-cleaning/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/contact/business/</loc>
-    <lastmod>2026-09-09</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/contact/shop/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/business/contact/</loc>
-    <lastmod>2026-09-09</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/aircon01/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/aircon02/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/fridge/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/kitchen/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/washer/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/toilet/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/drier/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/others/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/office/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/office/light/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/office/oa/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/office/air/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/office/kitchen/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/summer/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/energy-saving/winter/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/aircon/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/pack/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/water/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/aircon/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/office/floor/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/office/carpet/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/office/fluorescent/</loc>
-    <lastmod>2026-09-29</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/office/photocatalyst/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/office/space/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/office/glass/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/pack/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/water/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/washer/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/kitchen/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/room/</loc>
-    <lastmod>2026-09-17</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/others/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/error/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/washer/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/kitchen/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/room/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/others/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/coating/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/business/racn/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/quick_cart/coating/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/error/405/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/policy-1/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/policy-2/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/error/403/</loc>
-    <lastmod>2026-09-30</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/house-cleaning/aircon/2027problem/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://yasojima.github.io/campaign/super-sale_2025/</loc>
-    <lastmod>2026-09-01</lastmod>
-  </url>
-  <url><loc>https://yasojima.github.io/business/cleaning/</loc></url>
-  <url><loc>https://yasojima.github.io/house-cleaning/reasons/</loc></url>
-</urlset>
+<url>
+<loc>https://yasojima.github.io/beginner/</loc>
+<lastmod>2026-09-14</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/policy/</loc>
+<lastmod>2026-09-01</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/</loc>
+<lastmod>2026-09-18</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/house-cleaning/aircon/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/house-cleaning/pack/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/house-cleaning/water/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+
+<url>
+<loc>https://yasojima.github.io/house-cleaning/washer/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/house-cleaning/kitchen/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/house-cleaning/room/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/house-cleaning/others/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+<url>
+<loc>https://yasojima.github.io/house-cleaning/coating/</loc>
+<lastmod>2026-09-30</lastmod>
+</url>
+
+
+<url>
+<loc>https://yasojima.github.io/house-cleaning/aircon/2027problem/</loc>
+<lastmod>2026-09-01</lastmod>
+</url>
+
+<url><loc>https://yasojima.github.io/business/cleaning/</loc></url>
+<url><loc>https://yasojima.github.io/house-cleaning/reasons/</loc></url>
+<url><loc>https://yasojima.github.io/house-cleaning/mold/</loc></url></urlset>
