@@ -17,13 +17,17 @@
 
   function normalize(lines, catalogue) {
     if (!Array.isArray(lines)) throw new Error('カートの形式を確認できません。');
+    const retiredKeys = new Set(Array.isArray(catalogue.retiredKeys) ? catalogue.retiredKeys : []);
     const totals = new Map();
     for (const line of lines) {
-      if (!line || !Object.hasOwn(catalogue.items, line.key)) throw new Error('商品情報を確認できません。');
+      if (!line || (!Object.hasOwn(catalogue.items, line.key) && !retiredKeys.has(line.key))) {
+        throw new Error('商品情報を確認できません。');
+      }
       const count = quantity(line.quantity);
       totals.set(line.key, quantity((totals.get(line.key) || 0) + count));
     }
-    return [...totals].filter(([, count]) => count > 0).map(([key, count]) => ({key, quantity: count}));
+    return [...totals].filter(([key, count]) => count > 0 && !retiredKeys.has(key))
+      .map(([key, count]) => ({key, quantity: count}));
   }
 
   function hasParent(lines, parentKey, catalogue) {

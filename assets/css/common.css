@@ -1411,52 +1411,6 @@ screen and (min-width: 768px) {
   }
 }
 
-.c-breadcrumbs {
-  width: 100%;
-  font-size: .625rem;
-  line-height: 1;
-  padding: 10px 15px;
-  border-top: solid 1px #f5f8fa;
-  text-overflow: ellipsis;
-  word-break: keep-all;
-  white-space: nowrap;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
-.c-breadcrumbs__item {
-  display: inline-flex;
-  align-items: center;
-  color: #88929b
-}
-
-.c-breadcrumbs__item:not(:last-of-type) {
-  color: #005bac
-}
-
-.c-breadcrumbs__item:not(:last-of-type)::after {
-  content: url("/assets/images/common-parts/icon/breadcrumbs-arrow.svg");
-  display: inline-block;
-  width: 8px;
-  height: 9px;
-  margin-inline: 12px
-}
-
-.c-breadcrumbs__item:last-of-type {
-  pointer-events: none
-}
-
-.c-breadcrumbs__link {
-  display: block;
-  transition: opacity .3s
-}
-
-@media(hover: hover) {
-  .c-breadcrumbs__link:not(.is-disabled-hover):hover {
-    opacity: .75
-  }
-}
-
 .c-checkbox {
   display: inline-flex;
   gap: 8px;
