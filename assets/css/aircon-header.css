@@ -173,7 +173,7 @@ html {
   outline-offset: 3px;
 }
 
-@media (min-width: 901px) {
+@media (min-width: 768px) {
   .c-header-contact {
     --aircon-phone-inset: 52px;
     grid-template-columns: clamp(138px, 14.6vw, 204px) max-content max-content;
@@ -874,7 +874,7 @@ body.aircon-menu-open .c-header__navigation {
 
 @media (max-width: 767.98px) {
   html {
-    --aircon-header-height: 148px;
+    --aircon-header-height: 202px;
     --aircon-mobile-menu-size: clamp(48px, 12vw, 56px);
     --aircon-mobile-menu-right: calc(37px - var(--aircon-mobile-menu-size) / 2);
   }
@@ -923,6 +923,15 @@ body.aircon-menu-open .c-header__navigation {
     align-items: center;
     gap: 5px 10px;
     transform: none;
+  }
+
+  .c-header-contact__cta {
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+    height: 40px;
+    margin-top: 4px;
   }
 
   .c-header-contact__telephone {
@@ -1047,7 +1056,7 @@ body.aircon-menu-open .c-header__navigation {
 
 @media (max-width: 360px) {
   html {
-    --aircon-header-height: 148px;
+    --aircon-header-height: 202px;
   }
 
   .c-header-contact {
@@ -1089,12 +1098,14 @@ body.aircon-menu-open .c-header__navigation {
 
 @media (min-width: 375px) and (max-width: 767.98px) {
   html {
-    --aircon-header-height: 96px;
+    --aircon-header-height: 144px;
   }
 
   .c-header {
     display: grid;
     grid-template-columns: clamp(126px, 33vw, 146px) minmax(0, 1fr) clamp(48px, 12vw, 56px);
+    grid-template-rows: 96px;
+    align-content: start;
     align-items: center;
     padding-right: var(--aircon-mobile-menu-right);
     gap: 4px;
@@ -1128,6 +1139,17 @@ body.aircon-menu-open .c-header__navigation {
   .c-header-contact__payment {
     width: 28px;
     height: 22px;
+  }
+
+  .c-header-contact__cta {
+    position: absolute;
+    left: 12px;
+    right: var(--aircon-mobile-menu-right);
+    bottom: 8px;
+    grid-column: auto;
+    grid-row: auto;
+    width: auto;
+    margin-top: 0;
   }
 
   .c-header-contact__telephone {
