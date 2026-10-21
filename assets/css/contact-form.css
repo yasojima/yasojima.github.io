@@ -108,22 +108,27 @@ main.cch-contact {
 
 .cch-contact__consent {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 32px;
+  gap: 6px;
+  margin-top: 20px;
 }
 
 .cch-contact__consent input {
-  flex: 0 0 20px;
-  width: 20px;
-  height: 20px;
-  margin: 4px 0 0;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  appearance: auto;
   accent-color: #005bac;
   cursor: pointer;
 }
 
 .cch-contact__consent label {
+  padding-block: 4px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -134,23 +139,30 @@ main.cch-contact {
 }
 
 .cch-contact a:focus-visible,
-.cch-contact__button:focus-visible {
+.cch-contact__button:focus-visible,
+.cch-contact__submit:focus-visible {
   outline: 3px solid #153962;
   outline-offset: 4px;
 }
 
 .cch-contact__challenge {
-  width: 300px;
-  max-width: 100%;
-  min-height: 65px;
-  margin: 24px auto 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 58px;
+  margin: 12px auto 0;
   line-height: 0;
 }
 
+.cch-contact__challenge > div {
+  flex-shrink: 0;
+  zoom: .88;
+}
+
 .cch-contact__status {
-  margin: 16px 0 0;
-  font-size: 14px;
-  line-height: 1.8;
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
   text-align: center;
 }
 
@@ -167,7 +179,13 @@ main.cch-contact {
 .cch-contact__actions {
   display: flex;
   justify-content: center;
-  margin-top: 28px;
+  margin-top: 20px;
+}
+
+.cch-contact__submit {
+  max-width: 320px;
+  min-height: 48px;
+  cursor: pointer;
 }
 
 .cch-contact__button {
@@ -267,15 +285,6 @@ main.cch-contact {
 
   .cch-contact__message {
     min-height: 200px;
-  }
-
-  .cch-contact__consent {
-    margin-top: 28px;
-    gap: 8px;
-  }
-
-  .cch-contact__consent input {
-    margin-top: 3px;
   }
 
   .cch-contact__button {
