@@ -115,7 +115,7 @@
       if (!pending) notify('送信の準備をしています。');
       function render() {
         widget = env.turnstile.render(mount, {sitekey: settings.turnstileSiteKey, action: 'contact', language: 'ja',
-          size: mount.clientWidth < 300 ? 'compact' : 'normal', appearance: 'interaction-only',
+          size: 'compact', appearance: 'interaction-only',
           callback: value => { token = value; if (!busy && !pending) notify(''); ready(); },
           'expired-callback': () => { token = ''; ready(); },
           'error-callback': () => { token = ''; notify('送信の準備を確認できません。ページを再読み込みしてください。', true); ready(); }});
