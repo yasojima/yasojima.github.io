@@ -25,9 +25,24 @@
         if (selector && cards) {
           set(frame, '--selector-cards-height', 'none');
           set(frame, '--first-view-selector-space', px(36));
+          const offset = parseFloat(frame.style.getPropertyValue('--selector-cards-offset')) || 0;
+          const bounds = [...cards.children].map(card => card.getBoundingClientRect())
+            .filter(rect => rect.width > 0 && rect.height > 0);
+          let nextOffset = 0;
+          if (bounds.length) {
+            const firstTop = Math.min(...bounds.map(rect => rect.top));
+            const rowHeight = Math.max(...bounds.filter(rect => Math.abs(rect.top - firstTop) < 1)
+              .map(rect => rect.bottom - firstTop));
+            const documentTop = firstTop + window.scrollY - offset;
+            if (documentTop + rowHeight > window.innerHeight) {
+              nextOffset = Math.max(0, window.innerHeight + 24 - documentTop);
+            }
+          }
+          set(frame, '--selector-cards-offset', px(nextOffset));
         }
         return;
       }
+      frame.style.removeProperty('--selector-cards-offset');
       const minimum = parseFloat(style.getPropertyValue('--banner-min-height'));
       const maximum = parseFloat(style.getPropertyValue('--banner-preferred-height'));
       const reserved = parseFloat(style.getPropertyValue('--first-view-selector-reserve'));
