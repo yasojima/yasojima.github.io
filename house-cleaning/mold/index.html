@@ -22,7 +22,11 @@ body.c-mold-lp>main#mold-story{width:100%;margin:0;padding:0}
 body.c-mold-lp #cch-first-lp{overflow:clip;background:#fff;scroll-margin-top:144px}
 body.c-mold-lp #cch-first-lp .lp-canvas>.cta-final{margin-top:0}
 body.c-mold-lp #cch-first-lp .lp-backdrop-estimate .lp-backdrop-join{display:none}
-@media(max-width:600px){.mold-row{grid-template-columns:1fr}}
+@media(max-width:600px){
+.mold-manga{display:grid;width:calc(100% - 32px);max-width:380px;gap:8px}
+.mold-chapter{display:grid;gap:8px}
+.mold-row{grid-template-columns:1fr;gap:8px}
+}
 @media(max-width:992px){.mold-chapter,.mold-transition,body.c-mold-lp #cch-first-lp{scroll-margin-top:96px}}
 </style>
 <script src="/assets/js/common.js?v=2026100602" defer></script>
