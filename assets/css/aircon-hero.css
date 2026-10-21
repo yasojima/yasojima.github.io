@@ -157,6 +157,33 @@
   .c-lineup-heading--round > .c-lineup-heading__sub-text { font-size: 18px; }
 }
 
+/* Category selectors keep every card in normal document flow. */
+main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards {
+  max-height: none;
+  overflow: visible;
+  overscroll-behavior-y: auto;
+}
+@media screen and (min-width: 768px) {
+  main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards {
+    --selector-columns: 4;
+    grid-template-columns: repeat(var(--selector-columns), minmax(0, 228px));
+  }
+  main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards:has(> a:first-child:last-child) {
+    --selector-columns: 1;
+  }
+  main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards:has(> a:nth-child(2):last-child) {
+    --selector-columns: 2;
+  }
+  main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards:has(> a:nth-child(3):last-child) {
+    --selector-columns: 3;
+  }
+}
+@media screen and (max-width: 767.98px) {
+  main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* Compact category first views prioritize readable artwork and natural page flow. */
 @media screen and (min-width: 768px) and (max-height: 799.98px) {
   main[data-service-layout="shared-v2"] .c-first-view {
@@ -175,8 +202,5 @@
   }
   main[data-service-layout="shared-v2"] .c-first-view .p-page-anchors__cards {
     padding-block-start: var(--selector-cards-offset, 0px);
-    max-height: none;
-    overflow: visible;
-    overscroll-behavior-y: auto;
   }
 }
