@@ -1007,43 +1007,101 @@ body.c-beginner-lp #cch-first-lp .lp-comparison-manga-cta .lp-reference-estimate
   }
 }
 
-/* Keep keyboard focus on the visible handle rather than its full-height hit area. */
-body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control {
-  outline: 0;
+/* Service comparison controls retain the native proportions of the LP photos. */
+body.c-beginner-lp #cch-first-lp [data-before-after].c-aircon-compare {
+  aspect-ratio: 750 / 433;
 }
-body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control-line:first-child {
-  position: absolute;
-  top: 0;
+body.c-beginner-lp #cch-first-lp :is(#first-cases, .lp-closing-results, .lp-bath-comparison) .c-tab {
+  width: 100%;
+  max-width: 750px;
+  margin-inline: auto;
+  font-family: "Noto Sans JP", sans-serif;
+}
+body.c-beginner-lp #cch-first-lp :is(#first-cases, .lp-closing-results, .lp-bath-comparison) .c-tab__buttons {
+  gap: 12px;
+  margin: 0;
+  padding-bottom: 11px;
+}
+body.c-beginner-lp #cch-first-lp :is(#first-cases, .lp-closing-results, .lp-bath-comparison) .c-tab__button {
+  padding: 0 12px;
+  font-size: 16px;
+  line-height: 1.8;
+  letter-spacing: normal;
+}
+body.c-beginner-lp #cch-first-lp :is(#first-cases, .lp-closing-results, .lp-bath-comparison) .c-tab__panels {
+  margin-top: 24px;
+}
+body.c-beginner-lp #cch-first-lp :is(#first-cases, .lp-closing-results, .lp-bath-comparison) .c-compare-image-tab__text {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.8;
+  text-align: left !important;
+}
+body.c-beginner-lp #cch-first-lp .lp-opening-portrait::before {
+  height: calc(var(--lp-opening-plate-height) * .515);
+}
+body.c-beginner-lp #cch-first-lp .lp-opening-portrait h1 {
+  height: calc(var(--lp-opening-plate-height) * .515);
+}
+body.c-beginner-lp #cch-first-lp .lp-opening-portrait #first-cases {
+  position: relative;
+  inset: auto;
+  width: auto;
+  margin: 0;
+  padding: 0 16px;
+}
+body.c-beginner-lp #cch-first-lp #first-concerns .lp-closing-results,
+body.c-beginner-lp #cch-first-lp #first-bath-results .lp-bath-comparison {
+  padding-inline: 16px;
+}
+body.c-beginner-lp #cch-first-lp .lp-opening-tail {
+  position: relative;
+  width: 100vw;
   left: 50%;
-  height: 100%;
   transform: translateX(-50%);
-  z-index: 0;
-  box-shadow: none !important;
+  height: calc(var(--lp-opening-plate-height) * (.937 - 1100 / 1544) + var(--lp-opening-button-height) / 2 + 32px);
+  margin-top: 16px;
+  background: url('/assets/images/first-lp/art/opening-wide.png') center calc(var(--lp-opening-plate-height) * -1100 / 1544) / var(--lp-opening-plate-width) auto no-repeat;
 }
-body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control-line:last-child {
-  display: none;
-}
-body.c-beginner-lp #cch-first-lp [data-before-after] .icv__theme-wrapper {
-  top: 50%;
-  left: 50%;
-  width: 72px;
-  height: 56px;
-  border-radius: 28px;
-  background: #fff;
-  box-shadow: 0 0 15px rgba(0, 0, 0, .2);
-  transform: translate(-50%, -50%);
-}
-body.c-beginner-lp #cch-first-lp [data-before-after] .icv__control:focus-visible .icv__theme-wrapper {
-  outline: 3px solid #005bac;
-  outline-offset: 3px;
-}
-body.c-beginner-lp #cch-first-lp [data-before-after] .icv__arrow-wrapper::before {
-  background-color: #005bac;
+body.c-beginner-lp #cch-first-lp .lp-opening-tail .lp-opening-actions {
+  top: calc(var(--lp-opening-plate-height) * (.937 - 1100 / 1544));
 }
 @media (max-width: 767.98px) {
-  body.c-beginner-lp #cch-first-lp [data-before-after] .icv__theme-wrapper {
-    width: 36px;
-    height: 28px;
-    border-radius: 14px;
+  body.c-beginner-lp #cch-first-lp .lp-opening-portrait h1 {
+    height: calc(990 / 757 * 100cqw);
+  }
+  body.c-beginner-lp #cch-first-lp .lp-opening-portrait #first-cases {
+    position: relative;
+    inset: auto;
+    width: auto;
+    margin: 0;
+    padding: 0 16px;
+  }
+  body.c-beginner-lp #cch-first-lp #first-concerns .lp-closing-results,
+  body.c-beginner-lp #cch-first-lp #first-bath-results .lp-bath-comparison {
+    padding-inline: 16px;
+  }
+  body.c-beginner-lp #cch-first-lp :is(#first-cases, .lp-closing-results, .lp-bath-comparison) .c-tab__button {
+    min-height: 48px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  body.c-beginner-lp #cch-first-lp :is(#first-cases, .lp-closing-results, .lp-bath-comparison) .c-compare-image-tab__text {
+    font-size: 14px;
+  }
+  /* The image's blank band becomes a flow slot so text cannot cover the price artwork. */
+  body.c-beginner-lp #cch-first-lp .lp-opening-tail {
+    position: relative;
+    display: block;
+    width: 100%;
+    left: auto;
+    transform: none;
+    height: calc((2078 * .894 - 1450) / 757 * 100cqw + var(--lp-opening-button-height) + 20px);
+    margin-top: 16px;
+    background: url('/assets/images/first-lp/art/opening-integrated.webp?v=d22dc0ebbf') center calc(-1450 / 757 * 100cqw) / 100% auto no-repeat;
+  }
+  body.c-beginner-lp #cch-first-lp .lp-opening-tail .lp-opening-actions {
+    top: calc((2078 * .894 - 1450) / 757 * 100cqw);
   }
 }
