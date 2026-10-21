@@ -17,7 +17,8 @@
       if (!hero) return;
       const budget = Math.max(0, Math.min(window.innerHeight, 800) - headerHeight - 16);
       const style = getComputedStyle(frame);
-      const naturalFlow = frame.closest('main[data-service-layout="shared-v2"]') &&
+      const sharedService = Boolean(frame.closest('main[data-service-layout="shared-v2"]'));
+      const naturalFlow = sharedService &&
         style.getPropertyValue('--first-view-natural-flow').trim() === '1';
       if (naturalFlow) {
         frame.style.removeProperty('--banner-height');
@@ -51,6 +52,10 @@
       set(frame, '--banner-height', px(bannerHeight));
       if (!selector || !cards) return;
       set(frame, '--selector-cards-height', 'none');
+      if (sharedService) {
+        set(frame, '--first-view-selector-space', px(window.innerWidth < 768 ? 24 : 36));
+        return;
+      }
       const measure = space => {
         set(frame, '--first-view-selector-space', px(space));
         return selector.getBoundingClientRect().height;
