@@ -10,6 +10,13 @@
   const route = location.pathname.replace(/index\.html$/, '').replace(/\/?$/, '/');
   const quick = route.startsWith('/quick_cart/') && route !== '/quick_cart/option/';
   const bindings = new Map();
+  const boundCarousels = new WeakSet();
+  const cartStatus = document.querySelector('[data-cart-status]') || document.createElement('p');
+  cartStatus.className = 'cch-cart-toast';
+  cartStatus.setAttribute('role', 'status');
+  cartStatus.setAttribute('aria-atomic', 'true');
+  if (!cartStatus.isConnected) document.body.append(cartStatus);
+  let toastTimer;
   const cards = [...document.querySelectorAll('.js-product-card')];
   for (const binding of catalogue.pages[route] || []) {
     const card = cards[binding.index];
@@ -94,21 +101,15 @@
     if (dialog?.open) dialog.close();
   }
 
-  function addedItemMarkup(entry, result) {
-    const line = result.details.find(line => line.key === entry.key);
-    const item = line.item;
-    const unit = escape(item.unit);
-    const discount = item.quote ? 0 : item.tiers[0].price - line.unitPrice;
-    return `<div class="c-add-cart__item c-add-cart-item">
-      <h3 class="c-bullet-heading c-add-cart-item__name">${escape(item.name)}</h3>
-      <dl class="c-add-cart-item__details">
-        <div class="c-add-cart-item__detail"><dt class="c-add-cart-item__term">価格:</dt><dd class="c-add-cart-item__price">${item.quote ? '<p class="c-add-cart-item-price-text">別途見積り</p>' : `<p class="c-add-cart-item-price${item.approximate ? '-text' : ''}" data-unit="${unit}">${item.approximate ? '¥' : ''}${format(item.tiers[0].price)}${item.approximate ? `〜（税込）／${unit}` : ''}</p>`}</dd></div>
-        ${discount ? `<div class="c-add-cart-item__detail"><dt class="c-add-cart-item__term c-add-cart-item__term--discount">数量割引:</dt><dd class="c-add-cart-item__discount">−¥${format(discount)}（税込）／${unit}</dd></div>` : ''}
-        <div class="c-add-cart-item__detail"><dt class="c-add-cart-item__term">数量：</dt><dd class="c-add-cart-item__quantity">${entry.quantity}</dd></div>
-      </dl></div>`;
+  function showAddedToast() {
+    clearTimeout(toastTimer);
+    cartStatus.textContent = 'カートに追加しました';
+    toastTimer = setTimeout(() => { cartStatus.textContent = ''; }, 5000);
   }
 
-  function show(message, added = [], parentRequired = false) {
+  function show(message, parentRequired = false) {
+    clearTimeout(toastTimer);
+    cartStatus.textContent = '';
     let dialog = document.getElementById('cch-cart-dialog');
     if (!dialog) {
       dialog = document.createElement('dialog');
@@ -125,19 +126,66 @@
       document.body.append(dialog);
     }
     triggerBeforeDialog = document.activeElement;
-    const result = core.calculate(lines, catalogue);
     dialog.innerHTML = `<div class="c-modal__backdrop" data-cart-close></div><div class="c-modal__main">
       <button class="c-modal-closer" type="button" data-cart-close aria-label="モーダルを閉じる">モーダルを閉じる</button>
-      <div class="c-add-cart"><h2 class="c-add-cart__heading" id="cch-cart-dialog-title">${added.length ? 'カートに追加しました！' : 'ご確認ください'}</h2>
-      ${added.length ? `<div class="c-add-cart__items">${added.map(entry => addedItemMarkup(entry, result)).join('')}</div>
-      <a class="c-cart-confirm-button c-add-cart__button" href="/cart/" aria-label="カートを見る（${result.count}点）"><span class="c-cart-confirm-button__text" data-cart-count="${result.count}">カートを見る</span></a>` : `<p class="cch-cart-dialog__message${parentRequired ? ' cch-cart-dialog__message--parent-required' : ''}">${escape(message)}</p>`}
+      <div class="c-add-cart"><h2 class="c-add-cart__heading" id="cch-cart-dialog-title">ご確認ください</h2>
+      <p class="cch-cart-dialog__message${parentRequired ? ' cch-cart-dialog__message--parent-required' : ''}">${escape(message)}</p>
       <button type="button" class="c-add-cart__close-button" data-cart-close>閉じる</button></div></div>`;
     document.body.classList.add('cch-cart-dialog-open');
     if (!dialog.open) dialog.showModal();
   }
 
   function showError(error) {
-    show(error.message, [], error.code === 'parent_service_required');
+    show(error.message, error.code === 'parent_service_required');
+  }
+
+  function cartNodeKey(node) {
+    if (node.nodeType !== 1) return null;
+    for (const attribute of ['id', 'data-cart-line', 'data-cart-option', 'data-cart-disclosure', 'data-cart-carousel']) {
+      if (node.hasAttribute(attribute)) return attribute + ':' + node.getAttribute(attribute);
+    }
+    return null;
+  }
+
+  // Retain live controls and open disclosures so updates never collapse the page.
+  function syncCartChildren(current, next) {
+    const keyed = new Map([...current.childNodes].map(node => [cartNodeKey(node), node]).filter(([key]) => key));
+    [...next.childNodes].forEach((node, index) => {
+      const key = cartNodeKey(node);
+      const position = current.childNodes[index];
+      let existing = key ? keyed.get(key) : position;
+      if (!existing || existing.nodeName !== node.nodeName || cartNodeKey(existing) !== key) {
+        current.insertBefore(node.cloneNode(true), position || null);
+        return;
+      }
+      if (existing !== position) current.insertBefore(existing, position || null);
+      if (existing.isEqualNode(node)) return;
+      if (node.nodeType === 3) { existing.textContent = node.textContent; return; }
+      if (node.nodeType !== 1) return;
+      for (const attribute of [...existing.attributes]) {
+        if (existing.tagName === 'DETAILS' && attribute.name === 'open') continue;
+        if (!node.hasAttribute(attribute.name)) existing.removeAttribute(attribute.name);
+      }
+      for (const attribute of node.attributes) {
+        if (existing.getAttribute(attribute.name) !== attribute.value) existing.setAttribute(attribute.name, attribute.value);
+      }
+      syncCartChildren(existing, node);
+    });
+    while (current.childNodes.length > next.childNodes.length) current.lastChild.remove();
+  }
+
+  function renderCartMarkup(mount, markup) {
+    const next = document.createElement('div');
+    next.innerHTML = markup;
+    syncCartChildren(mount, next);
+  }
+
+  function addOptionWithoutMoving(button, key, count) {
+    const top = button.getBoundingClientRect().top;
+    update(key, count, true);
+    const delta = button.getBoundingClientRect().top - top;
+    if (Math.abs(delta) > .5) window.scrollBy({top: delta, behavior: 'instant'});
+    showAddedToast();
   }
 
   function quantityInput(line, removable = true) {
@@ -257,7 +305,7 @@
     }).join('');
     const beforeTax = (result.total + result.discount) - Math.floor((result.total + result.discount) * catalogue.taxRate / (100 + catalogue.taxRate));
     const discount = beforeTax - result.subtotal;
-    mount.innerHTML = `<div class="cart"><div class="cart__contents"><ul class="cart-contents cch-cart-lines">${grouped}</ul></div>
+    renderCartMarkup(mount, `<div class="cart"><div class="cart__contents"><ul class="cart-contents cch-cart-lines">${grouped}</ul></div>
       <aside class="cart__price-info" aria-label="お見積り金額"><div class="price-info-card"><h3 class="price-info-card__heading price-info-card-heading">現在 <span class="price-info-card-heading__count">${result.count}点</span> のメニューが入っています</h3>
       <div class="price-info-card__detail"><dl class="price-description"><dt class="price-description__term">合計金額（税抜）：</dt><dd class="price-description__price" data-cart-subtotal-before>${format(beforeTax)}</dd></dl>
       ${discount ? `<div class="discount-description is-show"><dl class="discount-description__main price-description"><dt class="price-description__term">数量割引（税抜）：</dt><dd class="price-description__price">${format(discount)}</dd></dl>
@@ -267,16 +315,19 @@
       <dl class="price-info-card__total-amount total-amount"><dt class="c-label-tag c-label-tag--pill-shape total-amount__term">合計金額（税込）</dt><dd class="total-amount__price" data-cart-total>${totalLabel(result)}</dd></dl>
       ${result.approximate ? '<p class="cch-cart-note">「〜」の付いたサービスは表示料金をもとにした概算です。</p>' : ''}
       ${result.quoteCount ? '<p class="cch-cart-note">別途見積りの商品は上記の合計金額に含まれていません。</p>' : ''}</div>
-      <div class="action-buttons u-mt-32_36 cch-cart-sidebar-actions">${checkoutButton()}<a class="c-button c-button--large action-buttons__button" href="/#home-cleaning-list"><span class="c-button__text">メニューに戻る</span><span class="c-icon c-icon--circle-caret-right c-button__icon"></span></a></div></aside></div>`;
+      <div class="action-buttons u-mt-32_36 cch-cart-sidebar-actions">${checkoutButton()}<a class="c-button c-button--large action-buttons__button" href="/#home-cleaning-list"><span class="c-button__text">メニューに戻る</span><span class="c-icon c-icon--circle-caret-right c-button__icon"></span></a></div></aside></div>`);
     renderRecommendations(parentGroups);
     for (const node of document.querySelectorAll('[data-cart-disclosure]')) node.open = open.has(node.dataset.cartDisclosure);
     for (const node of document.querySelectorAll('.cch-cart-option-card select')) if (selections.has(node.id)) node.value = selections.get(node.id);
     for (const track of document.querySelectorAll('[data-cart-carousel]')) {
       track.scrollLeft = scroll.get(track.dataset.cartCarousel) || 0;
       syncCarousel(track);
-      track.addEventListener('scroll', () => syncCarousel(track), {passive: true});
+      if (!boundCarousels.has(track)) {
+        track.addEventListener('scroll', () => syncCarousel(track), {passive: true});
+        boundCarousels.add(track);
+      }
     }
-    if (activeId) document.getElementById(activeId)?.focus({preventScroll: true});
+    if (activeId && document.activeElement?.id !== activeId) document.getElementById(activeId)?.focus({preventScroll: true});
   }
 
   function renderRecommendations(parents) {
@@ -292,7 +343,7 @@
         <button type="button" class="product-slider-next-button cch-cart-carousel-arrow cch-cart-carousel-arrow--next" data-cart-slide="${escape(key)}" data-direction="1" aria-controls="${id}" aria-label="${escape(item.name)}の次のオプション"></button></div></section>`;
     }).join('');
     mount.hidden = !groups;
-    mount.innerHTML = groups ? `<div class="cch-cart-recommendations__inner"><h2 id="cart-options-heading">カートに入れたサービスにオススメのオプション</h2>${groups}</div>` : '';
+    renderCartMarkup(mount, groups ? `<div class="cch-cart-recommendations__inner"><h2 id="cart-options-heading">カートに入れたサービスにオススメのオプション</h2>${groups}</div>` : '');
   }
 
   function syncCarousel(track) {
@@ -371,7 +422,7 @@
     const count = countFor(card);
     if (!count) throw new Error('数量を選択してください。');
     update(key, count, true);
-    show('', [{key, quantity: count}]);
+    showAddedToast();
   }
 
   function addOffice() {
@@ -384,7 +435,7 @@
     entries.sort((a, b) => Number(Boolean(catalogue.items[a.key].parentKey)) - Number(Boolean(catalogue.items[b.key].parentKey)));
     for (const entry of entries) next = core.change(next, entry.key, entry.quantity, catalogue, true);
     commit(next);
-    show('', entries);
+    showAddedToast();
   }
 
   for (const button of document.querySelectorAll('.js-add-cart, #js-add-cart')) {
@@ -426,8 +477,7 @@
       } else if (button.hasAttribute('data-cart-add-option')) {
         const key = button.dataset.cartAddOption;
         const count = button.closest('.cch-cart-option-card').querySelector('select').value;
-        update(key, count, true);
-        document.querySelector('[data-cart-status]').textContent = `${catalogue.items[key].name}を${count}点追加しました。`;
+        addOptionWithoutMoving(button, key, count);
       } else if (button.hasAttribute('data-cart-remove')) update(button.dataset.cartRemove, 0);
       else if (button.matches('.js-counter-button')) {
         const input = document.getElementById(button.getAttribute('aria-controls'));

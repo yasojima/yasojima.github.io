@@ -73,9 +73,9 @@
       let notice;
       try { notice = JSON.parse(document.querySelector('#cch-contact-content').textContent); } catch { return; }
       title.textContent = '送信が完了しました。';
-      message.textContent = notice.message;
-      for (const [name, text] of [['hours', '受付時間 ' + notice.hours], ['days', notice.days],
-        ['reply', 'ご入力いただいたメールアドレスへ、受付完了メールをお送りしました。']]) {
+      message.textContent = notice.message.replace(/。(?!$)/g, '。\n');
+      for (const [name, text] of [['hours', '受付時間' + notice.hours], ['days', notice.days],
+        ['reply', '入力いただいたメールアドレスへ、\n受付完了メールをお送りしました。']]) {
         const element = complete.querySelector('[data-contact-complete-' + name + ']');
         element.textContent = text; element.hidden = false;
       }

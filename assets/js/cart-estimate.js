@@ -2,18 +2,19 @@
   'use strict';
   const fieldNames = ['last-name', 'first-name', 'last-name_kana', 'first-name_kana', 'email',
     'tel_01', 'tel_02', 'tel_03', 'postal-code_01', 'postal-code_02', 'address_01', 'address_02',
-    'address_03', 'address_04', 'separate-address', 'service_postal-code_01', 'service_postal-code_02',
-    'service_address_01', 'service_address_02', 'service_address_03', 'service_address_04', 'preferred-date', 'preferred-time', 'notes', 'privacy', 'mail-consent'];
+    'address_03', 'preferred-date', 'preferred-time', 'notes', 'privacy', 'mail-consent'];
+  const storedFieldNames = [...fieldNames, 'address_04', 'separate-address', 'service_postal-code_01', 'service_postal-code_02',
+    'service_address_01', 'service_address_02', 'service_address_03', 'service_address_04'];
 
   function record(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
 
   function normalizeDraft(value) {
     if (!record(value) || value.version !== 1 || !record(value.fields)) return null;
     const fields = {}, display = {};
-    for (const name of fieldNames) {
+    for (const name of storedFieldNames) {
       if (!Object.hasOwn(value.fields, name)) continue;
       const text = value.fields[name];
-      if (typeof text !== 'string' || text.length > (name === 'notes' ? 2000 : 120)) return null;
+      if (typeof text !== 'string' || text.length > (name === 'notes' ? 2000 : name === 'address_03' ? 241 : 120)) return null;
       if (name === 'preferred-date' && text && (!/^\d{4}-\d{2}-\d{2}$/.test(text) || !Number.isFinite(Date.parse(text + 'T00:00:00Z')) || new Date(text + 'T00:00:00Z').toISOString().slice(0, 10) !== text)) return null;
       if (name === 'preferred-time' && !['', '指定なし', '午前', '午後', '夕方以降'].includes(text)) return null;
       if (['privacy', 'separate-address', 'mail-consent'].includes(name) && text !== 'on') return null;
@@ -28,6 +29,19 @@
         display[name] = text;
       }
     }
+    return {version: 1, fields, display};
+  }
+
+  function editableDraft(value) {
+    const draft = normalizeDraft(value);
+    if (!draft) return null;
+    const fields = {...draft.fields}, display = {...draft.display};
+    const prefix = fields['separate-address'] === 'on' ? 'service_' : '';
+    for (const name of ['postal-code_01', 'postal-code_02', 'address_01', 'address_02']) fields[name] = draft.fields[prefix + name] || '';
+    fields.address_03 = [draft.fields[prefix + 'address_03'], draft.fields[prefix + 'address_04']].filter(Boolean).join(' ');
+    if (prefix) display.address_01 = display.service_address_01 || '';
+    delete display.service_address_01;
+    for (const name of Object.keys(fields)) if (!fieldNames.includes(name)) delete fields[name];
     return {version: 1, fields, display};
   }
 
@@ -78,7 +92,7 @@
   }
 
   function sameContents(receipt, draft, lines) {
-    const fields = value => Object.fromEntries(fieldNames.filter(name => name !== 'mail-consent' && value[name]).sort().map(name => [name, value[name]]));
+    const fields = value => Object.fromEntries(storedFieldNames.filter(name => name !== 'mail-consent' && value[name]).sort().map(name => [name, value[name]]));
     const orderedLines = value => value.map(line => ({key: line.key, quantity: line.quantity})).sort((a, b) => a.key.localeCompare(b.key));
     return JSON.stringify(fields(receipt.fields)) === JSON.stringify(fields(draft.fields)) &&
       JSON.stringify(orderedLines(receipt.lines)) === JSON.stringify(orderedLines(lines));
@@ -89,7 +103,7 @@
   }
 
   if (typeof module === 'object' && module.exports) {
-    module.exports = {normalizeDraft, normalizeReceipt, normalizeDelivery, sameRequest};
+    module.exports = {normalizeDraft, normalizeReceipt, normalizeDelivery, sameRequest, editableDraft};
     return;
   }
 
@@ -166,7 +180,7 @@
       ['Eメールアドレス', f.email || ''],
       ['電話番号', [f.tel_01,f.tel_02,f.tel_03].join('-')],
       ['ご住所', address('')],
-      ['サービスご提供先', f['separate-address'] === 'on' ? address('service_') : '上記のご住所と同じ'],
+      ...(f['separate-address'] === 'on' ? [['サービスご提供先', address('service_')]] : []),
       ['ご希望日', f['preferred-date'] || '指定なし'],
       ['ご希望時間帯', f['preferred-time'] || '指定なし'],
       ['備考', f.notes || 'なし'],
@@ -180,7 +194,7 @@
     const required = ['last-name','first-name','last-name_kana','first-name_kana','email','tel_01','tel_02','tel_03',
       'postal-code_01','postal-code_02','address_01','address_02','address_03'];
     if (f['separate-address'] === 'on') required.push('service_postal-code_01','service_postal-code_02','service_address_01','service_address_02','service_address_03');
-    return required.every(name => typeof f[name] === 'string' && f[name].trim() && f[name].length <= 120);
+    return required.every(name => typeof f[name] === 'string' && f[name].trim() && f[name].length <= (name === 'address_03' ? 241 : 120));
   }
 
   function guard() {
@@ -202,17 +216,9 @@
     }
   }
 
-  function toggleAddress() {
-    const enabled = form.elements['separate-address'].checked;
-    const section = form.querySelector('.service-address__contents');
-    section.hidden = !enabled;
-    section.style.display = enabled ? 'block' : 'none';
-    section.querySelectorAll('input,select').forEach(input => { input.disabled = !enabled; });
-  }
-
   if (form && guard()) {
     let draft;
-    try { draft = readSaved(key); }
+    try { draft = editableDraft(readSaved(key)); }
     catch { showError(form, '入力内容を保存できません。ブラウザの保存設定をご確認ください。'); }
     for (const input of form.querySelectorAll('input[name],select[name],textarea[name]')) {
       if (draft?.fields && Object.hasOwn(draft.fields, input.name)) {
@@ -226,8 +232,6 @@
       today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
       preferredDate.min = today.toISOString().slice(0, 10);
     }
-    toggleAddress();
-    form.elements['separate-address'].addEventListener('change', toggleAddress);
     form.querySelector('[type="submit"]').disabled = !storage || deliveryUnavailable;
     if (deliveryUnavailable) showError(form, '現在、見積もり依頼の送信設定を確認中です。しばらくしてから再度ご利用ください。');
     form.addEventListener('submit', event => {
@@ -427,10 +431,10 @@
   if (connected) {
     if (form) {
       document.querySelectorAll('.cch-estimate-notice').forEach(node => {
-        node.textContent = '無料見積もりを依頼できます。訪問日時・最終料金は担当者より改めてご連絡いたします。';
+        node.textContent = '無料見積もりを依頼できます。\n\n訪問日時・最終料金は担当者より改めてご連絡いたします。';
       });
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
-      form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
+      form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面にて送信に同意後、お客様の受信ボックスに自動応答メールが届きます。';
       form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金のご案内は担当者より改めてご連絡いたします。';
     }
   }
