@@ -19,6 +19,7 @@
 }
 
 .cch-estimate [data-estimate-complete] { padding-block: 40px; }
+.cch-estimate-notice { white-space: pre-line; }
 
 @media print {
   .cch-estimate .action-buttons,
