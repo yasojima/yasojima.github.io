@@ -29,21 +29,53 @@
 }
 
 .cch-estimate-review dd { white-space: pre-wrap; overflow-wrap: anywhere; }
-.cch-estimate-mail-consent { margin-top: 24px; line-height: 1.8; }
+.cch-estimate-mail-consent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+.cch-estimate-mail-consent input {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  appearance: auto;
+  accent-color: #005bac;
+  cursor: pointer;
+}
+.cch-estimate-mail-consent label {
+  padding-block: 4px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cch-estimate-mail-consent input:focus-visible {
+  outline: 3px solid #005bac;
+  outline-offset: 3px;
+}
 .cch-estimate-challenge {
-  width: 300px;
-  min-height: 65px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 58px;
+  margin: 12px auto 0;
   line-height: 0;
-  margin-top: 16px;
+}
+.cch-estimate-challenge > div {
+  flex-shrink: 0;
   zoom: .88;
 }
 .cch-estimate [data-estimate-challenge-status] {
-  max-width: 264px;
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   color: #62717d;
   font-size: 12px;
   line-height: 1.6;
+  text-align: center;
 }
+.cch-estimate [data-estimate-challenge-status]:empty { display: none; }
 .cch-estimate textarea.c-text-field { width: 100%; resize: vertical; }
 .cch-estimate input[type="date"].c-text-field {
   width: 100%;
