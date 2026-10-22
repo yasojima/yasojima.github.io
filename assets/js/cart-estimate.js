@@ -427,10 +427,10 @@
   if (connected) {
     if (form) {
       document.querySelectorAll('.cch-estimate-notice').forEach(node => {
-        node.textContent = '無料見積もりを依頼できます。訪問日時・最終料金は担当者より改めてご連絡いたします。';
+        node.textContent = '無料見積もりを依頼できます。\n\n訪問日時・最終料金は担当者より改めてご連絡いたします。';
       });
       for (const [name, length] of Object.entries({'last-name': 50, 'first-name': 50, 'last-name_kana': 80, 'first-name_kana': 80, tel_02: 4, tel_03: 4})) form.elements[name].maxLength = length;
-      form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面で送信に同意後、自動応答メールがお客様に届きます。';
+      form.querySelector('[data-estimate-confirmation-mail]').textContent = '確認画面にて送信に同意後、お客様の受信ボックスに自動応答メールが届きます。';
       form.querySelector('[data-estimate-confirmation-contact]').textContent = '訪問日時・最終料金のご案内は担当者より改めてご連絡いたします。';
     }
   }
