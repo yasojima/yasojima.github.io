@@ -116,6 +116,7 @@
     location.replace('/cart/estimate/confirm/');
     return;
   }
+  const receptionHours = JSON.parse(document.getElementById('cch-reception-hours').textContent);
   const topNotice = document.querySelector('.cch-estimate-notice');
   const key = 'cch-estimate-draft-v1';
   const receiptKey = 'cch-estimate-receipt-v1';
@@ -132,8 +133,11 @@
 
   function setViewState(completed, local = false, focus = false) {
     const heading = document.querySelector('.c-page-heading');
-    const title = completed ? local ? '保存内容の確認' : '見積もり依頼の受付内容' : 'ご入力内容のご確認';
-    if (heading) heading.textContent = title;
+    const title = completed ? local ? '保存内容の確認' : '送信が完了しました。' : 'ご入力内容のご確認';
+    if (heading) {
+      heading.textContent = title;
+      heading.setAttribute('data-estimate-completed', String(completed && !local));
+    }
     document.querySelectorAll('[data-estimate-progress] .cch-estimate-progress__item').forEach((item, index) => {
       if (index === (completed ? 2 : 1)) item.setAttribute('aria-current', 'step');
       else item.removeAttribute('aria-current');
@@ -400,9 +404,16 @@
     }
   }
 
+  function acceptedMessage(metadata) {
+    return `<div class="cch-estimate-completion"><p class="cch-estimate-completion__message">見積もり依頼を受け付けました。<br>担当者からのご連絡を今しばらくお待ちください。</p>
+      <p class="cch-estimate-completion__hours">受付時間${escape(receptionHours.hours)}<br>${escape(receptionHours.days)}</p>
+      <p class="cch-estimate-completion__reply">入力いただいたメールアドレスへ、<br>見積もりの受付完了メールをお送りしました。</p>
+      <div class="cch-estimate-completion__metadata"><p>受付日時：${escape(new Date(metadata.acceptedAt).toLocaleString('ja-JP'))}</p><p>受付番号：${escape(metadata.receiptNumber || metadata.requestId)}</p></div></div>`;
+  }
+
   function renderAccepted(mount, receipt, saveFailed = false, focus = false) {
     setViewState(true, false, focus);
-    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付内容の自動返信メールと店舗への通知を、メール送信サービスで受け付けました。メールの到着まで少しお時間がかかる場合があります。</p><p class="message-box__text">受信箱と迷惑メールフォルダをご確認ください。</p><p class="message-box__text">担当者より改めてご連絡いたします。</p><p class="message-box__text">受付日時：${escape(new Date(receipt.delivery.acceptedAt).toLocaleString('ja-JP'))}</p><p class="message-box__text">受付番号：${escape(receipt.delivery.receiptNumber || receipt.delivery.requestId)}</p></div>
+    mount.innerHTML = `${acceptedMessage(receipt.delivery)}
       ${saveFailed ? '<p class="cch-estimate-error" role="alert">依頼は受け付けましたが、この端末に受付結果を保存できませんでした。この画面を控え、同じ依頼を新たに送信しないでください。</p>' : ''}
       ${summaryMarkup(receipt.summary)}${detailsMarkup(receipt)}<p class="cch-estimate-local-notice">上記の送信データは24時間経過後、保存されず自動的に履歴がリセットされます。尚、お送りいただいた送信済みのメールは削除されないため何卒ご了承ください。</p>
       <div class="action-buttons cch-estimate-accepted-actions"><a class="c-button c-button--fill-blue cch-estimate-accepted-home is-disabled-hover" href="/"><span class="c-button__text">ホームへ戻る</span></a></div>`;
@@ -410,7 +421,7 @@
 
   function renderAcceptedWithoutDetails(mount, metadata) {
     setViewState(true);
-    mount.innerHTML = `<div class="message-box"><h2 class="message-box__heading">見積もり依頼を受け付けました</h2><p class="message-box__text">受付番号：${escape(metadata.receiptNumber || metadata.requestId)}</p><p class="message-box__text">この画面では保存した受付内容を表示できません。受付メールをご確認ください。同じ依頼を新たに送信しないでください。</p></div><div class="action-buttons"><a class="c-button c-button--fill-blue cch-estimate-accepted-home is-disabled-hover" href="/"><span class="c-button__text">ホームへ戻る</span></a></div>`;
+    mount.innerHTML = `${acceptedMessage(metadata)}<p class="cch-estimate-error">この画面では保存した受付内容を表示できません。受付メールをご確認ください。同じ依頼を新たに送信しないでください。</p><div class="action-buttons"><a class="c-button c-button--fill-blue cch-estimate-accepted-home is-disabled-hover" href="/"><span class="c-button__text">ホームへ戻る</span></a></div>`;
   }
 
   function renderLocalSaved(mount, receipt, focus = false) {
