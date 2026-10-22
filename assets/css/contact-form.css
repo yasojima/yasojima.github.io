@@ -185,6 +185,7 @@ main.cch-contact {
 .cch-contact__submit {
   max-width: 320px;
   min-height: 48px;
+  border-radius: 0;
   cursor: pointer;
 }
 
