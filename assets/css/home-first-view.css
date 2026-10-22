@@ -459,7 +459,36 @@
 .home-quick-estimate__toggle:focus-visible { outline-color: #fff; }
 .aircon-menu-open .home-quick-estimate { visibility: hidden; }
 
+.home-first-view__inquiry { display: none; }
 @media (max-width: 767.98px) {
+  .home-first-view__inquiry {
+    position: absolute;
+    z-index: 100;
+    left: 4.17%;
+    top: calc(var(--home-social-top, calc(65% + var(--home-action-size) + 16px)) + var(--home-action-size) / 2);
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: clamp(172px, 46vw, 216px);
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #fff;
+    border-radius: 0;
+    background: transparent;
+    color: #fff;
+    font: 400 clamp(12px, 3vw, 14px)/1.4 "Noto Sans JP", sans-serif;
+    letter-spacing: .1em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .home-first-view__inquiry:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+  }
+  .aircon-menu-open .home-first-view__inquiry,
+  .home-first-view:has(.home-socials.is-open) .home-first-view__inquiry { visibility: hidden; }
   .home-actions { gap: 12px; }
   .home-socials__rail,
   .home-socials__links .c-footer-sns__link { transition: none; }
