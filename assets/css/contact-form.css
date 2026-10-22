@@ -228,6 +228,7 @@ main.cch-contact {
 .cch-contact__complete-message,
 .cch-contact__complete-reply {
   margin: 24px 0 0;
+  white-space: pre-line;
 }
 
 .cch-contact__complete-hours {
