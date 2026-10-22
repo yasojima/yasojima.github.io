@@ -20,6 +20,28 @@
 
 .cch-estimate [data-estimate-complete] { padding-block: 40px; }
 .cch-estimate-notice { white-space: pre-line; }
+.cch-estimate .c-page-heading[data-estimate-completed="true"] {
+  margin-bottom: 0;
+  color: #005bac;
+  font-size: 28px;
+  line-height: 1.6;
+}
+.cch-estimate-completion {
+  padding-block: 8px 24px;
+  color: #243c50;
+  font-size: 16px;
+  line-height: 1.8;
+  text-align: center;
+}
+.cch-estimate-completion__message,
+.cch-estimate-completion__reply { margin: 24px 0 0; }
+.cch-estimate-completion__hours { margin: 16px 0 0; }
+.cch-estimate-completion__metadata { margin-top: 28px; overflow-wrap: anywhere; }
+.cch-estimate-completion__metadata p + p { margin-top: 8px; }
+@media (max-width: 767.98px) {
+  .cch-estimate .c-page-heading[data-estimate-completed="true"] { font-size: 22px; }
+  .cch-estimate-completion { font-size: 14px; }
+}
 
 @media print {
   .cch-estimate .action-buttons,
