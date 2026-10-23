@@ -2,6 +2,36 @@
   const hero = document.querySelector('.home-first-view');
   const header = document.querySelector('.c-header');
   if (!hero || !header) return;
+  const video = hero.querySelector('video');
+  const playback = hero.querySelector('.home-first-view__playback');
+  if (video && playback) {
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let userPaused = reducedMotion.matches;
+    video.muted = true;
+    const updatePlayback = () => {
+      playback.classList.toggle('is-paused', video.paused);
+      playback.setAttribute('aria-label', video.paused ? '動画を再生' : '動画を一時停止');
+    };
+    const playVideo = () => video.play().catch(updatePlayback);
+    playback.addEventListener('click', () => {
+      userPaused = !video.paused;
+      if (userPaused) video.pause();
+      else playVideo();
+    });
+    video.addEventListener('play', updatePlayback);
+    video.addEventListener('pause', updatePlayback);
+    reducedMotion.addEventListener('change', event => {
+      userPaused = event.matches;
+      if (userPaused) video.pause();
+      else playVideo();
+    });
+    new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) video.pause();
+      else if (!userPaused) playVideo();
+    }).observe(hero);
+    if (userPaused) video.pause();
+    updatePlayback();
+  }
   const actions = document.querySelector('.home-actions');
   const menuButton = header.querySelector('.c-header__menu');
   const socials = document.querySelector('.home-socials');
