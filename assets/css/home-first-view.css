@@ -46,46 +46,6 @@
   object-position: center;
 }
 
-.home-first-view__playback {
-  position: absolute;
-  z-index: 100;
-  top: calc(var(--aircon-header-height) + 12px);
-  right: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid #005bac;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 92%);
-  color: #005bac;
-  cursor: pointer;
-}
-.home-first-view__playback span {
-  width: 12px;
-  height: 16px;
-  border-inline: 4px solid currentColor;
-  box-sizing: border-box;
-}
-.home-first-view__playback.is-paused span {
-  width: 0;
-  height: 0;
-  margin-left: 3px;
-  border: 8px solid transparent;
-  border-right: 0;
-  border-left: 12px solid currentColor;
-}
-.home-first-view__playback:focus-visible {
-  outline: 2px solid #005bac;
-  outline-offset: 3px;
-}
-.aircon-menu-open .home-first-view__playback {
-  visibility: hidden;
-}
-
 #home-reasons {
   scroll-margin-top: var(--aircon-header-height);
 }
