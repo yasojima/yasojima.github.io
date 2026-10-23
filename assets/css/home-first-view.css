@@ -46,32 +46,44 @@
   object-position: center;
 }
 
-.home-first-view__placeholder {
+.home-first-view__playback {
+  position: absolute;
+  z-index: 100;
+  top: calc(var(--aircon-header-height) + 12px);
+  right: 16px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  height: 100%;
-  gap: 12px;
-  padding: var(--aircon-header-height) 20px 24px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #005bac;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 92%);
   color: #005bac;
-  text-align: center;
+  cursor: pointer;
 }
-
-.home-first-view__label {
-  font-family: Arial, sans-serif;
-  font-size: clamp(24px, 3.4vw, 48px);
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: .12em;
+.home-first-view__playback span {
+  width: 12px;
+  height: 16px;
+  border-inline: 4px solid currentColor;
+  box-sizing: border-box;
 }
-
-.home-first-view__note {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.6;
-  letter-spacing: .08em;
+.home-first-view__playback.is-paused span {
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border: 8px solid transparent;
+  border-right: 0;
+  border-left: 12px solid currentColor;
+}
+.home-first-view__playback:focus-visible {
+  outline: 2px solid #005bac;
+  outline-offset: 3px;
+}
+.aircon-menu-open .home-first-view__playback {
+  visibility: hidden;
 }
 
 #home-reasons {
@@ -474,17 +486,17 @@
     width: clamp(172px, 46vw, 216px);
     height: 44px;
     padding: 0 16px;
-    border: 1px solid #fff;
+    border: 1px solid #005bac;
     border-radius: 0;
-    background: transparent;
-    color: #fff;
+    background: rgb(255 255 255 / 92%);
+    color: #005bac;
     font: 400 clamp(12px, 3vw, 14px)/1.4 "Noto Sans JP", sans-serif;
     letter-spacing: .1em;
     text-decoration: none;
     white-space: nowrap;
   }
   .home-first-view__inquiry:focus-visible {
-    outline: 2px solid #fff;
+    outline: 2px solid #005bac;
     outline-offset: 4px;
   }
   .aircon-menu-open .home-first-view__inquiry,
