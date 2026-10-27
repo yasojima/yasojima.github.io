@@ -173,9 +173,10 @@ html.cms-display body{overflow-x:auto;overflow-y:hidden}
 :root{--header-control-scale:1.5;--header-title-size:19.554px;--header-meta-size:23px}
 .topbar{position:relative;z-index:110;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(max-content,1fr);gap:16px;padding-top:8px;padding-bottom:8px}
 .topbar h1{font-size:var(--header-title-size);overflow:hidden;text-overflow:ellipsis;max-width:100%}
-/* CHG-023: one quiet black marker for every shared page heading. */
-.topbar .title-row{gap:10px}
-.topbar .title-row::before{content:"";display:block;width:4px;height:22px;background:#111;flex:0 0 4px}
+/* CHG-027: shared marker, 1.5 times the previous 4px width. */
+:root{--section-marker-width:6px;--section-marker-height:22px;--section-marker-gap:10px}
+.topbar .title-row{gap:var(--section-marker-gap)}
+.topbar .title-row::before{content:"";display:block;width:var(--section-marker-width);height:var(--section-marker-height);background:#111;flex:0 0 var(--section-marker-width)}
 .topbar .title-row h1{min-width:0}
 .header-scan{height:calc(44px * var(--header-control-scale));min-height:calc(44px * var(--header-control-scale));font-size:calc(16px * var(--header-control-scale));padding:calc(6px * var(--header-control-scale)) calc(16px * var(--header-control-scale));gap:calc(10px * var(--header-control-scale));justify-self:center}
 .header-scan .icon{width:calc(25px * var(--header-control-scale));height:calc(25px * var(--header-control-scale));stroke-width:2}
@@ -259,6 +260,8 @@ html[data-order-cards="3"] .orders-workspace .order-card .btn{min-height:52px;fo
 /* CHG-020: the modal canvas includes the application header area. */
 .dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px;margin-bottom:14px;flex-shrink:0}
 .dialog .dialog-heading h2{font-size:24px;line-height:1.25;margin:0;min-width:0;overflow-wrap:anywhere}
+.dialog .dialog-heading h2:not(.visually-hidden){position:relative;padding-inline-start:calc(var(--section-marker-width) + var(--section-marker-gap))}
+.dialog .dialog-heading h2:not(.visually-hidden)::before{content:"";position:absolute;inset-inline-start:0;top:50%;transform:translateY(-50%);width:var(--section-marker-width);height:var(--section-marker-height);background:#111}
 .dialog-tools{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .dialog .dialog-tools .dialog-close{position:static;width:44px;height:48px;min-width:44px;min-height:48px;display:grid;place-items:center;padding:8px}
 .dialog .dialog-tools .dialog-close .icon{width:25px;height:25px}
