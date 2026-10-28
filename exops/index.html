@@ -469,19 +469,19 @@ html.cms-display .dialog.wide.commerce-dialog,html.cms-display .dialog.wide.rece
 
 /* CHG-031: adopted order rough v2 uses display px; Root owns density. */
 html.sidebar-layout[data-order-cards="3"] .orders-workspace{--order-unit:calc(1px / var(--ui-density))}
-html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket{grid-template-rows:calc(56 * var(--order-unit)) calc(28 * var(--order-unit)) calc(34 * var(--order-unit)) calc(40 * var(--order-unit));gap:calc(2 * var(--order-unit));padding:calc(6 * var(--order-unit)) calc(8 * var(--order-unit))}
+html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket{grid-template-rows:calc(56 * var(--order-unit)) calc(28 * var(--order-unit)) calc(34 * var(--order-unit)) minmax(calc(40 * var(--order-unit)),1fr);align-content:start;gap:calc(2 * var(--order-unit));padding:calc(6 * var(--order-unit)) calc(8 * var(--order-unit))}
 html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-times{font-size:calc(16 * var(--order-unit));line-height:calc(17.6 * var(--order-unit));gap:calc(1.5 * var(--order-unit));padding-top:0}
 html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-times>div{gap:calc(5 * var(--order-unit))}
 html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-times span{max-width:calc(100% - 5 * var(--order-unit))}
 html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-times small{font-size:calc(11 * var(--order-unit));line-height:calc(14 * var(--order-unit))}
-html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket .ticket-name{font-size:calc(22 * var(--order-unit));line-height:calc(27 * var(--order-unit));gap:calc(6 * var(--order-unit));overflow:hidden}
+html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket .ticket-name{font-size:calc(22 * var(--order-unit));line-height:calc(27 * var(--order-unit));gap:calc(6 * var(--order-unit));overflow:hidden;align-self:start}
 html.sidebar-layout[data-order-cards="3"] .orders-workspace .customer-link{min-width:0}
 html.sidebar-layout[data-order-cards="3"] .orders-workspace .guest-tag{flex-shrink:0}
-html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-product-summary{font-size:calc(20 * var(--order-unit));line-height:calc(25 * var(--order-unit));gap:calc(5 * var(--order-unit))}
+html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-product-summary{font-size:calc(20 * var(--order-unit));line-height:calc(25 * var(--order-unit));gap:calc(5 * var(--order-unit));align-self:start}
 html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-product-summary small{font-size:calc(12 * var(--order-unit));line-height:calc(16 * var(--order-unit))}
-html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket .btn{height:calc(40 * var(--order-unit));min-height:calc(40 * var(--order-unit));font-size:calc(16 * var(--order-unit));line-height:calc(20 * var(--order-unit));padding:calc(3 * var(--order-unit)) calc(7 * var(--order-unit))}
+html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket .btn{height:calc(40 * var(--order-unit));min-height:calc(40 * var(--order-unit));font-size:calc(16 * var(--order-unit));line-height:calc(20 * var(--order-unit));padding:calc(3 * var(--order-unit)) calc(7 * var(--order-unit));align-self:end}
 @media(max-width:1100px),(max-height:617px){
- html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket{grid-template-rows:calc(56 * var(--order-unit)) calc(25 * var(--order-unit)) calc(31 * var(--order-unit)) calc(40 * var(--order-unit))}
+ html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket{grid-template-rows:calc(56 * var(--order-unit)) calc(25 * var(--order-unit)) calc(31 * var(--order-unit)) minmax(calc(40 * var(--order-unit)),1fr)}
  html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-times{font-size:calc(14.5 * var(--order-unit));line-height:calc(16 * var(--order-unit))}
  html.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-times small{font-size:calc(10 * var(--order-unit));line-height:calc(13 * var(--order-unit))}
  html.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket .ticket-name{font-size:calc(20 * var(--order-unit));line-height:calc(24 * var(--order-unit))}
