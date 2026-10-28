@@ -332,7 +332,7 @@ html.sidebar-layout .refund-dialog .dialog-close .icon{width:calc(22 * var(--ref
 html.cms-display .calendar-overlay{left:0;width:calc(var(--ui-canvas-width) / var(--ui-density));min-width:1024px}
 
 /* CHG-029: v2 sidebar. Approved display px are converted once by Root density. */
-html.sidebar-layout{--sidebar-unit:calc(1px / var(--ui-density));--sidebar-expanded:calc(188 * var(--sidebar-unit));--header:0px}
+html.sidebar-layout{--sidebar-unit:calc(1px / var(--ui-density));--sidebar-expanded:calc(188 * var(--sidebar-unit));--header:0px;--sidebar-logo-scale:1.10}
 .sidebar-layout .shell{grid-template-rows:minmax(0,1fr)}
 .sidebar-layout .workspace{grid-row:1;display:flex;flex-direction:column;overflow:hidden;padding:calc(14 * var(--sidebar-unit)) calc(16 * var(--sidebar-unit)) calc(16 * var(--sidebar-unit))}
 .sidebar-layout .page-content{flex:1;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain}
@@ -342,7 +342,7 @@ html.sidebar-layout{--sidebar-unit:calc(1px / var(--ui-density));--sidebar-expan
 .sidebar-layout .sidebar{height:100%;padding:calc(10 * var(--sidebar-unit)) calc(8 * var(--sidebar-unit)) calc(12 * var(--sidebar-unit));overflow:hidden}
 .sidebar-layout .sidebar-actions{display:flex;align-items:center;gap:calc(8 * var(--sidebar-unit));height:calc(44 * var(--sidebar-unit));min-height:calc(44 * var(--sidebar-unit));margin-top:calc(4 * var(--sidebar-unit));margin-bottom:calc(14 * var(--sidebar-unit));flex-shrink:0}
 .sidebar-layout .brand{height:calc(58 * var(--sidebar-unit));min-height:calc(58 * var(--sidebar-unit));padding:0 calc(2 * var(--sidebar-unit)) calc(7 * var(--sidebar-unit));margin-bottom:calc(2 * var(--sidebar-unit))}
-.sidebar-layout .brand-inner{height:100%;gap:calc(7 * var(--sidebar-unit))}
+.sidebar-layout .brand-inner{height:100%;gap:calc(7 * var(--sidebar-unit));transform:scale(var(--sidebar-logo-scale));transform-origin:center center}
 .sidebar-layout .brand-emblem{width:calc(46 * var(--sidebar-unit));height:calc(45 * var(--sidebar-unit));flex-shrink:0}
 .sidebar-layout .brand-wordmark{width:calc(110 * var(--sidebar-unit));height:calc(29 * var(--sidebar-unit));flex-shrink:0}
 html.sidebar-layout .sidebar .sidebar-scan{width:calc(120 * var(--sidebar-unit));min-width:calc(120 * var(--sidebar-unit));height:calc(44 * var(--sidebar-unit));min-height:calc(44 * var(--sidebar-unit));justify-content:flex-start;padding:0 calc(10 * var(--sidebar-unit));gap:calc(12 * var(--sidebar-unit));border:0;border-radius:calc(6 * var(--sidebar-unit));font-size:calc(14 * var(--sidebar-unit));line-height:1.2;font-weight:700;flex-shrink:0;margin:0}
