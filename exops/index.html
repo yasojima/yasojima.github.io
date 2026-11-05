@@ -1661,12 +1661,12 @@ html.ops-foundation .dialog[data-dialog-size=workspace]:is(.wide,.narrow,.scan-d
 
 /* SRC-117: distinguish title, section, table and reading surfaces. */
 html.ops-foundation{
- --ops-title-surface:linear-gradient(175deg,#e3ebf1,#bacbd9);
- --ops-section-surface:linear-gradient(180deg,#e9eff3,#d7e1e8);
- --ops-table-surface:#e9ecef;
+ --ops-title-surface:linear-gradient(175deg,#e4dfd8,#c9c1b7);
+ --ops-section-surface:linear-gradient(180deg,#f0ece7,#ddd6cd);
+ --ops-table-surface:#eeece9;
  --ops-card-outline:#b5a18e;
  --ops-card-top-outline:#9e8976;
- --ops-heading-outline:#9cadba;
+ --ops-heading-outline:#ad9c8a;
 }
 html.ops-foundation :is(.pickup-detail,.packing-panel,.panel,.metric,.customer-list,.customer-detail,.stat-mini,.detail-products,.detail-money,.swap-panel,.diff-cell,.connection-summary,.material-card,.login-panel form),
 html.ops-foundation .exchange-two-columns>section{
@@ -1676,24 +1676,25 @@ html.ops-foundation .grouped-page .panel{
  border:1px solid var(--ops-card-outline);border-top-color:var(--ops-card-top-outline);
 }
 html.ops-foundation .dialog>.dialog-heading,
+html.ops-foundation .workspace-backdrop .dialog-heading,
 html.ops-foundation .dialog[data-dialog-size=workspace]>.dialog-heading{
  background:var(--ops-title-surface);color:var(--ops-tone-ink);
- border:1px solid var(--ops-heading-outline);border-top-color:#9cadba;
+ border:1px solid var(--ops-heading-outline);border-top-color:#ad9c8a;
  border-radius:calc(10 * var(--u));padding:0 calc(12 * var(--u));
- box-shadow:inset 0 1px 0 #fff9,0 2px 0 #a4b7c5;
+ box-shadow:inset 0 1px 0 #fff9,0 2px 0 #b6a99b,0 3px 0 #a29485,0 4px 3px #44372914;
 }
 html.ops-foundation .dialog>.dialog-heading h2{min-width:0;flex-shrink:1}
-html.ops-foundation :is(.packing-panel>h3,.panel>h2,.metric>h2,.swap-panel>h3,.exchange-two-columns>section>h3){
+html.ops-foundation :is(.packing-panel>h3,.panel>h2,.metric>h2,.swap-panel>h3,.exchange-two-columns>section>h3,.customer-list>h2,.panel>div>h2,.product-media-content>h2,.allergen-editor>h2,.preview-sections>section>h3,.dialog>h3,.store-sales-heading>h2,.login-panel>h2){
  background:var(--ops-section-surface);color:var(--ops-tone-ink);
- border:1px solid #b4c2cd;border-top-color:#9cadba;
+ border:1px solid #c3b6a8;border-top-color:#ad9c8a;
  border-radius:calc(7 * var(--u));padding:calc(8 * var(--u)) calc(12 * var(--u));
- box-shadow:inset 0 1px 0 #fff9,0 1px 0 #b6c5d1;
+ box-shadow:inset 0 1px 0 #fff9,0 1px 0 #cdbfb0;
 }
 html.ops-foundation .workspace-order-page .packing-panel>h3{margin-bottom:calc(12 * var(--u))}
 html.ops-foundation .column-head{
- background:var(--ops-section-surface);border:1px solid #b4c2cd;
- border-top-color:#9cadba;border-radius:calc(8 * var(--u));padding:calc(4 * var(--u));
- box-shadow:inset 0 1px 0 #fff9,0 1px 0 #b6c5d1;
+ background:var(--ops-section-surface);border:1px solid #c3b6a8;
+ border-top-color:#ad9c8a;border-radius:calc(8 * var(--u));padding:calc(4 * var(--u));
+ box-shadow:inset 0 1px 0 #fff9,0 1px 0 #cdbfb0;
 }
 html.ops-foundation :is(thead th,.axis-head),
 html.ops-foundation .workspace-order-page .pickup-items th{
@@ -1704,10 +1705,10 @@ html.ops-foundation .products-table tbody tr{border-top:1px solid var(--ops-card
 
 /* Navigation stays quiet: depth belongs to the QR tile, not the whole rail. */
 html.ops-foundation .sidebar{
- --ops-sidebar-face:#dce5ec;background:var(--ops-sidebar-face);border-right:0;box-shadow:none;
+ --ops-sidebar-face:#e6e1da;background:var(--ops-sidebar-face);border-right:0;box-shadow:none;
 }
 html.ops-foundation .utility-nav{
- background:transparent;border-top:1px solid #b2c1cc;box-shadow:none;
+ background:transparent;border-top:1px solid #c8bcaf;box-shadow:none;
 }
 html.ops-foundation .utility-nav::before{content:none}
 html.ops-foundation .primary-nav .nav-link.active{
@@ -1746,39 +1747,69 @@ html.ops-foundation .sidebar .sidebar-order-date button{
  html.ops-foundation .utility-nav .nav-link:hover{background:#fff;box-shadow:none}
 }
 html.ops-foundation .inpage-tabs{
- background:linear-gradient(#d6e1e9,#e9eff3);border-color:#b4c2cd;
- box-shadow:inset 0 2px 3px #718b9c29,inset 0 -1px 0 #fff;
+ background:linear-gradient(#e0d8cf,#f0ece7);border-color:#c3b6a8;
+ box-shadow:inset 0 2px 3px #75665526,inset 0 -1px 0 #fff;
 }
 html.ops-foundation .inpage-tab[aria-selected=true]{
  --ops-soft-top:#fff;background:#fff;color:var(--ops-tone-ink);
- box-shadow:inset 0 1px 0 #fff,0 2px 0 #a4b7c5,0 4px 4px #718b9c20;
+ box-shadow:inset 0 1px 0 #fff,0 2px 0 #b6a99b,0 4px 4px #75665520;
 }
 
 /* Defined button contours and short contact shadows reduce visual haze. */
 html.ops-foundation{
  --ops-depth-button-side:#9f7354;--ops-depth-button-rim:#9f7354;--ops-depth-button-under:#875d42;
- --ops-button-outline:#9f7354;--ops-secondary-outline:#788995;
+ --ops-button-outline:#9f7354;--ops-secondary-outline:#877c70;
  --ops-depth-panel-shadow:inset 0 1px 0 #fff,0 2px 0 #dfd2c6,0 4px 0 #bca48e,0 6px 5px #3321111f;
 }
-html.ops-foundation .btn:not(.secondary):not(:disabled){
+html.ops-foundation .btn:not(.secondary):not(:disabled):not(.sidebar-scan){
  border:1px solid var(--ops-button-outline);border-top-color:var(--ops-button-outline);
  box-shadow:inset 0 1px 0 #ffffff99,inset 0 -1px 0 #b57e4f26,0 2px 0 #d4a07a,0 4px 0 #ad7b57,0 6px 0 #8f6447,0 7px 5px #3321111f;
 }
 html.ops-foundation .btn.secondary:not(:disabled){
- background:linear-gradient(180deg,#fff,#f9fafb 65%,#e7ebee);color:var(--ops-tone-ink);
+ background:linear-gradient(180deg,#fff,#fbfaf8 65%,#ece7e1);color:var(--ops-tone-ink);
  border:1px solid var(--ops-secondary-outline);
- box-shadow:inset 0 1px 0 #fff,0 2px 0 #d7dadd,0 4px 0 #b5bdc4,0 6px 0 #8797a2,0 7px 4px #2634401f;
+ box-shadow:inset 0 1px 0 #fff,0 2px 0 #dcd6cf,0 4px 0 #bdb1a3,0 6px 0 #968675,0 7px 4px #3f33271f;
 }
-html.ops-foundation .btn:not(:disabled):active{
+html.ops-foundation .btn:not(:disabled):not(.sidebar-scan):active{
  transform:translateY(5px);box-shadow:inset 0 2px 3px #33211126,0 1px 0 var(--ops-depth-button-under),0 2px 2px #3321111f;
 }
 html.ops-foundation .btn.secondary:not(:disabled):active{
- background:linear-gradient(#e7ebee,#f9fafb);box-shadow:inset 0 2px 3px #26344026,0 1px 0 #8797a2,0 2px 2px #2634401f;
+ background:linear-gradient(#ece7e1,#fbfaf8);box-shadow:inset 0 2px 3px #3f332726,0 1px 0 #968675,0 2px 2px #3f33271f;
 }
 html.ops-foundation :is(.pickup-detail,.packing-panel,.panel,.metric,.customer-list,.customer-detail,.stat-mini,.detail-products,.detail-money,.swap-panel,.diff-cell,.connection-summary,.material-card,.login-panel form),
 html.ops-foundation .grouped-page .panel,
 html.ops-foundation .exchange-two-columns>section{box-shadow:var(--ops-depth-panel-shadow)}
 html.ops-foundation .dialog[data-dialog-size=mini]{box-shadow:inset 0 1px 0 #fff,0 3px 0 #c8b29e,0 6px 0 #a78f7b,0 10px 12px #33211129}
+
+/* Form fields use a calm reading surface and a real outline, not a deep bevel. */
+html.ops-foundation :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea){
+ background:#fff;color:var(--ops-tone-ink);border:calc(1 * var(--u)) solid #998c7e;
+ box-shadow:inset 0 2px 2px #5543301a,inset 0 -1px 0 #fff;border-radius:calc(11 * var(--u));
+}
+html.ops-foundation .compound-field{
+ background:#fff;border:calc(1 * var(--u)) solid #998c7e;box-shadow:none;border-radius:calc(11 * var(--u));
+}
+html.ops-foundation .store-form .compound-field select:is(:enabled,:disabled){
+ background-color:#fff;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m2 2 4 4 4-4' fill='none' stroke='%2351483e' stroke-width='1.5'/%3E%3C/svg%3E");
+ background-position:right 4px center;background-repeat:no-repeat;
+ border:0;border-right:calc(1 * var(--u)) solid #c8bcaf;border-radius:0;box-shadow:none;
+}
+html.ops-foundation .store-form .compound-field select:last-child{border-right:0}
+html.ops-foundation :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),select,textarea):is(:disabled,[readonly]){
+ background:#f3f1ee;color:#736a61;border-color:#b8ada2;box-shadow:none;
+}
+html.ops-foundation .compound-field:focus-within{outline:2px solid var(--ops-tone-blue);outline-offset:2px}
+html.ops-foundation .quarter-tabs .btn.secondary[aria-pressed=true]{
+ background:var(--ops-section-surface);color:var(--ops-tone-ink);border-color:#8e7b68;
+ box-shadow:inset 0 2px 3px #69503b26,0 1px 0 #fff;transform:none;
+}
+@media(hover:none),(pointer:coarse){
+ html.ops-foundation .primary-nav .nav-link:not(.active):is(:hover,:active){background:transparent;color:var(--ops-tone-ink);box-shadow:none}
+ html.ops-foundation .primary-nav .nav-link:not(.active):is(:hover,:active)::before,
+ html.ops-foundation .primary-nav .nav-link:not(.active):is(:hover,:active)::after{content:none}
+ html.ops-foundation .utility-nav .nav-link:is(:hover,:active){background:transparent;color:var(--ops-tone-ink);box-shadow:none}
+}
 </style></head>
 <body>
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><symbol id="orders" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M9 9h6M9 13h6M9 17h4"/></symbol><symbol id="products" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7l9-5ZM3 7l9 5 9-5M12 12v10"/></symbol><symbol id="news" viewBox="0 0 24 24"><path d="m3 9 14-5v16L3 15V9ZM17 8h3a2 2 0 0 1 0 8h-3M7 16l2 6H5l-2-7M3 9H1v6h2"/></symbol><symbol id="customers" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M2 22v-4a7 7 0 0 1 14 0v4H2ZM17 4a4 4 0 0 1 0 8M19 15a6 6 0 0 1 3 5v2h-4"/></symbol><symbol id="sales" viewBox="0 0 24 24"><path d="M2 22h4V12H2v10ZM10 22h4V7h-4v15ZM18 22h4V2h-4v20Z"/></symbol><symbol id="store" viewBox="0 0 24 24"><path d="M3 10v12h18V10M8 22v-8h8v8M2 4h20l1 5a3 3 0 0 1-5 2 3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-5-2l1-5Z"/></symbol><symbol id="design" viewBox="0 0 24 24"><path d="M12 2A10 10 0 1 0 12 22c2 0 2-2 1-3s0-3 2-3h3c5 0 4-14-6-14Z"/><circle cx="7" cy="8" r="1"/><circle cx="13" cy="6" r="1"/><circle cx="18" cy="10" r="1"/><circle cx="5" cy="14" r="1"/></symbol><symbol id="settings" viewBox="0 0 24 24"><path d="m10 2-1 3-3 1-3-1-2 4 3 2v3l-3 2 2 4 3-1 3 1 1 3h4l1-3 3-1 3 1 2-4-3-2v-3l3-2-2-4-3 1-3-1-1-3h-4Z"/><circle cx="12" cy="12" r="4"/></symbol><symbol id="logout" viewBox="0 0 24 24"><path d="M10 3H3v18h7M8 12h14m-5-5 5 5-5 5"/></symbol><symbol id="scan" viewBox="0 0 24 24"><path d="M3 8V3h5m8 0h5v5M3 16v5h5m8 0h5v-5"/></symbol><symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V2m-5 5 5-5 5 5M3 15v7h18v-7"/></symbol><symbol id="download" viewBox="0 0 24 24"><path d="M12 2v14m-5-5 5 5 5-5M3 15v7h18v-7"/></symbol><symbol id="plus" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></symbol><symbol id="edit" viewBox="0 0 24 24"><path d="m15 3 6 6-12 12H3v-6L15 3ZM12 6l6 6"/></symbol><symbol id="search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7"/><path d="m15 15 7 7"/></symbol><symbol id="check" viewBox="0 0 24 24"><path d="m3 12 6 6L21 5"/></symbol><symbol id="close" viewBox="0 0 24 24"><path d="m4 4 16 16M20 4 4 20"/></symbol><symbol id="up" viewBox="0 0 24 24"><path d="m5 14 7-7 7 7M12 7v15"/></symbol><symbol id="down" viewBox="0 0 24 24"><path d="m5 10 7 7 7-7M12 2v15"/></symbol><symbol id="left" viewBox="0 0 24 24"><path d="m15 4-8 8 8 8"/></symbol><symbol id="right" viewBox="0 0 24 24"><path d="m9 4 8 8-8 8"/></symbol><symbol id="image" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><circle cx="8" cy="8" r="2"/><path d="m2 18 6-6 4 4 4-5 6 7"/></symbol><symbol id="video" viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m16 9 6-4v14l-6-4"/></symbol><symbol id="camera" viewBox="0 0 24 24"><path d="M2 6h5l2-3h6l2 3h5v15H2V6Z"/><circle cx="12" cy="13" r="5"/></symbol><symbol id="warning" viewBox="0 0 24 24"><path d="m12 2 11 20H1L12 2Z"/><path d="M12 8v6m0 3v1"/></symbol><symbol id="mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 5 10 8L22 5"/></symbol><symbol id="phone" viewBox="0 0 24 24"><path d="m3 2 5 2-1 5 5 5 5-1 4 5-3 4C8 21 2 14 1 6l2-4Z"/></symbol><symbol id="grip" viewBox="0 0 24 24"><circle cx="8" cy="5" r="1"/><circle cx="16" cy="5" r="1"/><circle cx="8" cy="12" r="1"/><circle cx="16" cy="12" r="1"/><circle cx="8" cy="19" r="1"/><circle cx="16" cy="19" r="1"/></symbol><symbol id="calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="17" rx="2"/><path d="M7 2v6m10-6v6M3 11h18M7 15h2m4 0h2m-8 4h2"/></symbol><symbol id="undo" viewBox="0 0 24 24"><path d="M3 5v6h6M3 11a9 9 0 1 1 2 8"/></symbol><symbol id="allergens" viewBox="0 0 24 24"><path d="M3 3h7l11 11-7 7L3 10V3Z"/><circle cx="7" cy="7" r="1"/></symbol><symbol id="panel-close" viewBox="0 0 24 24"><rect x="2.5" y="3.5" width="19" height="17" rx="3"/><path d="M9 4v16M5.5 8h.5M5.5 12h.5M5.5 16h.5m10-7-3 3 3 3"/></symbol><symbol id="panel-open" viewBox="0 0 24 24"><rect x="2.5" y="3.5" width="19" height="17" rx="3"/><path d="M9 4v16M5.5 8h.5M5.5 12h.5M5.5 16h.5m7-7 3 3-3 3"/></symbol><symbol id="rail-plate" viewBox="0 0 36 48"><defs><linearGradient id="rail-face" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4b4c50"/><stop offset=".48" stop-color="#303136"/><stop offset="1" stop-color="#202125"/></linearGradient></defs><path d="M8.5.75h19L35.25 8.5v31l-7.75 7.75h-19L.75 39.5v-31Z" fill="url(#rail-face)" stroke="#85847c" stroke-width="1.5"/><path d="M9 2.75h17.5L33.25 9.5" fill="none" stroke="#d6b760" stroke-opacity=".65" stroke-width="1"/><path d="m2.75 38.5 6.5 6h17.5l6.5-6" fill="none" stroke="#151619" stroke-width="1.5"/><path d="M14 11h8M14 37h8" fill="none" stroke="#77766e" stroke-width="1"/></symbol><symbol id="camera" viewBox="0 0 24 24"><path d="M3 7h4l2-3h6l2 3h4v13H3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol><symbol preserveAspectRatio="none" id="rail-inset-open" viewBox="0 0 68 32"><defs><linearGradient id="face-app-inset-open" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4d5055"/><stop offset=".5" stop-color="#303237"/><stop offset="1" stop-color="#202226"/></linearGradient></defs><path d="M9 3h50l6 6v14l-6 6H9l-6-6V9Z" fill="#17191c" stroke="#1a1b1e"/><path d="M10 5h47l6 6v10l-6 6H10l-5-5V10Z" fill="url(#face-app-inset-open)" stroke="#6b6c68" stroke-width=".9"/><path d="M11 6.5h44l5 5" stroke="#d6b760" stroke-opacity=".55" fill="none"/><path d="M15 12v8m4-8v8m4-8v8" stroke="#85878a" stroke-opacity=".5"/><path d="m48 11-5 5 5 5" fill="none" stroke="#ddc579" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol><symbol preserveAspectRatio="none" id="rail-inset-closed" viewBox="0 0 34 32"><defs><linearGradient id="face-app-inset-closed" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#4d5055"/><stop offset=".5" stop-color="#303237"/><stop offset="1" stop-color="#202226"/></linearGradient></defs><path d="M8 2h18l6 6v16l-6 6H8l-6-6V8Z" fill="url(#face-app-inset-closed)" stroke="#73736a" stroke-width=".9"/><path d="M9 3.5h15l5 5" stroke="#d6b760" stroke-opacity=".6" fill="none"/><path d="m14 11 5 5-5 5" fill="none" stroke="#ddc579" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol></svg>
