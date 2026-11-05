@@ -976,6 +976,8 @@ html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .tick
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions{display:flex;justify-content:center;align-self:stretch;margin-top:auto;gap:0;width:100%}
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions .btn{width:min(100%,calc(207 * var(--u)));flex:0 1 auto;background:#e3e6ea;border-color:#e3e6ea;color:#171717}
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions .btn:disabled{color:#91979d}
+html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled){background:#222;border-color:#222;color:#fff}
+html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled):hover{background:#333;border-color:#333}
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-number{font-size:22.5px}
 @media(max-width:900px){
  html.ops-foundation .store-layout{grid-template-columns:minmax(0,1fr)}
@@ -1259,6 +1261,9 @@ html.ops-foundation .exchange-bottom-actions .btn{width:calc(174 * var(--u));hei
 .exchange-waiting-body{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:calc(18 * var(--u));text-align:center;font-size:calc(15.65 * var(--u))}.exchange-waiting-body small{font-size:calc(13.5 * var(--u));color:#5d6268}
 @media(max-width:1000px){.exchange-two-columns{gap:calc(18 * var(--u))}.exchange-two-columns section{padding:calc(12 * var(--u))}}
 html.ops-foundation .dialog:is(.pickup-order-dialog,.pickup-exchange-dialog,.pickup-handoff-dialog,.scan-dialog:not(.pickup-mini)){border-radius:calc(12 * var(--u))}
+/* Trial only for the order checklist: keep its width, with a 2px gap from the sidebar. */
+html.ops-foundation .overlay:has(>.pickup-order-dialog [data-action=pickup-pack]){justify-content:flex-start}
+html.ops-foundation .overlay>.pickup-order-dialog:has([data-action=pickup-pack]){transform:translateX(calc(-14 * var(--u)))}
 html.ops-foundation .dialog.pickup-mini{border-radius:calc(10 * var(--u))}
 html.ops-foundation .dialog.pickup-entry{border-radius:calc(9 * var(--u))}
 html.ops-foundation .pickup-order-dialog .packing-line{height:calc(44 * var(--u));min-height:calc(44 * var(--u))}
