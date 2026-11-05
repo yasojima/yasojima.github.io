@@ -799,10 +799,14 @@ html.ops-foundation {
   --space:calc(12 * var(--u)); --line:#dfe3e8;
   --header-title-size:calc(20 * var(--u));
   --ui-canvas-width:max(100vw,768px);
+  --ui-canvas-height:100vh;
+  --ui-canvas-height:100dvh;
   font-size:var(--body-size);
 }
 html.ops-foundation body{min-width:calc(768 * var(--u));background:#fff}
-html.ops-foundation .shell{min-width:calc(768 * var(--u));grid-template-columns:var(--sidebar-expanded) minmax(0,1fr)}
+html.ops-foundation .shell{min-width:calc(768 * var(--u));min-height:0;grid-template-columns:var(--sidebar-expanded) minmax(0,1fr)}
+/* Below the former 600px canvas, scroll complete cards instead of clipping names/CTAs. */
+@media(max-height:599px){html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .commerce-ticket{height:auto;min-height:min-content}}
 html.ops-foundation .sidebar{background:#181818;transform:none;visibility:visible;will-change:auto}
 html.ops-foundation .sidebar-actions{margin:0 0 calc(10 * var(--u));height:var(--control-h);min-height:var(--control-h)}
 html.ops-foundation .sidebar .sidebar-scan{width:100%;min-width:0;background:#2563eb;justify-content:flex-start}
