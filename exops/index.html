@@ -1928,10 +1928,10 @@ html.ops-foundation .dialog.order-products-mini>.form-actions{position:static;in
 html.ops-foundation .dialog.order-products-mini>.form-actions .btn{min-width:calc(144 * var(--u));width:auto;height:calc(44 * var(--u));min-height:calc(44 * var(--u));font-size:calc(15.65 * var(--u))}
 @media(max-width:1050px){html.ops-foundation .order-tabbed-dialog>.order-customer-panel{grid-template-columns:minmax(0,1fr);grid-template-rows:max-content max-content;align-content:start;overflow:auto;height:100%;padding-bottom:calc(8 * var(--u))}html.ops-foundation .order-customer-record{grid-template-rows:calc(104 * var(--u)) auto}html.ops-foundation .order-customer-card{display:block;min-height:max-content}html.ops-foundation .order-customer-contact{gap:calc(16 * var(--u))}html.ops-foundation .order-customer-history{max-height:calc(300 * var(--u));min-height:calc(150 * var(--u))}}
 
-/* SRC-124: reference 02. Sloped overlapping tabs share one rounded lower rail. */
+/* SRC-125: trace reference 02 shoulders; no lower rail; end caps fade into white. */
 html.ops-foundation{
- --ops-tab-rest-shape:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20188%2044%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f4f0eb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23d9d0c5%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M12%20.7H137Q146%20.7%20153%208L178%2037Q182%2042.5%20187%2043.3H.7V12Q.7%20.7%2012%20.7Z%22%20fill%3D%22url%28%23g%29%22%20stroke%3D%22%23b8aa9a%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M12%202.1H137Q145%202.1%20151.8%209L176.5%2038%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.8%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
- --ops-tab-selected-shape:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20188%2044%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23ffffff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23fcfaf7%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D%22M12%20.7H137Q146%20.7%20153%208L178%2037Q182%2042.5%20187%2043.3H.7V12Q.7%20.7%2012%20.7Z%22%20fill%3D%22url%28%23g%29%22%20stroke%3D%22%23b4a18d%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M12%202.1H137Q145%202.1%20151.8%209L176.5%2038%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.8%22%20stroke-width%3D%221%22%2F%3E%3C%2Fsvg%3E");
+ --ops-tab-rest-shape:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22208%22%20height%3D%2244%22%20viewBox%3D%220%200%20208%2044%22%3E%0A%20%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%22surface%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eae2%22%2F%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%23e5ddd2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ffffff%22%2F%3E%3C%2FlinearGradient%3E%0A%20%20%3ClinearGradient%20id%3D%22blend%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22white%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22white%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%2F%3E%3C%2FlinearGradient%3E%0A%20%20%3Cmask%20id%3D%22fade%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22208%22%20height%3D%2244%22%3E%3Crect%20width%3D%22208%22%20height%3D%2244%22%20fill%3D%22url%28%23blend%29%22%2F%3E%3C%2Fmask%3E%0A%20%3C%2Fdefs%3E%0A%20%3Cg%20mask%3D%22url%28%23fade%29%22%3E%0A%20%20%3Cpath%20d%3D%22M12%20.7H154C168%20.7%20174%2011%20184%2026C193%2039%20198%2043.3%20207.3%2043.3H.7V12C.7%204%204%20.7%2012%20.7Z%22%20fill%3D%22url%28%23surface%29%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M.7%2043.3V12C.7%204%204%20.7%2012%20.7H154C168%20.7%20174%2011%20184%2026C193%2039%20198%2043.3%20207.3%2043.3%22%20fill%3D%22none%22%20stroke%3D%22%23b8aa9a%22%20stroke-width%3D%221.2%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M2.1%2030V12C2.1%204.9%205%202.1%2012%202.1H154C167%202.1%20172.7%2011.9%20182.8%2026.7%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.75%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+ --ops-tab-selected-shape:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22208%22%20height%3D%2244%22%20viewBox%3D%220%200%20208%2044%22%3E%0A%20%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%22surface%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23fff%22%2F%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%23fff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ffffff%22%2F%3E%3C%2FlinearGradient%3E%0A%20%20%3ClinearGradient%20id%3D%22blend%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22white%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22white%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22black%22%2F%3E%3C%2FlinearGradient%3E%0A%20%20%3Cmask%20id%3D%22fade%22%20maskUnits%3D%22userSpaceOnUse%22%20x%3D%220%22%20y%3D%220%22%20width%3D%22208%22%20height%3D%2244%22%3E%3Crect%20width%3D%22208%22%20height%3D%2244%22%20fill%3D%22url%28%23blend%29%22%2F%3E%3C%2Fmask%3E%0A%20%3C%2Fdefs%3E%0A%20%3Cg%20mask%3D%22url%28%23fade%29%22%3E%0A%20%20%3Cpath%20d%3D%22M12%20.7H154C168%20.7%20174%2011%20184%2026C193%2039%20198%2043.3%20207.3%2043.3H.7V12C.7%204%204%20.7%2012%20.7Z%22%20fill%3D%22url%28%23surface%29%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M.7%2043.3V12C.7%204%204%20.7%2012%20.7H154C168%20.7%20174%2011%20184%2026C193%2039%20198%2043.3%20207.3%2043.3%22%20fill%3D%22none%22%20stroke%3D%22%23b8aa9a%22%20stroke-width%3D%221.2%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M2.1%2030V12C2.1%204.9%205%202.1%2012%202.1H154C167%202.1%20172.7%2011.9%20182.8%2026.7%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.75%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E");
 }
 html.ops-foundation .inpage-tabs,
 html.ops-foundation #workspace .workspace-tabs-header .inpage-tabs,
@@ -1942,12 +1942,7 @@ html.ops-foundation .order-entry-tabs{
  padding:0 calc(28 * var(--u)) calc(12 * var(--u)) calc(12 * var(--u));
  border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;flex:none;
 }
-html.ops-foundation .inpage-tabs::before{
- content:"";position:absolute;inset:auto 0 0;height:calc(14 * var(--u));z-index:3;
- background:linear-gradient(#fff 45%,#f7f3ee);border:1px solid #bdad9a;
- border-radius:calc(14 * var(--u));box-shadow:0 calc(2 * var(--u)) 0 #d8cdbf,0 calc(4 * var(--u)) calc(3 * var(--u)) #56402b1a;
- pointer-events:none;
-}
+html.ops-foundation .inpage-tabs::before,
 html.ops-foundation .inpage-tabs::after{content:none}
 html.ops-foundation .inpage-tabs .inpage-tab,
 html.ops-foundation .qr-main .qr-entry-tabs .inpage-tab,
@@ -1960,15 +1955,16 @@ html.ops-foundation .order-entry-tabs .inpage-tab{
 }
 html.ops-foundation .inpage-tabs .inpage-tab::before{
  content:"";position:absolute;inset:0 calc(-24 * var(--u)) 0 0;z-index:-1;
- width:auto;height:auto;border:0;border-radius:0;background:var(--ops-tab-rest-shape) 0 0/100% 100% no-repeat;
- filter:drop-shadow(0 calc(1 * var(--u)) calc(1 * var(--u)) #59432d20);pointer-events:none;
+ width:auto;height:auto;border:solid transparent;border-width:calc(1 * var(--u)) calc(50 * var(--u)) calc(1 * var(--u)) calc(12 * var(--u));border-radius:0;background:none;
+ border-image-source:var(--ops-tab-rest-shape);border-image-slice:1 50 1 12 fill;border-image-width:1;border-image-repeat:stretch;
+ filter:none;pointer-events:none;
 }
 html.ops-foundation .inpage-tabs .inpage-tab::after{content:none}
 html.ops-foundation .inpage-tabs .inpage-tab[aria-selected=true]{
  z-index:2;background:none;box-shadow:none;color:#222;font-weight:600;
 }
 html.ops-foundation .inpage-tabs .inpage-tab[aria-selected=true]::before{
- background-image:var(--ops-tab-selected-shape);
+ border-image-source:var(--ops-tab-selected-shape);
 }
 html.ops-foundation .inpage-tabs .inpage-tab:focus-visible{
  outline:2px solid var(--ops-tone-blue);outline-offset:calc(3 * var(--u));z-index:4;
