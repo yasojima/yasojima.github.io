@@ -2158,7 +2158,7 @@ html.ops-foundation .calendar-dialog .quarter-tabs .btn.secondary[aria-pressed=t
 }
 html.ops-foundation .calendar-dialog .quarter-tabs .btn.secondary[aria-pressed=true]:active{transform:translateY(calc(5 * var(--u)));box-shadow:var(--ops-control-pressed)}
 
-/* SRC-145: use the accepted QR mechanics; keep text faces frontal. */
+/* QR mechanics are preserved; SRC-146 gives small text CTAs a thinner side. */
 html.ops-foundation{
  --ops-cta-travel:calc(5 * var(--u));--ops-cta-hit-depth:calc(8 * var(--u));
  --ops-cta-side-1:3px;--ops-cta-side-2:6px;--ops-cta-side-3:8px;
@@ -2169,18 +2169,24 @@ html.ops-foundation{
  --ops-cta-dark-shadow:inset 0 1px 0 #ffffff30,var(--ops-cta-dark-side-shadow);
  --ops-cta-neutral-pressed:inset 0 3px 5px #3f332726,0 3px 0 #968675,0 6px 5px #3f33271f;
  --ops-cta-dark-pressed:inset 0 3px 5px rgba(0,0,0,.35),0 3px 0 #131313,0 6px 5px rgba(0,0,0,.16);
+ --ops-text-cta-side-1:calc(1 * var(--u));--ops-text-cta-side-2:calc(2 * var(--u));--ops-text-cta-side-3:calc(3 * var(--u));
+ --ops-text-cta-contact:calc(4 * var(--u));--ops-text-cta-blur:calc(3 * var(--u));
+ --ops-text-cta-neutral-shadow:inset 0 1px 0 #fff,0 var(--ops-text-cta-side-1) 0 #e1dbd4,0 var(--ops-text-cta-side-2) 0 #c8beb2,0 var(--ops-text-cta-side-3) 0 #a99a8b,0 var(--ops-text-cta-contact) var(--ops-text-cta-blur) #3f33271f;
+ --ops-text-cta-dark-shadow:inset 0 1px 0 #ffffff30,0 var(--ops-text-cta-side-1) 0 #42474b,0 var(--ops-text-cta-side-2) 0 #30353a,0 var(--ops-text-cta-side-3) 0 #22262a,0 var(--ops-text-cta-contact) var(--ops-text-cta-blur) #00000024;
+ --ops-text-cta-neutral-pressed:inset 0 calc(1 * var(--u)) calc(2 * var(--u)) #3f332726,0 var(--ops-text-cta-side-1) 0 #a99a8b,0 var(--ops-text-cta-side-2) var(--ops-text-cta-side-2) #3f33271a;
+ --ops-text-cta-dark-pressed:inset 0 calc(1 * var(--u)) calc(2 * var(--u)) #0005,0 var(--ops-text-cta-side-1) 0 #22262a,0 var(--ops-text-cta-side-2) var(--ops-text-cta-side-2) #0002;
 }
 html.ops-foundation .orders-workspace .order-sort-controls{gap:calc(4 * var(--order-unit));border:0;background:transparent;overflow:visible;padding-bottom:var(--ops-cta-hit-depth)}
 html.ops-foundation .orders-workspace .order-sort-option{
- position:relative;border:1px solid var(--ops-secondary-outline);border-radius:calc(13 * var(--order-unit));background:#fff;color:#222;text-shadow:none;box-shadow:var(--ops-cta-neutral-shadow);
+ position:relative;border:1px solid var(--ops-secondary-outline);border-radius:calc(13 * var(--order-unit));background:#fff;color:#222;text-shadow:none;box-shadow:var(--ops-text-cta-neutral-shadow);
  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
  transition:transform var(--ops-cta-return-time) var(--ops-cta-ease),box-shadow var(--ops-cta-return-time) var(--ops-cta-ease);
 }
 /* The transparent hit surface stays in place while the visible cap sinks. */
 html.ops-foundation .orders-workspace .order-sort-option::after{content:'';position:absolute;inset:0 0 calc(-1 * var(--ops-cta-hit-depth));border-radius:inherit}
-html.ops-foundation .orders-workspace .order-sort-option[aria-pressed=true]{background:#3e4348;color:#fff;border-color:#272c31;box-shadow:var(--ops-cta-dark-shadow)}
-html.ops-foundation .orders-workspace .order-sort-option:active{transform:translateY(var(--ops-cta-travel));box-shadow:var(--ops-cta-neutral-pressed);transition-duration:var(--ops-cta-down-time)}
-html.ops-foundation .orders-workspace .order-sort-option[aria-pressed=true]:active{box-shadow:var(--ops-cta-dark-pressed)}
+html.ops-foundation .orders-workspace .order-sort-option[aria-pressed=true]{background:#3e4348;color:#fff;border-color:#272c31;box-shadow:var(--ops-text-cta-dark-shadow)}
+html.ops-foundation .orders-workspace .order-sort-option:active{transform:translateY(var(--ops-cta-travel));box-shadow:var(--ops-text-cta-neutral-pressed);transition-duration:var(--ops-cta-down-time)}
+html.ops-foundation .orders-workspace .order-sort-option[aria-pressed=true]:active{box-shadow:var(--ops-text-cta-dark-pressed)}
 html.ops-foundation .orders-workspace .order-sort-option:active::after{top:calc(-1 * var(--ops-cta-travel));bottom:calc(var(--ops-cta-travel) - var(--ops-cta-hit-depth))}
 @media(prefers-reduced-motion:reduce){html.ops-foundation .orders-workspace .order-sort-option{transition:none}}
 /* SRC-141: preserve the adopted preparation and return CTAs during this trial. */
