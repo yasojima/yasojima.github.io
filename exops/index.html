@@ -1728,6 +1728,8 @@ html.ops-foundation .sidebar .sidebar-order-date input[type=date],
 html.ops-foundation .sidebar .sidebar-order-date button{
  background:#f7f5f2;color:var(--ops-tone-ink);border-color:#cbbfb2;box-shadow:none;
 }
+/* The joining corners decorate the rail; they must stay behind date controls. */
+html.ops-foundation .sidebar-order-date{position:relative;z-index:1}
 @media(hover:hover) and (pointer:fine){
  html.ops-foundation .primary-nav .nav-link:not(.active):hover{
   position:relative;background:#fff;margin-right:0;border-radius:calc(20 * var(--u)) 0 0 calc(20 * var(--u));box-shadow:none;
