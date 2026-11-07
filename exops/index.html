@@ -2144,9 +2144,9 @@ html.ops-foundation button.store-link:not(:disabled):is(:active:where(:not(.ops-
 html.ops-foundation button.store-link:disabled{background:#e8eaec;color:#92989e;border-color:#d7dbde;box-shadow:inset 0 1px 1px #2221;transform:none}
 html.ops-foundation :is(.compound-field,input[type=color]){background:#fff;border-color:#998c7e;box-shadow:var(--ops-field-shadow)}
 html.ops-foundation input[type=color]{border-radius:calc(11 * var(--u))}
-html.ops-foundation .sidebar .sidebar-date-field{box-shadow:var(--ops-field-shadow)}
-html.ops-foundation .sidebar .sidebar-order-date>button{box-shadow:var(--ops-small-control-shadow);border:1px solid #cbbfb2}
-html.ops-foundation .sidebar .sidebar-order-date>button:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed:where(:not(:disabled,[aria-disabled=true]))){transform:translateY(calc(2 * var(--u)));box-shadow:var(--ops-control-pressed)}
+/* SRC-169: shared lighting on the existing date controls; keep the 2px travel. */
+html.ops-foundation .sidebar .sidebar-order-date>button{--ops-cta-material-scale:2;border:1px solid #c9c2bb;border-top-color:#f7f4f0;border-left-color:#eee9e3}
+html.ops-foundation .sidebar .sidebar-order-date>button:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed:where(:not(:disabled,[aria-disabled=true]))){transform:translateY(calc(2 * var(--u)));box-shadow:var(--ops-cta-surface-pressed)}
 html.ops-foundation input[type=checkbox]{
  appearance:none;-webkit-appearance:none;display:inline-grid;place-content:center;flex-shrink:0;
  border:1px solid #998c7e;border-radius:4px;background:linear-gradient(#eee7e0,#fff);box-shadow:var(--ops-field-shadow);
@@ -2188,19 +2188,26 @@ html.ops-foundation{
 }
 /* SRC-157: fixed direction palette on every date/column, independent of selection. */
 html.ops-foundation .orders-workspace .order-sort-controls{
- gap:calc(4 * var(--order-unit));border:0;background:transparent;overflow:visible;padding-bottom:calc(11 * var(--order-unit));
+ gap:calc(4 * var(--order-unit));border:0;background:transparent;overflow:visible;padding-bottom:calc(8 * var(--order-unit));font-size:calc(13 * var(--order-unit));
 }
 html.ops-foundation .orders-workspace .order-sort-option{
  --ops-material-top:#fff;--ops-material-mid:#f9f7f4;--ops-material-bottom:#e7e0d9;--ops-material-ink:#222;
  --ops-material-edge:#b8afa6;--ops-material-top-edge:#fff;--ops-material-left-edge:#f4eee7;
  --ops-material-side-1:#dcd6cf;--ops-material-side-2:#bdb1a3;--ops-material-side-3:#968675;
  --ops-cta-dark-pressed:inset 0 3px 5px rgba(0,0,0,.35),0 3px 0 #968675,0 6px 5px rgba(0,0,0,.16);
- position:relative;display:flex;align-items:center;justify-content:center;vertical-align:middle;height:calc(25 * var(--order-unit));min-height:0;
+ position:relative;display:flex;align-items:center;justify-content:center;vertical-align:middle;min-width:calc(59 * var(--order-unit));height:calc(28 * var(--order-unit));min-height:0;
  margin:0;padding:0 calc(7 * var(--order-unit) - var(--u));line-height:1.1;text-align:center;text-shadow:none;transform:none;
  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
 }
 html.ops-foundation .orders-workspace .order-sort-label{display:block;pointer-events:none}
+/* SRC-168: enlarge the face inside the same 36px group and heading footprint. */
+html.ops-foundation .orders-workspace .order-sort-option[data-direction=new]{min-width:calc(67 * var(--order-unit))}
+@media(min-width:1101px) and (max-width:1189px){
+ html.ops-foundation .orders-workspace .order-sort-controls{font-size:calc(12 * var(--order-unit))}
+ html.ops-foundation .orders-workspace .order-sort-option{min-width:calc(55 * var(--order-unit))}
+ html.ops-foundation .orders-workspace .order-sort-option[data-direction=new]{min-width:calc(62 * var(--order-unit))}
+}
 html.ops-foundation .orders-workspace .order-sort-option[data-direction=old]{
  --ops-material-top:#596067;--ops-material-mid:#3e4348;--ops-material-bottom:#272c31;--ops-material-ink:#fff;
  --ops-material-edge:#474747;--ops-material-top-edge:#9b9b9b;--ops-material-left-edge:#777;
@@ -2210,12 +2217,14 @@ html.ops-foundation .orders-workspace .order-sort-option[data-direction=old]{
 /* The hit surface stays fixed while the whole face sinks like QR. */
 html.ops-foundation .orders-workspace .order-sort-option::after{content:'';position:absolute;inset:0 0 calc(-1 * var(--ops-cta-hit-depth));border-radius:inherit}
 html.ops-foundation .orders-workspace .order-sort-option:is(:active:where(:not(.ops-touch-managed)),.ops-pressed:where(:not(:disabled,[aria-disabled=true])))::after{top:calc(-1 * var(--ops-cta-travel));bottom:calc(var(--ops-cta-travel) - var(--ops-cta-hit-depth))}
-/* SRC-141: preserve the adopted preparation and return CTAs during this trial. */
-html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled){border-radius:calc(13 * var(--u));box-shadow:inset 0 1px 0 #ffffff50,0 2px 0 #555,0 4px 0 #333,0 6px 0 #191919,0 7px 5px #2222}
+/* SRC-170: preparation shares the material recipe; return keeps its adopted face. */
+html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled){border-radius:calc(13 * var(--u))}
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions>.order-return:not(:disabled){border-radius:calc(13 * var(--u));background:var(--ops-secondary-bg);border-color:var(--ops-secondary-outline);color:#222;box-shadow:inset 0 1px 0 #fff,0 2px 0 #dcd6cf,0 4px 0 #bdb1a3,0 6px 0 #968675,0 7px 4px #3f33271f}
-html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed:where(:not(:disabled,[aria-disabled=true]))),
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions>.order-return:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed:where(:not(:disabled,[aria-disabled=true]))){transform:translateY(calc(5 * var(--u)));box-shadow:inset 0 2px 3px #2223,0 1px 0 #968675,0 2px 2px #3f33271f}
-html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:disabled{border-radius:calc(13 * var(--u));box-shadow:inset 0 1px 0 #fff9,0 1px 0 #c3c6c9,0 2px 0 #afb4b9;transform:none}
+html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:disabled{
+ border-radius:calc(13 * var(--u));background:linear-gradient(145deg,#f3f4f5,#e8eaec 49%,#dfe3e6);border-color:#d7dbde;border-top-color:#f4f5f6;border-left-color:#e9ecee;color:#92989e;
+ box-shadow:inset 0 calc(2 * var(--u)) calc(1 * var(--u)) #fff9,inset calc(-1 * var(--u)) calc(-2 * var(--u)) calc(2 * var(--u)) #59636b12,0 calc(2 * var(--u)) 0 #cdd1d5,0 calc(4 * var(--u)) 0 #b9bfc4,0 calc(6 * var(--u)) calc(4 * var(--u)) #28323c18;transform:none;
+}
 
 /* SRC-142: shared dialog heading and right-workspace mini axis. */
 html.ops-foundation .overlay:has(>.dialog[data-dialog-size=mini]){display:flex;align-items:center;justify-content:center}
@@ -2322,18 +2331,21 @@ html.ops-foundation .ui-review-store .store-information,html.ops-foundation .ui-
 /* A wrapped save notice owns its full height and the CTA's shadow clearance. */
 html.ops-foundation .store-calendar-panel>[data-store-status]{flex:0 0 auto;padding-bottom:calc(14 * var(--u))}
 
-/* SRC-163: one lighting/depth recipe for QR, adopted sorting, and action CTAs.
-   The initial order board, text tabs, switches and plain dismiss crosses stay scoped out.
+/* SRC-163/169/170: one lighting/depth recipe for QR, sorting, date and action CTAs.
+   Other initial board controls, text tabs, switches and plain dismiss crosses stay scoped out.
    Local zoom is compensated so supplemental controls retain the same displayed depth. */
+html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled),
 html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-review-rail) :is(.btn,button.store-link):not(.dialog-close,.annual-close,.sidebar-scan):not(:disabled,[aria-disabled=true]){
  --ops-material-top:#ffe9d7;--ops-material-mid:#f3c6a5;--ops-material-bottom:#dfaa83;
  --ops-material-side-1:#d4a07a;--ops-material-side-2:#ad7b57;--ops-material-side-3:#8f6447;
 }
+html.ops-foundation .sidebar .sidebar-order-date>button:not(:disabled),
 html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-review-rail) :is(.btn.secondary,button.store-link,.discard-answers .btn):not(.dialog-close,.annual-close,.sidebar-scan):not(:disabled,[aria-disabled=true]){
  --ops-material-top:#fff;--ops-material-mid:#f9f7f4;--ops-material-bottom:#e7e0d9;
  --ops-material-side-1:#dcd6cf;--ops-material-side-2:#bdb1a3;--ops-material-side-3:#968675;
 }
 /* SRC-167: soften only neutral white CTA edges; geometry/travel stay shared. */
+html.ops-foundation .sidebar .sidebar-order-date>button:not(:disabled),
 html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-review-rail) :is(.btn.secondary,button.store-link,.discard-answers .btn):not(.dialog-close,.annual-close,.sidebar-scan,.selected):not(:disabled,[aria-disabled=true],[aria-pressed=true]){
  --ops-material-lower-edge:rgba(60,48,36,.16);
  --ops-material-side-1:#e1dcd6;--ops-material-side-2:#cfc5ba;--ops-material-side-3:#b2a496;
@@ -2347,6 +2359,8 @@ html.ops-foundation [data-chrome-tools=compact]{--ops-cta-material-scale:.666666
 html.ops-foundation .order-calendar-dialog{--ops-cta-material-scale:calc(1 / var(--ui-density))}
 html.ops-foundation .scan-app-tile,
 html.ops-foundation .orders-workspace .order-sort-option,
+html.ops-foundation .sidebar .sidebar-order-date>button:not(:disabled),
+html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled),
 html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-review-rail) :is(.btn,button.store-link):not(.dialog-close,.annual-close,.sidebar-scan):not(:disabled,[aria-disabled=true]){
  --ops-qr-material-side-shadow:0 calc(var(--ops-cta-side-1) / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-1,#383838),0 calc(var(--ops-cta-side-2) / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-2,#252525),0 calc(var(--ops-cta-side-3) / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-3,#131313),0 calc(var(--ops-cta-contact) / var(--ops-cta-material-scale,1)) calc(var(--ops-cta-contact-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.23),0 calc(var(--ops-cta-ground) / var(--ops-cta-material-scale,1)) calc(var(--ops-cta-ground-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.18);
  --ops-cta-surface-pressed:inset 0 calc(3px / var(--ops-cta-material-scale,1)) calc(5px / var(--ops-cta-material-scale,1)) rgba(0,0,0,.35),0 calc(3px / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-3,#131313),0 calc(6px / var(--ops-cta-material-scale,1)) calc(5px / var(--ops-cta-material-scale,1)) rgba(0,0,0,.16);
@@ -2354,6 +2368,7 @@ html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-revi
  background:radial-gradient(ellipse at 28% 9%,rgba(255,255,255,.23),transparent 53%),linear-gradient(145deg,var(--ops-material-top,#414141),var(--ops-material-mid,#292929) 49%,var(--ops-material-bottom,#191919));
  box-shadow:inset 0 calc(3px / var(--ops-cta-material-scale,1)) calc(2px / var(--ops-cta-material-scale,1)) rgba(255,255,255,.42),inset calc(3px / var(--ops-cta-material-scale,1)) 0 calc(4px / var(--ops-cta-material-scale,1)) rgba(255,255,255,.17),inset calc(-3px / var(--ops-cta-material-scale,1)) calc(-4px / var(--ops-cta-material-scale,1)) calc(4px / var(--ops-cta-material-scale,1)) var(--ops-material-lower-edge,rgba(0,0,0,.36)),var(--ops-qr-material-side-shadow);
 }
+html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed),
 html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-review-rail) :is(.btn,button.store-link):not(.dialog-close,.annual-close,.sidebar-scan):not(:disabled,[aria-disabled=true]):is(:active:where(:not(.ops-touch-managed)),.ops-pressed){
  transform:translateY(calc(var(--ops-cta-travel) / var(--ops-cta-material-scale,1)));box-shadow:var(--ops-cta-surface-pressed);
 }
