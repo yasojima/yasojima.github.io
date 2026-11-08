@@ -2355,10 +2355,15 @@ html.ops-foundation :is(#workspace,.dialog,.page-chrome-backdrop)[data-page-chro
 html.ops-foundation :is(#workspace,.dialog,.page-chrome-backdrop)[data-page-chrome=title][data-dialog-size=mini]>.page-chrome-header{height:auto;min-height:calc(36 * var(--u))}
 html.ops-foundation.page-chrome-workspace .primary-nav .nav-link.active::before,
 html.ops-foundation.page-chrome-workspace .primary-nav .nav-link.active::after{content:none}
-.page-chrome-sidebar-bridge{position:fixed;z-index:101;background:#fff;pointer-events:none;transform:none}
-.page-chrome-sidebar-bridge>i{position:absolute;right:0;width:calc(16 * var(--u));height:calc(16 * var(--u));pointer-events:none}
-.page-chrome-sidebar-bridge>i:first-child{top:calc(-16 * var(--u));background:radial-gradient(circle at 0 0,transparent calc(15.6 * var(--u)),#fff calc(16 * var(--u)))}
-.page-chrome-sidebar-bridge>i:last-child{bottom:calc(-16 * var(--u));background:radial-gradient(circle at 0 100%,transparent calc(15.6 * var(--u)),#fff calc(16 * var(--u)))}
+/* SRC-201: one adopted flowing outline behind every selected business menu. */
+html.ops-foundation .sidebar.sidebar-flow-active{isolation:isolate}
+html.ops-foundation .sidebar-flow-surface{position:absolute;left:0;top:0;z-index:0;pointer-events:none;fill:#fff}
+html.ops-foundation .sidebar.sidebar-flow-active>:is(.sidebar-actions,.primary-nav,.utility-nav){position:relative;z-index:1}
+html.ops-foundation .sidebar.sidebar-flow-active .primary-nav .nav-link.active{background:transparent}
+html.ops-foundation .sidebar.sidebar-flow-active .primary-nav .nav-link.active::before,
+html.ops-foundation .sidebar.sidebar-flow-active .primary-nav .nav-link.active::after{content:none}
+.page-chrome-sidebar-bridge{position:fixed;z-index:101;background:transparent;pointer-events:none;transform:none;overflow:hidden}
+.page-chrome-sidebar-bridge>svg{display:block;width:100%;height:100%;fill:#fff;pointer-events:none}
 
 /* Public demo display review replaces only the sidebar while active. */
 html.ops-foundation .ui-review-rail{position:fixed;inset:0 auto 0 0;width:calc(188 * var(--u));z-index:1500;display:flex;flex-direction:column;gap:calc(14 * var(--u));padding:calc(22 * var(--u)) calc(12 * var(--u));background:#e6e1da;color:#25282b;overflow:auto;font-size:calc(13 * var(--u));line-height:1.5}
@@ -15011,7 +15016,7 @@ var qrcode = function() {
 try {
 const mediaNames=["media-logo.js", "media-photo-1.js", "media-photo-2.js", "media-photo-3.js", "media-photo-4.js"];
 let modulePayload=null;
-const moduleAssetVersion="748129ed703c7295c83b";
+const moduleAssetVersion="9add9fe1e0f72bdc7f66";
 const mediaText=await Promise.all(mediaNames.map(async(name,index)=>{const assetURL=new URL(name,document.baseURI);if(index===mediaNames.length-1)assetURL.searchParams.set('v',moduleAssetVersion);const response=await fetch(assetURL);if(!response.ok)throw new Error('EX OPS image unavailable');let text=await response.text();const packed=text.match(/\/\*EXOPS_MODULES_BASE64:([A-Za-z0-9+/=]+)\*\/\s*$/);if(packed){if(modulePayload!==null)throw new Error('EX OPS duplicate module payload');modulePayload=packed[1];text=text.slice(0,packed.index);}if(index===0){const earlyLogo=text.match(/^window\.EXOPS_ASSETS=\{logo:"(data:image\/png;base64,[A-Za-z0-9+/=]+)",photo:"data:image\/png;base64,"\};\s*$/)?.[1];if(!earlyLogo)throw new Error('EX OPS logo data invalid');for(const image of document.querySelectorAll('[data-boot-logo]'))image.setAttribute('href',earlyLogo);document.querySelector('.launch-brand')?.classList.add('logo-ready');}return text;}));
 const logo=mediaText[0].match(/^window\.EXOPS_ASSETS=\{logo:"(data:image\/png;base64,[A-Za-z0-9+/=]+)",photo:"data:image\/png;base64,"\};\s*$/)?.[1];
 const photoParts=mediaText.slice(1).map(text=>text.match(/^window\.EXOPS_ASSETS\.photo\+="([A-Za-z0-9+/=]+)";\s*$/)?.[1]);
