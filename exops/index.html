@@ -15016,7 +15016,7 @@ var qrcode = function() {
 try {
 const mediaNames=["media-logo.js", "media-photo-1.js", "media-photo-2.js", "media-photo-3.js", "media-photo-4.js"];
 let modulePayload=null;
-const moduleAssetVersion="9add9fe1e0f72bdc7f66";
+const moduleAssetVersion="274d77d6b0f238641783";
 const mediaText=await Promise.all(mediaNames.map(async(name,index)=>{const assetURL=new URL(name,document.baseURI);if(index===mediaNames.length-1)assetURL.searchParams.set('v',moduleAssetVersion);const response=await fetch(assetURL);if(!response.ok)throw new Error('EX OPS image unavailable');let text=await response.text();const packed=text.match(/\/\*EXOPS_MODULES_BASE64:([A-Za-z0-9+/=]+)\*\/\s*$/);if(packed){if(modulePayload!==null)throw new Error('EX OPS duplicate module payload');modulePayload=packed[1];text=text.slice(0,packed.index);}if(index===0){const earlyLogo=text.match(/^window\.EXOPS_ASSETS=\{logo:"(data:image\/png;base64,[A-Za-z0-9+/=]+)",photo:"data:image\/png;base64,"\};\s*$/)?.[1];if(!earlyLogo)throw new Error('EX OPS logo data invalid');for(const image of document.querySelectorAll('[data-boot-logo]'))image.setAttribute('href',earlyLogo);document.querySelector('.launch-brand')?.classList.add('logo-ready');}return text;}));
 const logo=mediaText[0].match(/^window\.EXOPS_ASSETS=\{logo:"(data:image\/png;base64,[A-Za-z0-9+/=]+)",photo:"data:image\/png;base64,"\};\s*$/)?.[1];
 const photoParts=mediaText.slice(1).map(text=>text.match(/^window\.EXOPS_ASSETS\.photo\+="([A-Za-z0-9+/=]+)";\s*$/)?.[1]);
