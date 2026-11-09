@@ -2699,14 +2699,15 @@ html.ops-foundation .order-calendar-month .order-calendar-footer-heading h2 {
   line-height: 22px;
 }
 html.ops-foundation .order-calendar-month .annual-days {
-  grid-template-rows: repeat(6, minmax(24px, auto));
+  grid-template-rows: none;
+  grid-auto-rows: 38px;
 }
 html.ops-foundation .order-calendar-month .annual-date {
   height: 38px;
   padding: 0;
 }
-html.ops-foundation .order-calendar-month .annual-empty {
-  height: auto;
+html.ops-foundation .order-calendar-month .annual-days > .annual-empty:not(:has(~ .annual-date)) {
+  display: none;
 }
 html.ops-foundation .order-calendar-month .annual-date,
 html.ops-foundation .order-calendar-month .annual-date:is(.has-orders,.is-selected,.is-today,.is-cursor,:hover,:active,.ops-pressed) {
