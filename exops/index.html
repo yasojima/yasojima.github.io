@@ -2695,8 +2695,27 @@ html.ops-foundation #workspace.orders-workspace .order-number-search>.qr-text-co
   --ops-material-ink:#222;
 }
 html.ops-foundation #workspace.orders-workspace .qr-text-control::before {content:none}
+/* SRC-240: resize the complete 72px QR material, including corners, rim and shadows. */
+html.ops-foundation #workspace.orders-workspace .qr-text-control {
+  --qr-face-width:59;--qr-face-height:28;
+  --qr-scale-x:calc(var(--qr-face-width) / 72);
+  --qr-scale-y:calc(var(--qr-face-height) / 72);
+}
+html.ops-foundation #workspace.orders-workspace .qr-text-control[data-direction=new] {--qr-face-width:67}
+html.ops-foundation #workspace.orders-workspace .order-number-search>.qr-text-control {--qr-face-width:70;--qr-face-height:31}
+@media(min-width:1101px) and (max-width:1189px){
+  html.ops-foundation #workspace.orders-workspace .order-sort-option.qr-text-control {--qr-face-width:55}
+  html.ops-foundation #workspace.orders-workspace .order-sort-option.qr-text-control[data-direction=new] {--qr-face-width:62}
+}
 html.ops-foundation #workspace.orders-workspace .qr-text-control>.scan-app-tile {
-  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+  position:absolute;top:0;left:0;width:calc(72 * var(--u));height:calc(72 * var(--u));pointer-events:none;
+  transform-origin:0 0;transform:scale(var(--qr-scale-x),var(--qr-scale-y));
+}
+html.ops-foundation #workspace.orders-workspace .qr-text-control:is(:active:where(:not(.ops-touch-managed)),.ops-pressed:where(:not(:disabled,[aria-disabled=true])))>.scan-app-tile {
+  transform:scale(var(--qr-scale-x),var(--qr-scale-y)) translateY(var(--ops-cta-travel));
+}
+html.ops-foundation #workspace.orders-workspace .qr-text-control>.scan-app-tile>.order-sort-label {
+  transform:scale(calc(1 / var(--qr-scale-x)),calc(1 / var(--qr-scale-y)));
 }
 /* Keep the existing hit area on the stationary wrapper, just as the QR button does. */
 html.ops-foundation #workspace.orders-workspace .order-sort-option.qr-text-control::after {
