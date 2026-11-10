@@ -2679,16 +2679,26 @@ html.ops-foundation #workspace .order-header-tools .order-number-search .btn::af
   inset-inline:calc(-1 * var(--u))!important;
 }
 
-/* SRC-234/235: one rounded body, with the exact QR reflection and bevel recipe. */
+/* SRC-236: compact faces need a visible specular rim and a rounded continuous side. */
 html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true]) {
   --order-solid-contact:0 calc(var(--ops-cta-contact) / var(--ops-cta-material-scale,1) - var(--order-solid-depth)) calc(var(--ops-cta-contact-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.23),0 calc(var(--ops-cta-ground) / var(--ops-cta-material-scale,1) - var(--order-solid-depth)) calc(var(--ops-cta-ground-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.18);
   --order-solid-depth:calc(8 * var(--u));
+  --order-solid-side-depth:calc(var(--order-solid-depth) - var(--order-solid-sink));
+  --order-solid-reflection:rgba(255,255,255,.62);
+  --order-solid-edge:var(--ops-material-edge,#b8afa6);
+  --order-solid-top-edge:var(--ops-material-top-edge,#fff);
+  --order-solid-left-edge:var(--ops-material-left-edge,#f4eee7);
   --order-solid-sink:0px;
   --order-solid-duration:var(--ops-cta-return-time);
   isolation:isolate;
   background:transparent;
   border-color:transparent;
   box-shadow:none;
+}
+/* A white face needs room below white for the QR highlight to remain visible. */
+html.ops-foundation #workspace.orders-workspace :is(.order-sort-option[data-direction=new],.order-number-search > .btn):not(:disabled,[aria-disabled=true]) {
+  --ops-material-top:#f7f5f1;--ops-material-mid:#eee9e2;--ops-material-bottom:#ded4c8;
+  --order-solid-reflection:rgba(255,255,255,.95);
 }
 html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true])::before {
   content:'';
@@ -2697,8 +2707,18 @@ html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-nu
   z-index:-1;
   pointer-events:none;
   border-radius:calc(12 * var(--u)) calc(12 * var(--u)) calc(13 * var(--u)) calc(13 * var(--u));
-  background:var(--ops-qr-material-face);
-  box-shadow:var(--ops-qr-material-bevel),var(--order-solid-contact);
+  border:1px solid var(--order-solid-edge);
+  border-top-color:var(--order-solid-top-edge);
+  border-left-color:var(--order-solid-left-edge);
+  background:radial-gradient(ellipse at 28% 9%,var(--order-solid-reflection),rgba(255,255,255,.12) 30%,transparent 53%),var(--ops-qr-material-face);
+  box-shadow:
+    inset 0 calc(2 * var(--u)) calc(1 * var(--u)) rgba(255,255,255,.72),
+    inset calc(2 * var(--u)) 0 calc(2 * var(--u)) rgba(255,255,255,.32),
+    inset calc(-2 * var(--u)) 0 calc(2 * var(--u)) rgba(0,0,0,.22),
+    inset 0 calc(-.24 * var(--order-solid-side-depth)) calc(1 * var(--u)) var(--ops-material-side-3,#968675),
+    inset 0 calc(-.55 * var(--order-solid-side-depth)) calc(1.2 * var(--u)) var(--ops-material-side-2,#bdb1a3),
+    inset 0 calc(-1 * var(--order-solid-side-depth)) calc(1.5 * var(--u)) var(--ops-material-side-1,#dcd6cf),
+    var(--order-solid-contact);
   transition:box-shadow var(--order-solid-duration) ease;
 }
 html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true]):is(:active:where(:not(.ops-touch-managed)),.ops-pressed) {
