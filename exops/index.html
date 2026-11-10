@@ -2434,6 +2434,10 @@ html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-revi
  background:var(--ops-qr-material-face);
  box-shadow:var(--ops-qr-material-bevel),var(--ops-qr-material-side-shadow);
 }
+/* SRC-239: the pressed QR surface is also the resting surface; raised sides stay intact. */
+html.ops-foundation .scan-app-tile {
+ --ops-qr-material-bevel:inset 0 calc(3px / var(--ops-cta-material-scale,1)) calc(5px / var(--ops-cta-material-scale,1)) rgba(0,0,0,.35);
+}
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed),
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions>.order-return:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed),
 html.ops-foundation .order-workspace-header .btn:not(:disabled,[aria-disabled=true]):is(:active:where(:not(.ops-touch-managed)),.ops-pressed),
