@@ -2678,6 +2678,61 @@ html.ops-foundation #workspace .order-header-tools .order-number-search .btn::af
   inset-inline:calc(-1 * var(--u))!important;
 }
 
+/* Order text controls use one rounded surface from the face to the base. */
+html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true]) {
+  --order-solid-top:#fff;
+  --order-solid-face:#f9f7f4;
+  --order-solid-face-end:#eae3db;
+  --order-solid-shoulder:#d8cfc5;
+  --order-solid-side:#c0b4a8;
+  --order-solid-base:#ac9d8d;
+  --order-solid-rim:#fffc;
+  --order-solid-left:#fff4;
+  --order-solid-right:#56433224;
+  --order-solid-contact:0 2px 3px #392a2434,0 5px 9px #392a2412;
+  --order-solid-depth:calc(8 * var(--u));
+  --order-solid-sink:0px;
+  --order-solid-duration:var(--ops-cta-return-time);
+  isolation:isolate;
+  background:transparent;
+  border-color:transparent;
+  box-shadow:none;
+}
+html.ops-foundation #workspace.orders-workspace .order-sort-option[data-direction=old]:not(:disabled,[aria-disabled=true]) {
+  --order-solid-top:#636a71;
+  --order-solid-face:#474d53;
+  --order-solid-face-end:#3b4147;
+  --order-solid-shoulder:#30363c;
+  --order-solid-side:#24292f;
+  --order-solid-base:#1a1d22;
+  --order-solid-rim:#fff6;
+  --order-solid-left:#fff2;
+  --order-solid-right:#0004;
+}
+html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true])::before {
+  content:'';
+  position:absolute;
+  inset:-1px -1px calc(-1px - var(--order-solid-depth) + var(--order-solid-sink));
+  z-index:-1;
+  pointer-events:none;
+  border-radius:calc(12 * var(--u)) calc(12 * var(--u)) calc(13 * var(--u)) calc(13 * var(--u));
+  background:
+    radial-gradient(ellipse at 26% -27%,var(--order-solid-rim),transparent 68%),
+    linear-gradient(105deg,var(--order-solid-left),transparent 25% 76%,var(--order-solid-right)),
+    linear-gradient(180deg,var(--order-solid-top),var(--order-solid-face) 24%,var(--order-solid-face-end) 51%,var(--order-solid-shoulder) 73%,var(--order-solid-side) 92%,var(--order-solid-base));
+  box-shadow:inset 0 1px 1px var(--order-solid-rim),inset 0 -1px 2px var(--order-solid-right),
+    inset 1px 0 2px var(--order-solid-left),inset -2px 0 3px var(--order-solid-right),var(--order-solid-contact);
+  transition:bottom var(--order-solid-duration) var(--ops-cta-ease),box-shadow var(--order-solid-duration) ease;
+}
+html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true]):is(:active:where(:not(.ops-touch-managed)),.ops-pressed) {
+  --order-solid-sink:var(--ops-cta-travel);
+  --order-solid-duration:var(--ops-cta-down-time);
+  --order-solid-contact:0 1px 2px #392a242e,0 3px 4px #392a240c;
+}
+@media (prefers-reduced-motion:reduce) {
+  html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn)::before {transition:none}
+}
+
 /* SRC-224: keep the date and both arrows still across 1/2 digit months/days. */
 html.ops-foundation #workspace .order-header-tools .order-current-day{width:calc(176 * var(--u))!important;font-variant-numeric:tabular-nums}
 html.ops-foundation #workspace .order-header-tools .order-current-day :is(.calendar-month-number,.calendar-day-number){display:inline-block;flex:none;width:2ch;text-align:right;font-variant-numeric:tabular-nums}
