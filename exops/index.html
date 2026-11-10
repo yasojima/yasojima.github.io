@@ -3121,9 +3121,12 @@ html.ops-foundation .order-calendar-month .ops-matte-extended.order-calendar-sum
 /* SRC-244: reconnect-only action keeps its existing transparent fill and inherited color. */
 html.ops-foundation #recovery-actions-root .sync-recovery-action.ops-matte{--ops-material-mid:transparent;--ops-matte-disabled-fill:transparent}
 </style><style>
-/* SRC-246 / CHG-300: delineate only the order and customer list bodies. */
+/* SRC-246 list bodies; SRC-248 trial shares their outline with 10 order-list CTAs. */
 html.ops-foundation #workspace.orders-workspace .compact-order-card.ops-matte > .ops-matte-surface::after,
-html.ops-foundation #workspace .customer-list > .customer-button.ops-matte > .ops-matte-surface::after {
+html.ops-foundation #workspace .customer-list > .customer-button.ops-matte > .ops-matte-surface::after,
+html.ops-foundation:has(#workspace.orders-workspace #order-order-view) .sidebar .sidebar-scan > .scan-app-tile.ops-matte > .ops-matte-surface::after,
+html.ops-foundation:has(#workspace.orders-workspace #order-order-view) #workspace.orders-workspace .order-workspace-header :is(.calendar-date-arrow.ops-matte,.qr-text-control > .scan-app-tile.ops-matte) > .ops-matte-surface::after,
+html.ops-foundation:has(#workspace.orders-workspace #order-order-view) #workspace.orders-workspace .order-sort-controls .qr-text-control > .scan-app-tile.ops-matte > .ops-matte-surface::after {
  content:"";
  position:absolute;
  inset:0;
