@@ -2404,14 +2404,12 @@ html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-revi
  --ops-material-top:#fff;--ops-material-mid:#f9f7f4;--ops-material-bottom:#e7e0d9;
  --ops-material-side-1:#dcd6cf;--ops-material-side-2:#bdb1a3;--ops-material-side-3:#968675;
 }
-/* SRC-167: soften only neutral white CTA edges; geometry/travel stay shared. */
+/* SRC-235: neutral CTA edges keep the same defined rim as the QR material. */
 html.ops-foundation .sidebar .sidebar-order-date>button:not(:disabled),
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions>.order-return:not(:disabled),
 html.ops-foundation .order-workspace-header .btn.secondary:not(:disabled,[aria-disabled=true]),
 html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-review-rail) :is(.btn.secondary,button.store-link,.discard-answers .btn):not(.dialog-close,.annual-close,.sidebar-scan,.selected):not(:disabled,[aria-disabled=true],[aria-pressed=true]){
- --ops-material-lower-edge:rgba(60,48,36,.16);
- --ops-material-side-1:#e1dcd6;--ops-material-side-2:#cfc5ba;--ops-material-side-3:#b2a496;
- border-color:#c9c2bb;border-top-color:#f7f4f0;border-left-color:#eee9e3;
+ border-color:#b8afa6;border-top-color:#fff;border-left-color:#f4eee7;
 }
 html.ops-foundation #overlay-root :is(.calendar-dialog .quarter-tabs,.order-calendar-dialog .annual-quarters) .btn:is(.selected,[aria-pressed=true]):not(:disabled,[aria-disabled=true]){
  --ops-material-top:#ffe9d7;--ops-material-mid:#f3c6a5;--ops-material-bottom:#dfaa83;
@@ -2429,8 +2427,11 @@ html.ops-foundation :is(#workspace:not(.orders-workspace),#overlay-root,.ui-revi
  --ops-qr-material-side-shadow:0 calc(var(--ops-cta-side-1) / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-1,#383838),0 calc(var(--ops-cta-side-2) / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-2,#252525),0 calc(var(--ops-cta-side-3) / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-3,#131313),0 calc(var(--ops-cta-contact) / var(--ops-cta-material-scale,1)) calc(var(--ops-cta-contact-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.23),0 calc(var(--ops-cta-ground) / var(--ops-cta-material-scale,1)) calc(var(--ops-cta-ground-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.18);
  --ops-cta-surface-pressed:inset 0 calc(3px / var(--ops-cta-material-scale,1)) calc(5px / var(--ops-cta-material-scale,1)) rgba(0,0,0,.35),0 calc(3px / var(--ops-cta-material-scale,1)) 0 var(--ops-material-side-3,#131313),0 calc(6px / var(--ops-cta-material-scale,1)) calc(5px / var(--ops-cta-material-scale,1)) rgba(0,0,0,.16);
  backdrop-filter:none;-webkit-backdrop-filter:none;
- background:radial-gradient(ellipse at 28% 9%,rgba(255,255,255,.23),transparent 53%),linear-gradient(145deg,var(--ops-material-top,#414141),var(--ops-material-mid,#292929) 49%,var(--ops-material-bottom,#191919));
- box-shadow:inset 0 calc(3px / var(--ops-cta-material-scale,1)) calc(2px / var(--ops-cta-material-scale,1)) rgba(255,255,255,.42),inset calc(3px / var(--ops-cta-material-scale,1)) 0 calc(4px / var(--ops-cta-material-scale,1)) rgba(255,255,255,.17),inset calc(-3px / var(--ops-cta-material-scale,1)) calc(-4px / var(--ops-cta-material-scale,1)) calc(4px / var(--ops-cta-material-scale,1)) var(--ops-material-lower-edge,rgba(0,0,0,.36)),var(--ops-qr-material-side-shadow);
+ /* The QR is the source: every material uses these exact reflection/bevel values. */
+ --ops-qr-material-face:radial-gradient(ellipse at 28% 9%,rgba(255,255,255,.23),transparent 53%),linear-gradient(145deg,var(--ops-material-top,#414141),var(--ops-material-mid,#292929) 49%,var(--ops-material-bottom,#191919));
+ --ops-qr-material-bevel:inset 0 calc(3px / var(--ops-cta-material-scale,1)) calc(2px / var(--ops-cta-material-scale,1)) rgba(255,255,255,.42),inset calc(3px / var(--ops-cta-material-scale,1)) 0 calc(4px / var(--ops-cta-material-scale,1)) rgba(255,255,255,.17),inset calc(-3px / var(--ops-cta-material-scale,1)) calc(-4px / var(--ops-cta-material-scale,1)) calc(4px / var(--ops-cta-material-scale,1)) rgba(0,0,0,.36);
+ background:var(--ops-qr-material-face);
+ box-shadow:var(--ops-qr-material-bevel),var(--ops-qr-material-side-shadow);
 }
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .prepare-actions>.btn:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed),
 html.ops-foundation.sidebar-layout[data-order-cards="3"] .orders-workspace .ticket-actions>.order-return:not(:disabled):is(:active:where(:not(.ops-touch-managed)),.ops-pressed),
@@ -2678,18 +2679,9 @@ html.ops-foundation #workspace .order-header-tools .order-number-search .btn::af
   inset-inline:calc(-1 * var(--u))!important;
 }
 
-/* SRC-234: Order text controls use one rounded surface from the face to the base. */
+/* SRC-234/235: one rounded body, with the exact QR reflection and bevel recipe. */
 html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true]) {
-  --order-solid-top:#fff;
-  --order-solid-face:#f9f7f4;
-  --order-solid-face-end:#eae3db;
-  --order-solid-shoulder:#d8cfc5;
-  --order-solid-side:#c0b4a8;
-  --order-solid-base:#ac9d8d;
-  --order-solid-rim:#fffc;
-  --order-solid-left:#fff4;
-  --order-solid-right:#56433224;
-  --order-solid-contact:0 2px 3px #392a2434,0 5px 9px #392a2412;
+  --order-solid-contact:0 calc(var(--ops-cta-contact) / var(--ops-cta-material-scale,1) - var(--order-solid-depth)) calc(var(--ops-cta-contact-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.23),0 calc(var(--ops-cta-ground) / var(--ops-cta-material-scale,1) - var(--order-solid-depth)) calc(var(--ops-cta-ground-blur) / var(--ops-cta-material-scale,1)) rgba(0,0,0,.18);
   --order-solid-depth:calc(8 * var(--u));
   --order-solid-sink:0px;
   --order-solid-duration:var(--ops-cta-return-time);
@@ -2698,17 +2690,6 @@ html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-nu
   border-color:transparent;
   box-shadow:none;
 }
-html.ops-foundation #workspace.orders-workspace .order-sort-option[data-direction=old]:not(:disabled,[aria-disabled=true]) {
-  --order-solid-top:#636a71;
-  --order-solid-face:#474d53;
-  --order-solid-face-end:#3b4147;
-  --order-solid-shoulder:#30363c;
-  --order-solid-side:#24292f;
-  --order-solid-base:#1a1d22;
-  --order-solid-rim:#fff6;
-  --order-solid-left:#fff2;
-  --order-solid-right:#0004;
-}
 html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true])::before {
   content:'';
   position:absolute;
@@ -2716,18 +2697,14 @@ html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-nu
   z-index:-1;
   pointer-events:none;
   border-radius:calc(12 * var(--u)) calc(12 * var(--u)) calc(13 * var(--u)) calc(13 * var(--u));
-  background:
-    radial-gradient(ellipse at 26% -27%,var(--order-solid-rim),transparent 68%),
-    linear-gradient(105deg,var(--order-solid-left),transparent 25% 76%,var(--order-solid-right)),
-    linear-gradient(180deg,var(--order-solid-top),var(--order-solid-face) 24%,var(--order-solid-face-end) 51%,var(--order-solid-shoulder) 73%,var(--order-solid-side) 92%,var(--order-solid-base));
-  box-shadow:inset 0 1px 1px var(--order-solid-rim),inset 0 -1px 2px var(--order-solid-right),
-    inset 1px 0 2px var(--order-solid-left),inset -2px 0 3px var(--order-solid-right),var(--order-solid-contact);
+  background:var(--ops-qr-material-face);
+  box-shadow:var(--ops-qr-material-bevel),var(--order-solid-contact);
   transition:box-shadow var(--order-solid-duration) ease;
 }
 html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn):not(:disabled,[aria-disabled=true]):is(:active:where(:not(.ops-touch-managed)),.ops-pressed) {
   --order-solid-sink:var(--ops-cta-travel);
   --order-solid-duration:var(--ops-cta-down-time);
-  --order-solid-contact:0 1px 2px #392a242e,0 3px 4px #392a240c;
+  --order-solid-contact:0 calc(6px / var(--ops-cta-material-scale,1) - var(--order-solid-depth) + var(--order-solid-sink)) calc(5px / var(--ops-cta-material-scale,1)) rgba(0,0,0,.16);
 }
 @media (prefers-reduced-motion:reduce) {
   html.ops-foundation #workspace.orders-workspace :is(.order-sort-option,.order-number-search > .btn)::before {transition:none}
