@@ -2682,11 +2682,13 @@ html.ops-foundation #workspace .order-header-tools .order-number-search .btn::af
 
 /* SRC-237: the QR tile itself, resized and containing text. */
 html.ops-foundation #workspace.orders-workspace .qr-text-control {
-  --ops-material-top:initial;--ops-material-mid:initial;--ops-material-bottom:initial;
-  --ops-material-edge:initial;--ops-material-top-edge:initial;--ops-material-left-edge:initial;
-  --ops-material-side-1:initial;--ops-material-side-2:initial;--ops-material-side-3:initial;
-  --ops-material-ink:initial;--ops-cta-dark-pressed:inherit;
+  --ops-cta-dark-pressed:var(--ops-cta-surface-pressed);
   position:relative;background:transparent;border:0;box-shadow:none;transform:none;
+}
+/* SRC-238: preserve the original white search palette on the shared QR tile. */
+html.ops-foundation #workspace.orders-workspace .order-number-search>.qr-text-control {
+  --ops-material-edge:#b8afa6;--ops-material-top-edge:#fff;--ops-material-left-edge:#f4eee7;
+  --ops-material-ink:#222;
 }
 html.ops-foundation #workspace.orders-workspace .qr-text-control::before {content:none}
 html.ops-foundation #workspace.orders-workspace .qr-text-control>.scan-app-tile {
