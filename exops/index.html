@@ -3210,7 +3210,7 @@ html.ops-foundation .order-input-clear:focus-visible{outline:1px dotted #756c62;
 .time-proposal .order-four-times time{font-weight:600;color:#403b35}
 .time-proposal .order-four-times [data-clock=pickup]{font-weight:750}
 
-/* Isolated rough: change only the three existing state-label palettes. */
+/* Adopted status-label palettes. */
 .time-proposal .time-state.incoming{color:#70420d;background:#f5dfba;border-color:#be8645}
 .time-proposal .time-state.ready{color:#21557d;background:#d9eafa;border-color:#7da7c5}
 .time-proposal .time-state.completed{color:#256340;background:#dceee0;border-color:#79a788}
@@ -3230,6 +3230,37 @@ html.ops-foundation .time-proposal button.global-alert.late{color:#963c31}
 .time-proposal .global-alert b{display:inline-flex;align-items:center;white-space:nowrap;flex:none}
 .time-proposal .global-alert b::after{content:'件';font-weight:400;margin-left:calc(4 * var(--u))}
 .time-proposal .time-order:focus-visible{outline:calc(2 * var(--u)) solid #8c7968;outline-offset:calc(2 * var(--u))}
+
+/* SRC-271: retain the established compact card typography; reduce only gaps. */
+html.ops-foundation #order-order-view.time-proposal{padding:calc(4 * var(--u));gap:calc(2 * var(--u))}
+.time-proposal .time-controls{display:flex;align-items:center;justify-content:space-between;gap:calc(12 * var(--u));flex:none;min-width:0}
+.time-proposal .time-toolbar{height:calc(44 * var(--u));padding:0 calc(4 * var(--u));gap:calc(12 * var(--u))}
+.time-proposal .time-axis-title{min-width:0}
+.time-proposal .time-filters{gap:calc(8 * var(--u))}
+.time-proposal .time-livebar{height:calc(44 * var(--u));gap:calc(10 * var(--u));padding:0 calc(4 * var(--u))}
+.time-proposal .live-clock{flex-direction:column;align-items:flex-start;gap:0;line-height:1.1}
+.time-proposal .live-clock time{font-size:calc(19 * var(--u))}
+.time-proposal .time-column-head{padding:calc(2 * var(--u)) calc(9 * var(--u))}
+.time-proposal .time-title-line{margin-bottom:0}
+.time-proposal .time-counts,.time-proposal .time-col-alert{font-size:calc(12.8 * var(--u))}
+.time-proposal .time-counts span{min-height:calc(22 * var(--u))}
+.time-proposal .time-col-alert{margin-top:0;padding-top:0}
+.time-proposal .time-col-alert button{min-height:calc(24 * var(--u))}
+.time-proposal .time-orders{gap:calc(1 * var(--u));padding:calc(2 * var(--u)) calc(3 * var(--u)) calc(4 * var(--u))}
+.time-proposal .time-column-foot,.time-proposal .time-footer{display:none}
+html.ops-foundation .time-proposal .time-order{height:calc(76 * var(--u));min-height:calc(76 * var(--u));padding:calc(2 * var(--u)) calc(9 * var(--u))}
+html.ops-foundation .time-proposal .time-order .ops-matte-content{gap:calc(2 * var(--u));align-items:stretch}
+html.ops-foundation .time-proposal .compact-order-identity{gap:calc(6 * var(--u));justify-content:center}
+html.ops-foundation .time-proposal .time-state{font-size:calc(12.8 * var(--u));line-height:1.1;padding:calc(2 * var(--u)) calc(4 * var(--u));flex:none;overflow:visible}
+html.ops-foundation .time-proposal .order-four-times{font-size:calc(12.8 * var(--u));line-height:1.4;column-gap:calc(12 * var(--u));row-gap:calc(2 * var(--u))}
+html.ops-foundation .time-proposal .order-four-times>span{gap:calc(4 * var(--u))}
+html.ops-foundation .time-proposal .order-four-times small{color:inherit}
+html.ops-foundation .time-proposal .order-four-times time{font-weight:400;color:inherit}
+.time-proposal .fold-total,.time-proposal .fold-count{font-size:calc(12.8 * var(--u))}
+.time-proposal .fold-summary button.fold-count{position:relative;flex-direction:column;justify-content:center;gap:calc(2 * var(--u));min-height:calc(52 * var(--u));font-size:calc(12.8 * var(--u));padding:calc(4 * var(--u)) 0}
+.time-proposal .fold-summary button.fold-count .count-chevron{position:absolute;right:0;bottom:calc(8 * var(--u))}
+.time-proposal .attention-context{font-size:calc(12.8 * var(--u))}
+.time-proposal .attention-results{gap:calc(8 * var(--u));padding:calc(8 * var(--u))}
 
 </style></head>
 <body>
@@ -15707,7 +15738,7 @@ var qrcode = function() {
 </script><script type="module">
 const assetFetch=window.fetch.bind(window),media={logo:'',photo:''};
 const mediaNames=["media-logo.js", "media-photo-1.js", "media-photo-2.js", "media-photo-3.js", "media-photo-4.js"],mediaVersion="33e832a7d13d82d29016";
-const runtimeAsset="runtime-modules-255af266c2e13454.json",runtimeHash="255af266c2e134540fb266b87c8e489eb9cd740abc34d4d577971fc8a7d1a6ce";
+const runtimeAsset="runtime-modules-af97bb0c42d08b17.json",runtimeHash="af97bb0c42d08b17ad878e3d63691820dfc5062d123b531e2cdd456aeba677af";
 async function readAsset(url,validate,timeoutMs=12000){
  let failure;
  for(let attempt=0;attempt<2;attempt++){
