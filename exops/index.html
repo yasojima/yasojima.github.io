@@ -15611,10 +15611,10 @@ var qrcode = function() {
 const assetFetch=window.fetch.bind(window),media={logo:'',photo:''};
 const mediaNames=["media-logo.js", "media-photo-1.js", "media-photo-2.js", "media-photo-3.js", "media-photo-4.js"],mediaVersion="33e832a7d13d82d29016";
 const runtimeAsset="runtime-modules-350de84fed13abbe.json",runtimeHash="350de84fed13abbe772d653bfdaa6cc010b94ef26a9ffebd1f549b17c7c1069f";
-async function readAsset(url,validate){
+async function readAsset(url,validate,timeoutMs=12000){
  let failure;
  for(let attempt=0;attempt<2;attempt++){
-  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
   try{
    const response=await assetFetch(url,{signal:controller.signal,cache:attempt?'reload':'default'});
    if(!response.ok)throw new Error('EX OPS asset HTTP '+response.status);
@@ -15643,7 +15643,7 @@ function requestMedia(kind){
    const value=await readAsset(new URL(mediaNames[0],document.baseURI),text=>{
     const logo=text.match(/^window\.EXOPS_ASSETS=\{logo:"(data:image\/png;base64,[A-Za-z0-9+/=]+)",photo:"data:image\/png;base64,"\};\s*$/)?.[1];
     if(!logo)throw new Error('EX OPS logo data invalid');return logo;
-   });bindMedia('logo',value);
+   },60000);bindMedia('logo',value);
   }else{
    const parts=await Promise.all(mediaNames.slice(1).map(async(name,index)=>{
     const url=new URL(name,document.baseURI);if(index===mediaNames.length-2)url.searchParams.set('v',mediaVersion);
@@ -15652,7 +15652,7 @@ function requestMedia(kind){
      text=text.replace(/\/\*EXOPS_MODULES_BASE64:[A-Za-z0-9+/=]+\*\/\s*$/,'');
      const part=text.match(/^window\.EXOPS_ASSETS\.photo\+="([A-Za-z0-9+/=]+)";\s*$/)?.[1];
      if(!part)throw new Error('EX OPS photo data invalid');return part;
-    });
+    },60000);
    }));
    const data=Uint8Array.from(atob(parts.join('')),c=>c.charCodeAt(0));
    bindMedia('photo',URL.createObjectURL(new Blob([data],{type:'image/png'})));
