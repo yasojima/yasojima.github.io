@@ -3268,76 +3268,8 @@ html.ops-foundation .orders-workspace .time-proposal .time-order{touch-action:pa
 .time-proposal :is(.time-scroll,.time-orders){touch-action:pan-x pan-y pinch-zoom}
 .time-proposal .attention-results{touch-action:pan-y pinch-zoom}
 
-/* SRC-277: legacy card geometry and time-column header are the comparison
-   baseline. Controls at the left are temporary placement, not a new design.
-   Their original DOM, click handlers, data and keyboard behavior stay intact. */
-html.ops-foundation:has(#workspace.orders-workspace) :is(.page-chrome-surface-layer,.page-chrome-sidebar-bridge){display:none}
-html.ops-foundation .shell:has(>#workspace.orders-workspace)>.sidebar{background:#e6e1da!important;z-index:0}
-html.ops-foundation .shell:has(>#workspace.orders-workspace)>.sidebar :is(.primary-nav,.utility-nav,.sidebar-flow-surface){display:none}
-html.ops-foundation #workspace.orders-workspace{
- position:relative;z-index:1;container-type:inline-size;padding:calc(12 * var(--u)) calc(10 * var(--u));
- overflow:visible!important;background:#fff;--chrome-body-top:0px!important;
-}
-html.ops-foundation #workspace.orders-workspace::before,
-html.ops-foundation #workspace.orders-workspace::after{content:none!important}
-
-/* Left: QR stays where it is. Tabs, date, search and state controls move here. */
-html.ops-foundation #workspace.orders-workspace>.order-workspace-header{
- position:absolute!important;left:calc(-178 * var(--u))!important;top:calc(108 * var(--u))!important;
- width:calc(168 * var(--u))!important;max-width:none!important;height:calc(216 * var(--u))!important;
- min-height:0!important;margin:0!important;padding:0!important;display:block!important;overflow:visible!important;z-index:5;
-}
-html.ops-foundation #workspace.orders-workspace .order-workspace-header .page-chrome-tab-slot{
- position:static!important;width:100%!important;max-width:none!important;min-width:0!important;
- height:calc(40 * var(--u))!important;overflow:visible!important;flex:none!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-workspace-header .page-chrome-tabs{
- display:flex!important;width:100%!important;gap:calc(4 * var(--u))!important;padding:0!important;border:0!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-workspace-header .page-chrome-tabs::after{display:none!important}
-html.ops-foundation #workspace.orders-workspace .order-workspace-header .inpage-tab{
- width:calc(82 * var(--u))!important;min-width:0!important;max-width:none!important;flex:0 0 calc(82 * var(--u))!important;
- height:calc(40 * var(--u))!important;padding:0!important;font-size:calc(15 * var(--u))!important;
- border-radius:calc(8 * var(--u))!important;background:#dce1e6!important;color:#61656b!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-workspace-header .inpage-tab[aria-selected=true]{background:#fff!important;color:#282b30!important}
-html.ops-foundation #workspace.orders-workspace .order-workspace-header .order-header-tools{
- position:absolute!important;left:0!important;right:auto!important;top:calc(56 * var(--u))!important;bottom:auto!important;
- display:flex!important;flex-direction:column;align-items:stretch!important;gap:calc(16 * var(--u))!important;
- width:100%!important;max-width:none!important;height:auto!important;padding:0!important;overflow:visible!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-header-tools .order-header-date{
- display:grid!important;grid-template-columns:1fr 1fr;grid-template-rows:calc(32 * var(--u)) calc(34 * var(--u));
- width:100%!important;height:auto!important;gap:calc(8 * var(--u))!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-header-tools .order-current-day{
- grid-column:1/-1;grid-row:1;width:100%!important;height:calc(32 * var(--u))!important;font-size:calc(16 * var(--u))!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-current-day small{font-size:calc(12.8 * var(--u));margin-left:0}
-html.ops-foundation #workspace.orders-workspace .order-header-tools .calendar-date-arrow{
- grid-row:2;width:calc(34 * var(--u))!important;height:calc(34 * var(--u))!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-header-tools [data-action=order-day-next]{justify-self:end}
-html.ops-foundation #workspace.orders-workspace .order-header-tools .order-number-search{
- display:flex!important;flex-direction:column;align-items:stretch!important;gap:calc(10 * var(--u))!important;width:100%!important;height:auto!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-header-tools .chrome-input-hit,
-html.ops-foundation #workspace.orders-workspace .order-header-tools .order-number-search input{
- width:100%!important;min-width:0!important;max-width:none!important;height:calc(36 * var(--u))!important;
-}
-html.ops-foundation #workspace.orders-workspace .order-header-tools .order-number-search .btn{width:100%!important;height:calc(32 * var(--u))!important}
-html.ops-foundation #workspace.orders-workspace .time-controls{
- position:absolute;left:calc(-178 * var(--u));top:calc(342 * var(--u));width:calc(168 * var(--u));
- display:flex;flex-direction:column;align-items:stretch;gap:calc(14 * var(--u));z-index:5;
-}
-html.ops-foundation #workspace.orders-workspace .time-toolbar{display:block;height:auto;padding:0}
-html.ops-foundation #workspace.orders-workspace .time-axis-title{display:block;margin-bottom:calc(8 * var(--u));font-size:calc(14 * var(--u))}
-html.ops-foundation #workspace.orders-workspace .time-filters{display:grid;grid-template-columns:1fr 1fr;gap:calc(12 * var(--u)) calc(8 * var(--u))}
-html.ops-foundation #workspace.orders-workspace .time-filter{width:100%;min-width:0;height:calc(38 * var(--u));padding:0;font-size:calc(15 * var(--u))}
-html.ops-foundation #workspace.orders-workspace .time-livebar{display:flex;flex-direction:column;align-items:stretch;height:auto;padding:0;gap:calc(12 * var(--u))}
-html.ops-foundation #workspace.orders-workspace button.global-alert{width:100%;height:calc(32 * var(--u));justify-content:center;font-size:calc(12.8 * var(--u))}
-html.ops-foundation #workspace.orders-workspace .live-clock{order:3;margin:calc(6 * var(--u)) 0 0;display:flex;flex-direction:row;justify-content:space-between;align-items:center;font-size:calc(12.8 * var(--u))}
-html.ops-foundation #workspace.orders-workspace .live-clock time{font-size:calc(20 * var(--u))}
+/* Restore the existing management navigation and header; retain adopted card and time-column geometry. */
+html.ops-foundation #workspace.orders-workspace{container-type:inline-size}
 
 /* Same three-column width calculation and scroll gutter as the legacy board.
    Border goes outside that content width; all five cards keep their 88px face. */
