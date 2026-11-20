@@ -1,4 +1,4 @@
-/* Private to this browser's copy of the EXOPS trial. PDF bytes are read only on demand. */
+/* Attachments stay in this browser. The list reads only version metadata. */
 const OfficeStore = (() => {
   const expenses = "/expenses/", documents = "/compliance/audit-log/";
   const categories = ["ガソリン代", "有料道路・駐車料金", "処分費", "消耗品費", "交通費", "通信費", "外注費", "その他"];
@@ -93,30 +93,68 @@ const OfficeStore = (() => {
     return {date:date(d.date,"支払日"), cents, vehicle, team:clean(d.team,"班",70,false),
       category:clean(d.category,"経費の種類",90), destination, payment, notes:clean(d.notes,"用途・備考",2000,false)};
   }
-  function receiptOf(draft) {
-    if (draft.receiptBytes == null) return null;
-    if (!(draft.receiptBytes instanceof ArrayBuffer)) throw Error("領収書を選び直してください。");
-    const bytes = new Uint8Array(draft.receiptBytes);
+  function attachmentType(buffer) {
+    if (!(buffer instanceof ArrayBuffer)) return null;
+    const bytes = new Uint8Array(buffer);
     const signatures = [
       ["application/pdf", [37,80,68,70,45]], ["image/jpeg", [255,216,255]],
       ["image/png", [137,80,78,71,13,10,26,10]]
     ];
-    const match = signatures.find(([,prefix])=>prefix.every((b,i)=>bytes[i]===b));
-    if (!match) throw Error("領収書にはPDF・JPEG・PNGを選んでください。");
-    return {id:crypto.randomUUID(), name:clean(draft.receiptName,"ファイル名",255), type:match[0]};
+    return signatures.find(([,prefix])=>prefix.every((b,i)=>bytes[i]===b))?.[0];
+  }
+  function receiptOf(draft) {
+    if (draft.receiptBytes == null) return null;
+    const type=attachmentType(draft.receiptBytes);
+    if (!type) throw Error("領収書にはPDF・JPEG・PNGを選んでください。");
+    return {id:crypto.randomUUID(), name:clean(draft.receiptName,"ファイル名",255), type};
+  }
+  async function photoPdf(bytes, type) {
+    const url=URL.createObjectURL(new Blob([bytes], {type}));
+    const image=new Image(), canvas=document.createElement("canvas");
+    try {
+      image.src=url;
+      try {await image.decode();} catch {throw Error("写真を読み込めませんでした。画像を確認して選び直してください。");}
+      // The browser applies camera orientation. Keep up to 300 dpi on A4 in the copy.
+      const scale=Math.min(1,3508/Math.max(image.naturalWidth,image.naturalHeight));
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+      canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      const ctx=canvas.getContext("2d");
+      if (!ctx) throw Error("写真をPDFにできませんでした。もう一度お試しください。");
+      ctx.fillStyle="white";ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(image,0,0,canvas.width,canvas.height);
+      const encoded=await new Promise(resolve=>canvas.toBlob(resolve,type,0.95));
+      if (!encoded) throw Error("写真をPDFにできませんでした。もう一度お試しください。");
+      const {PDFDocument,PageSizes}=await import("./lib/pdf-lib-1.17.1.min.js");
+      const pdf=await PDFDocument.create(), pixels=await encoded.arrayBuffer();
+      const photo=type==="image/png"?await pdf.embedPng(pixels):await pdf.embedJpg(pixels);
+      const [short,long]=PageSizes.A4;
+      const page=pdf.addPage(photo.width>photo.height?[long,short]:[short,long]);
+      const {width,height}=photo.scaleToFit(page.getWidth()-32,page.getHeight()-32);
+      page.drawImage(photo,{width,height,x:(page.getWidth()-width)/2,y:(page.getHeight()-height)/2});
+      return await pdf.save();
+    } finally {
+      URL.revokeObjectURL(url);
+      canvas.width=canvas.height=0;
+    }
   }
   async function version(d) {
-    const file=d.file;
-    if (!(file instanceof ArrayBuffer) || file.byteLength<5 || new TextDecoder().decode(file.slice(0,5)) !== "%PDF-") throw Error("控えにはPDFファイルを選んでください。");
+    const file=d.file, type=attachmentType(file);
+    if (!type) throw Error("書類の控えにはPDF・JPEG・PNGを選んでください。");
     const registered=date(d.date,"提出・登録日"), due=d.due?date(d.due,"更新期限"):"";
     if (due && due<registered) throw Error("更新期限は提出・登録日以降を指定してください。");
-    return {office:clean(d.office,"事業所名",110), title:clean(d.title,"書類名",150), number:clean(d.number,"登録・許可番号",100,false),
+    const entry={office:clean(d.office,"事業所名",110), title:clean(d.title,"書類名",150), number:clean(d.number,"登録・許可番号",100,false),
       date:registered, due, notes:clean(d.notes,"メモ",1100,false), savedAt:new Date().toISOString(),
       fileId:crypto.randomUUID(), filename:clean(d.filename || "控え.pdf","ファイル名",255), size:file.byteLength};
+    if (type==="application/pdf") return {entry,pdf:file};
+    entry.photoId=crypto.randomUUID();
+    entry.photoType=type;
+    entry.pdfName=(entry.filename.replace(/\.[^.]+$/,"")||entry.title)+".pdf";
+    return {entry,pdf:await photoPdf(file,type)};
   }
   async function save(place, draft) {
     const kind=access(place);
-    const item=kind==="expenses"?await expense(draft):await version(draft);
+    const documentVersion=kind==="documents"?await version(draft):null;
+    const item=documentVersion?documentVersion.entry:await expense(draft);
     if (kind==="expenses" && draft.status && !statuses.includes(draft.status)) throw Error("対応状況を確認してください。");
     const receipt = kind==="expenses" ? receiptOf(draft) : null;
     const needsCorrection = kind==="expenses" && place.role==="company_admin" && draft.status==="修正依頼";
@@ -133,7 +171,9 @@ const OfficeStore = (() => {
         if (issue) {tx.abort();return;}
         const revision=(old?.revision||0)+1;
         if (kind==="documents") {
-          tx.objectStore("files").add({id:item.fileId, documentId:id, bytes:draft.file});
+          const files=tx.objectStore("files");
+          files.add({id:item.fileId,documentId:id,bytes:documentVersion.pdf});
+          if (item.photoId) files.add({id:item.photoId,documentId:id,bytes:draft.file});
           store.put({id,revision,history:[...(old?.history||[]),item]});
         } else {
           if (receipt) {
@@ -154,7 +194,7 @@ const OfficeStore = (() => {
   async function attachment(place, key) {
     const kind=access(place);
     const db=await database(), file=await read(db.transaction("files").objectStore("files").get(key));
-    if (!file) throw Error("控えのPDFを確認できませんでした。");
+    if (!file) throw Error("ファイルを確認できませんでした。");
     if (kind==="expenses") {
       const row=file.expenseId && await read(db.transaction(kind).objectStore(kind).get(file.expenseId));
       if (!row || row.receipt?.id!==key || (place.role!=="company_admin" && ownerOf(row)!==place.account.id)) throw Error("対象の領収書を確認できませんでした。");
@@ -162,9 +202,10 @@ const OfficeStore = (() => {
     }
     if (!file.documentId) throw Error("対象の書類を確認できませんでした。");
     const record=await read(db.transaction("documents").objectStore("documents").get(file.documentId));
-    const entry=record?.history.find(v=>v.fileId===key);
+    const entry=record?.history.find(v=>v.fileId===key || v.photoId===key);
     if (!entry) throw Error("対象となる書類がありません。");
-    return {bytes:new Blob([file.bytes],{type:"application/pdf"}), name:entry.filename};
+    if (entry.photoId===key) return {bytes:new Blob([file.bytes],{type:entry.photoType}),name:entry.filename};
+    return {bytes:new Blob([file.bytes],{type:"application/pdf"}),name:entry.pdfName||entry.filename};
   }
   return {expenses,documents,snapshot,save,attachment,corrections,demoAccount};
 })();

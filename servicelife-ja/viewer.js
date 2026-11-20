@@ -27,7 +27,7 @@ const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,navigation,seq=0;
 const pendingMenuHashes=[];
-const dataVersion="?v=5975743798cd87a3";
+const dataVersion="?v=82ffdff042a39384";
 const screenFile=id=>"screens/"+id+".bin"+dataVersion;
 const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"+dataVersion),read("inside.js?v=59f588b81eef1b91","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
@@ -388,16 +388,20 @@ async function handleOffice(place,request){
 function showOfficePdf(file){
   const dialog=document.getElementById("office-pdf");
   if(dialog.open)dialog.close();
-  const url=URL.createObjectURL(file.bytes), embed=dialog.querySelector("iframe");
+  const url=URL.createObjectURL(file.bytes), embed=dialog.querySelector("iframe"), photo=dialog.querySelector("img");
+  const isPhoto=file.bytes.type.startsWith("image/");
   dialog.setAttribute("aria-label",file.receipt?"経費の領収書":"書類の控え");
   embed.title=file.receipt?"領収書":"控えのPDF";
   dialog.querySelector("strong").textContent=file.name;
   const [open,download]=dialog.querySelectorAll("a");
   open.href=url;download.href=url;download.download=file.name;
-  embed.src=url;
+  embed.hidden=isPhoto;photo.hidden=!isPhoto;
+  if(isPhoto){photo.alt=file.name;photo.src=url;}else{embed.src=url;}
   dialog.querySelector("button").onclick=()=>dialog.close();
   dialog.addEventListener("close",()=>{
-    embed.removeAttribute("src");open.removeAttribute("href");download.removeAttribute("href");
+    if(!dialog.open && open.href===url){
+      embed.removeAttribute("src");photo.removeAttribute("src");open.removeAttribute("href");download.removeAttribute("href");
+    }
     URL.revokeObjectURL(url);
   },{once:true});
   dialog.showModal();
