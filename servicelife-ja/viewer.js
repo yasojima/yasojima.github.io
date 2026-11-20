@@ -27,7 +27,7 @@ const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,navigation,seq=0;
 const pendingMenuHashes=[];
-const dataVersion="?v=7b7eb3570e70daa8";
+const dataVersion="?v=6c52767523abd806";
 const screenFile=id=>"screens/"+id+".bin"+dataVersion;
 const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"+dataVersion),read("inside.js?v=59f588b81eef1b91","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}

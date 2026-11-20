@@ -137,12 +137,12 @@ const OfficeStore = (() => {
       canvas.width=canvas.height=0;
     }
   }
-  async function version(d) {
+  async function version(d, department) {
     const file=d.file, type=attachmentType(file);
     if (!type) throw Error("書類の控えにはPDF・JPEG・PNGを選んでください。");
     const registered=date(d.date,"提出・登録日"), due=d.due?date(d.due,"更新期限"):"";
     if (due && due<registered) throw Error("更新期限は提出・登録日以降を指定してください。");
-    const entry={office:clean(d.office,"事業所名",110), title:clean(d.title,"書類名",150), number:clean(d.number,"登録・許可番号",100,false),
+    const entry={department, title:clean(d.title,"書類名",150), number:clean(d.number,"登録・許可番号など",100,false),
       date:registered, due, notes:clean(d.notes,"メモ",1100,false), savedAt:new Date().toISOString(),
       fileId:crypto.randomUUID(), filename:clean(d.filename || "控え.pdf","ファイル名",255), size:file.byteLength};
     if (type==="application/pdf") return {entry,pdf:file};
@@ -153,24 +153,31 @@ const OfficeStore = (() => {
   }
   async function save(place, draft) {
     const kind=access(place);
-    const documentVersion=kind==="documents"?await version(draft):null;
-    const item=documentVersion?documentVersion.entry:await expense(draft);
+    const department=kind==="documents"?(clean(draft.department,"部署",110,false)||"全社共通"):null;
+    const assignDepartment=kind==="documents" && draft.update==="department";
+    const documentVersion=kind==="documents" && !assignDepartment?await version(draft,department):null;
+    const item=kind==="expenses"?await expense(draft):documentVersion?.entry;
     if (kind==="expenses" && draft.status && !statuses.includes(draft.status)) throw Error("対応状況を確認してください。");
     const receipt = kind==="expenses" ? receiptOf(draft) : null;
     const needsCorrection = kind==="expenses" && place.role==="company_admin" && draft.status==="修正依頼";
     const reason = needsCorrection ? clean(draft.correctionReason,"修正理由",1000) : "";
     const db=await database(), id=draft.id||crypto.randomUUID();
     return new Promise((resolve,reject)=>{
-      const tx=db.transaction(kind==="documents" || receipt ? [kind,"files"] : [kind],"readwrite");
+      const tx=db.transaction(documentVersion || receipt ? [kind,"files"] : [kind],"readwrite");
       const store=tx.objectStore(kind); let issue;
       const req=store.get(id);
       req.onsuccess=()=>{
         const old=req.result;
         if ((draft.id && (!old || old.revision!==draft.revision)) || (!draft.id && old)) issue="別の画面で更新されました。詳細を開き直してください。";
+        if (assignDepartment && (!old?.history?.length || old.history.at(-1).department)) issue="最新の部署を確認して、詳細を開き直してください。";
         if (kind==="expenses" && old && place.role!=="company_admin" && (ownerOf(old)!==place.account.id || !["確認待ち","修正依頼"].includes(stateOf(old)))) issue="この明細は編集できません。最新の対応状況を確認してください。";
         if (issue) {tx.abort();return;}
         const revision=(old?.revision||0)+1;
-        if (kind==="documents") {
+        if (assignDepartment) {
+          const history=old.history.slice();
+          history[history.length-1]={...history.at(-1),department};
+          store.put({...old,revision,history});
+        } else if (kind==="documents") {
           const files=tx.objectStore("files");
           files.add({id:item.fileId,documentId:id,bytes:documentVersion.pdf});
           if (item.photoId) files.add({id:item.photoId,documentId:id,bytes:draft.file});
