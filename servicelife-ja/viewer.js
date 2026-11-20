@@ -26,24 +26,39 @@ async function read(name,type) {
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,seq=0;
+const pendingMenuHashes=[];
 const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js?v=a7daf18789456248","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
-function requested(){
-  const match=location.hash.slice(1).split("?")[0].match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
+function routeHash(role,route,vehicle){
+  const detail=route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0;
+  return "#"+(role==="company_admin"?"":role)+route+(detail?"?vehicle="+vehicle:"");
+}
+function requested(hash){
+  const [path,query]=hash.slice(1).split("?");
+  const match=path.match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
   const role=match?.[1]||"company_admin";
   const route=match?.[2]||initialRoute(role);
   if(catalog.files[role+"|"+route]){
-    const vehicle=Number(new URLSearchParams(location.hash.split("?")[1]).get("vehicle"));
+    const vehicle=Number(new URLSearchParams(query).get("vehicle"));
     return {role,route,vehicle:route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0 ? vehicle : null};
   }
   const home=initialRoute(role);
-  history.replaceState(null,"","#"+(role==="company_admin"?"":role)+home);
+  history.replaceState(null,"",routeHash(role,home));
   return {role,route:home};
 }
 function change(role,route,vehicle){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
-  const hash=(role==="company_admin"?"":role)+route+(route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0 ? "?vehicle="+vehicle : "");
-  if(location.hash!=="#"+hash)location.hash=hash;
+  const hash=routeHash(role,route,vehicle);
+  if(pendingMenuHashes.at(-1)===hash)return;
+  if(active && hash===routeHash(active.role,active.route,active.vehicle)){
+    ++seq;
+    pendingMenuHashes.length=0;
+    if(preparing){preparing.element.remove();preparing=null;}
+    if(location.hash!==hash)history.replaceState(null,"",hash);
+    return;
+  }
+  pendingMenuHashes.push(hash);
+  openScreen(hash);
 }
 function inline(parent,code,first=false){
   const script=parent.ownerDocument.createElement("script");
@@ -102,14 +117,14 @@ function render(record,programs,language,inside,tech,place){
   const resources=base.href+"lib/";
   const css=doc.createElement("style");
   css.textContent='@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url("'+resources+'webfonts/inter-latin.woff2") format("woff2")}html{font-family:Inter,system-ui,sans-serif}.sl-map-pin{background:transparent;border:none}.leaflet-container{background:#e8eee9}[hidden]{display:none!important}';
-  css.textContent+=':root{--sidebar-w:220px}@media(min-width:768px){.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
+  css.textContent+=':root{--sidebar-w:220px}@media(min-width:768px){html{scrollbar-gutter:stable}.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
   doc.head.append(css);
   const solid=doc.createElement("link");solid.rel="stylesheet";solid.href=resources+"css/solid.min.css";doc.head.append(solid);
   if(doc.querySelector("[data-offline-map]")){
     const leaflet=doc.createElement("link");leaflet.rel="stylesheet";leaflet.href=resources+"leaflet/leaflet.css";doc.head.append(leaflet);
     const l=doc.createElement("script");l.src=resources+"leaflet/leaflet.js";doc.head.prepend(l);
   }
-  css.textContent+=".sidebar-nav a[aria-busy=true]{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--accent)}";
+  css.textContent+=".sidebar-nav a[aria-busy=true]{cursor:progress}";
   inline(doc.head,"("+inside+")("+safeJson(conf)+");",true);
   inline(doc.head,"(function(terms){"+language.charts+"})(window.SL_VIEW.terms);");
   inline(doc.body,"(function(terms){"+language.localizer+"})(window.SL_VIEW.terms);");
@@ -119,12 +134,13 @@ function render(record,programs,language,inside,tech,place){
   doc.documentElement.lang="ja";
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }
-async function openScreen(){
+async function openScreen(hash=location.hash){
   const turn=++seq;
   if(preparing){preparing.element.remove();preparing=null;}
   try{
     const [c,programs,language,inside,tech]=await common;catalog=c;
-    const place=requested();const id=c.files[place.role+"|"+place.route];
+    if(turn!==seq)return;
+    const place=requested(hash);const id=c.files[place.role+"|"+place.route];
     const hasFleet=Boolean(c.files[place.role+"|/maintenance/"]);
     if(hasFleet)place.fleetToken=crypto.randomUUID();
     const [record,fleet]=await Promise.all([
@@ -144,11 +160,17 @@ async function openScreen(){
     frame.after(element);
   }catch(e){
     if(turn!==seq)return;
+    pendingMenuHashes.length=0;
     console.error(e);notice.hidden=false;notice.textContent="画面を読み込めませんでした。再読み込みしてください。";
   }
 }
 function showPrepared(next){
   if(preparing!==next || next.turn!==seq)return;
+  // Commit menu clicks and the visible page in the same frame, including rapid clicks.
+  for(const hash of pendingMenuHashes){
+    if(location.hash!==hash)history.pushState(null,"",hash);
+  }
+  pendingMenuHashes.length=0;
   const previous=frame;
   frame=next.element;active=next.place;preparing=null;
   previous.remove();frame.id="screen";
@@ -205,7 +227,10 @@ window.addEventListener("message",e=>{
     change(role,catalog.files[role+"|"+home]?home:initialRoute(role));
   }
 });
-window.addEventListener("hashchange",openScreen);
+window.addEventListener("hashchange",()=>{
+  pendingMenuHashes.length=0;
+  openScreen();
+});
 openScreen();
 
 async function fleetSnapshot(place){
@@ -227,8 +252,8 @@ async function handleFleet(place,request){
       fleetChannel?.postMessage("changed");
     }else if(request.action==="select" && place.route==="/maintenance/"){
       const vehicle=Number(request.key);
-      const prefix=place.role==="company_admin"?"":place.role;
-      history.replaceState(null,"","#"+prefix+place.route+(Number.isSafeInteger(vehicle)&&vehicle>0?"?vehicle="+vehicle:""));
+      place.vehicle=Number.isSafeInteger(vehicle)&&vehicle>0?vehicle:null;
+      history.replaceState(null,"",routeHash(place.role,place.route,place.vehicle));
       return;
     }else if(request.action!=="refresh")return;
     place.fleet=await fleetSnapshot(place);
