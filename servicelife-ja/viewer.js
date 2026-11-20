@@ -31,14 +31,17 @@ function requested(){
   const match=location.hash.slice(1).split("?")[0].match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
   const role=match?.[1]||"company_admin";
   const route=match?.[2]||initialRoute(role);
-  if(catalog.files[role+"|"+route])return {role,route};
+  if(catalog.files[role+"|"+route]){
+    const vehicle=Number(new URLSearchParams(location.hash.split("?")[1]).get("vehicle"));
+    return {role,route,vehicle:route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0 ? vehicle : null};
+  }
   const home=initialRoute(role);
   history.replaceState(null,"","#"+(role==="company_admin"?"":role)+home);
   return {role,route:home};
 }
-function change(role,route){
+function change(role,route,vehicle){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
-  const hash=(role==="company_admin"?"":role)+route;
+  const hash=(role==="company_admin"?"":role)+route+(route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0 ? "?vehicle="+vehicle : "");
   if(location.hash!=="#"+hash)location.hash=hash;else openScreen();
 }
 function inline(parent,code,first=false){
@@ -65,11 +68,21 @@ function render(record,programs,language,inside,tech,place){
   const mode=record.mode,raw=mode==="active"?record.raw:record.view;
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
-  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes};
+  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,
+    fleet:place.fleet, fleetToken:place.fleetToken, vehicle:place.vehicle};
   const skip=new Set(programs.skip);
   if(mode==="snapshot"){
     const drawer=Object.entries(programs.scripts).find(([,code])=>code.includes("function cbpToggleSidebar") || (code.includes('t.closest("#cbpHamburger")') && code.includes("cbpToggleSidebar()")));
     if(drawer)inline(doc.body,drawer[1]);
+    if(place.fleet){
+      const bell=Object.values(programs.scripts).find(code=>code.includes("window.cbpToggleNotifBell = function"));
+      if(bell){
+        for(const el of doc.querySelectorAll("#cbpNotifBellWrap [data-sl-click]")){
+          el.setAttribute("onclick",el.getAttribute("data-sl-click"));el.removeAttribute("data-sl-click");
+        }
+        inline(doc.body,bell);
+      }
+    }
   }
   for(const style of doc.querySelectorAll("style[data-sl-style]")){
     style.textContent=programs.styles[style.dataset.slStyle]||"";
@@ -107,6 +120,10 @@ async function openScreen(){
     const group=await read("screens/"+id+".bin");
     if(turn!==seq)return;
     const record=await reservationData(place,group[place.route]);
+    if(c.files[place.role+"|/maintenance/"]){
+      place.fleetToken=crypto.randomUUID();
+      place.fleet=await fleetSnapshot(place);
+    }
     if(turn!==seq)return;
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
     document.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
@@ -118,7 +135,10 @@ async function openScreen(){
 }
 window.addEventListener("message",e=>{
   if(e.source!==frame.contentWindow||e.data?.application!=="servicelife-jp"||!active)return;
-  if(e.data.type==="route")change(active.role,e.data.route);
+  if(e.data.type==="route")change(active.role,e.data.route,e.data.vehicle);
+  if(e.data.type==="fleet-request" && active.fleetToken && e.data.token===active.fleetToken){
+    handleFleet(active,e.data);
+  }
   if(e.data.type==="role"&&Object.hasOwn(catalog.roles,e.data.role)){
     const role=e.data.role;
     const home=role==="technician"?"/my-day/":role==="csr"?"/csr-dashboard/":"/business-manager/";
@@ -128,3 +148,37 @@ window.addEventListener("message",e=>{
 });
 window.addEventListener("hashchange",openScreen);
 openScreen();
+
+async function fleetSnapshot(place){
+  try{return await FleetStore.snapshot(place.route==="/maintenance/");}
+  catch{return {day:FleetStore.today(),alerts:[],vehicles:[],error:"このブラウザの試用データを読み込めませんでした。再読み込みしてください。"};}
+}
+const fleetChannel=typeof BroadcastChannel==="function" ? new BroadcastChannel("exops-servicelife-vehicles") : null;
+async function handleFleet(place,request){
+  const respond=(payload)=>{
+    if(active!==place)return;
+    frame.contentWindow.postMessage({application:"servicelife-jp",type:"fleet-result",token:place.fleetToken,
+      requestId:request.requestId,...payload},"*");
+  };
+  try{
+    let key;
+    if(request.action==="save"){
+      if(place.route!=="/maintenance/" || place.role!=="company_admin")throw Error("車両の登録・更新は会社管理者が行えます。");
+      key=await FleetStore.save(request.draft);
+      fleetChannel?.postMessage("changed");
+    }else if(request.action==="select" && place.route==="/maintenance/"){
+      const vehicle=Number(request.key);
+      const prefix=place.role==="company_admin"?"":place.role;
+      history.replaceState(null,"","#"+prefix+place.route+(Number.isSafeInteger(vehicle)&&vehicle>0?"?vehicle="+vehicle:""));
+      return;
+    }else if(request.action!=="refresh")return;
+    place.fleet=await fleetSnapshot(place);
+    respond({state:place.fleet,key});
+  }catch(error){respond({error:error.message});}
+}
+function refreshFleet(){
+  if(active?.fleetToken)handleFleet(active,{action:"refresh"});
+}
+if(fleetChannel)fleetChannel.onmessage=refreshFleet;
+window.addEventListener("focus",refreshFleet);
+setInterval(()=>{if(active?.fleet && active.fleet.day!==FleetStore.today())refreshFleet();},60000);

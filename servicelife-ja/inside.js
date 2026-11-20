@@ -12,6 +12,80 @@ function startServiceLifeReference(config) {
     box.textContent=message;clearTimeout(note.timer);note.timer=setTimeout(()=>box.remove(),3100);
   }
   window.SL_VIEW={route:config.route,word,translate:async values=>values.map(word),note};
+  const fleetPage = config.route === "/maintenance/";
+  if (config.fleet) {
+    const pending = new Map();
+    let sequence = 0;
+    function request(action, draft) {
+      return new Promise((resolve, reject) => {
+        const requestId = ++sequence;
+        pending.set(requestId, {resolve, reject});
+        send("fleet-request", {token:config.fleetToken, requestId, action, draft});
+      });
+    }
+    const fleet = window.SL_VIEW.fleet = {state:config.fleet, vehicle:config.vehicle, canEdit:config.role==="company_admin",
+      refresh:()=>request("refresh"), save:draft=>request("save",draft),
+      select:key=>send("fleet-request",{token:config.fleetToken,action:"select",key})};
+    window.addEventListener("message", event => {
+      const reply=event.data;
+      if(event.source!==parent || reply?.type!=="fleet-result" || reply.token!==config.fleetToken)return;
+      if(reply.state){
+        fleet.state=reply.state;
+        document.dispatchEvent(new Event("fleet-updated"));
+      }
+      const task=pending.get(reply.requestId);
+      if(task){
+        pending.delete(reply.requestId);
+        if(reply.error)task.reject(Error(reply.error));else task.resolve(reply.key);
+      }
+    });
+    function fillAlerts(container) {
+      const title = document.createElement("strong");
+      title.textContent = "車両の期限";
+      container.replaceChildren(title);
+      if(!fleet.state.alerts.length){
+        const empty=document.createElement("span");
+        empty.textContent=fleet.state.error || "お知らせする期限はありません。";
+        container.append(empty);
+      }
+      for(const item of fleet.state.alerts){
+        const a=document.createElement("a");
+        a.href="/maintenance/?vehicle="+item.key;
+        const heading=document.createElement("b"), sub=document.createElement("span");
+        heading.textContent=item.plate+"　"+item.model;
+        const stage={overdue:"期限超過",m1:"1か月以内",m3:"3か月以内",m6:"6か月以内"}[item.bucket];
+        sub.textContent=item.kind+"　"+item.due+"　"+stage;
+        if(item.bucket==="overdue")sub.className="sl-fleet-overdue";
+        a.append(heading,sub);container.append(a);
+      }
+    }
+    function mountAlerts(){
+      const dropdown=document.getElementById("cbpNotifDropdown");
+      if(!dropdown)return;
+      const css=document.createElement("style");
+      css.textContent=".sl-fleet-alerts{padding:10px 14px;display:grid;gap:4px;max-height:36vh;overflow:auto;background:white;border-bottom:1px solid #dce5df}.sl-fleet-alerts>strong{font-size:13px;color:#294f34}.sl-fleet-alerts a{display:grid;gap:3px;padding:7px 2px;color:#23362b;text-decoration:none;border-bottom:1px solid #e9eeeb;font-size:13px}.sl-fleet-alerts a:hover,.sl-fleet-alerts a:focus{background:#f0f6f0}.sl-fleet-alerts span{font-size:12px;color:#57635d}.sl-fleet-alerts .sl-fleet-overdue{color:#ad271d}";
+      document.head.append(css);
+      const section=document.createElement("section");
+      section.className="sl-fleet-alerts notranslate";
+      const list=document.getElementById("cbpNotifList");
+      dropdown.insertBefore(section,list);
+      if(fleetPage){
+        for(const el of dropdown.querySelectorAll(".head,.footer,#cbpNotifList"))el.hidden=true;
+      }
+      let overview;
+      if(config.route==="/notifications/"){
+        overview=section.cloneNode(false);
+        document.querySelector("main .content")?.prepend(overview);
+      }
+      function update(){
+        fillAlerts(section);
+        if(overview)fillAlerts(overview);
+        window.cbpRefreshNotifBell?.();
+      }
+      update();document.addEventListener("fleet-updated",update);
+    }
+    document.addEventListener("DOMContentLoaded",mountAlerts,{once:true});
+  }
   function localMemory() {
     const values=new Map();
     return {get length(){return values.size;},getItem:k=>values.has(String(k))?values.get(String(k)):null,
@@ -78,6 +152,11 @@ function startServiceLifeReference(config) {
     const p=u.pathname;
     const variants=parsed.filter(([k])=>k.pathname===p);
     const exact=variants.find(([k])=>queryKey(k.searchParams)===queryKey(u.searchParams));
+    if(config.fleet && /\/notifications\/unread-count\/$/.test(p)){
+      const old=exact?.[1] || variants[0]?.[1] || {};
+      const count=Number(old.count || old.unread_count || 0)+window.SL_VIEW.fleet.state.alerts.length;
+      return response({...old,count,unread_count:count});
+    }
     if(exact)return response(exact[1]);
     if(variants.length){
       const best=variants.map(([k,v])=>[v,[...u.searchParams].filter(([a,b])=>k.searchParams.get(a)===b).length]).sort((a,b)=>b[1]-a[1])[0][0];
@@ -110,7 +189,7 @@ function startServiceLifeReference(config) {
     let u;try{u=new URL(path,"https://reference.invalid"+config.route);}catch{return false}
     const choice=u.pathname.match(/^\/demo\/view\/(company_admin|csr|technician)\/$/);
     if(choice){send("role",{role:choice[1]});return true;}
-    if(routes.has(u.pathname)){send("route",{route:u.pathname});return true;}
+    if(routes.has(u.pathname)){send("route",{route:u.pathname,vehicle:Number(u.searchParams.get("vehicle"))});return true;}
     return false;
   }
   function openPanel(panel) {
@@ -148,9 +227,13 @@ function startServiceLifeReference(config) {
     }
     if(spec)note("この操作は元のデモのサーバーに接続する機能です。");
   }
-  addEventListener("submit",ev=>{ev.preventDefault();ev.stopImmediatePropagation();note("閲覧用の見本です。変更や送信は記録されません。");},true);
+  addEventListener("submit",ev=>{
+    if(fleetPage && ev.target.closest("#fleet"))return;
+    ev.preventDefault();ev.stopImmediatePropagation();note("閲覧用の見本です。変更や送信は記録されません。");
+  },true);
   addEventListener("click",ev=>{
     const el=ev.target.closest?.("a,button,[onclick],[data-sl-click],input[type=submit]");if(!el)return;
+    if(config.mode==="snapshot" && config.fleet && el.closest("#cbpNotifBellWrap") && el.hasAttribute("onclick"))return;
     if(el.closest(".leaflet-control-attribution"))return;
     const a=el.closest("a[href]");
     const h=a?.getAttribute("href")||"";
