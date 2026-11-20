@@ -14,18 +14,55 @@ function startServiceLifeReference(config) {
   window.SL_VIEW={route:config.route,terms:config.terms,word,translate:async values=>values.map(word),note,menuRoutes:config.menuRoutes,go};
   const fixtureRows = data => Object.entries(data || {}).map(([k,v])=>[new URL(k,"https://reference.invalid"),v]);
   let notificationRows=fixtureRows(config.fixtures);
+  let expenseAlerts=config.corrections||[];
   if(config.surface==="navigation"){
-    window.SL_VIEW.updateShell=(route,state,notifications)=>{
+    function updateExpenses(alerts) {
+      if(!alerts)return;
+      expenseAlerts=alerts;
+      document.dispatchEvent(new Event("expense-alerts-updated"));
+    }
+    window.SL_VIEW.updateShell=(route,state,notifications,corrections)=>{
       if(notifications)notificationRows=fixtureRows(notifications);
       config.route=route;window.SL_VIEW.route=route;
       if(state && window.SL_VIEW.fleet)window.SL_VIEW.fleet.state=state;
       document.dispatchEvent(new Event("fleet-updated"));
+      updateExpenses(corrections);
     };
     addEventListener("message",event=>{
       const m=event.data;
       if(event.source===parent && m?.application==="servicelife-jp" && m.type==="shell-fleet")
         window.SL_VIEW.updateShell(config.route,m.fleet);
+      if(event.source===parent && m?.application==="servicelife-jp" && m.type==="shell-expenses")updateExpenses(m.corrections);
     });
+    document.addEventListener("DOMContentLoaded",()=>{
+      const menu=document.querySelector('.sidebar-nav a[href="/expenses/"]');
+      const dropdown=document.getElementById("cbpNotifDropdown");
+      if(!menu || !dropdown)return;
+      const badge=document.createElement("span"), section=document.createElement("section");
+      badge.id="expense-badge";badge.className="notranslate";menu.append(badge);
+      section.id="expense-bell-requests";section.className="notranslate";
+      dropdown.insertBefore(section,document.getElementById("cbpNotifList"));
+      const css=document.createElement("style");
+      css.textContent="#expense-badge{margin-inline-start:auto;padding:1px 7px;background:#b42328;color:white;border-radius:12px;font:600 12px/1.5 system-ui}#expense-bell-requests{padding:10px 14px;max-height:32vh;overflow:auto;border-bottom:1px solid #dce5df}#expense-bell-requests a{display:block;color:#234c32;padding:7px 0;overflow-wrap:anywhere}#expense-bell-requests small{display:block;color:#48544b}";
+      document.head.append(css);
+      function update(){
+        const count=expenseAlerts.length;
+        badge.hidden=!count;badge.textContent=String(count);
+        badge.setAttribute("aria-label","修正が必要な経費 "+count+"件");
+        section.hidden=!count;
+        const title=document.createElement("strong");title.textContent="経費の修正依頼";
+        section.replaceChildren(title);
+        for(const row of expenseAlerts){
+          const link=document.createElement("a"), reason=document.createElement("small");
+          link.href="/expenses/?expense="+encodeURIComponent(row.id);
+          link.append(row.date+"　"+row.category);
+          reason.textContent=row.reason||"明細を確認してください。";
+          link.append(reason);section.append(link);
+        }
+        window.cbpRefreshNotifBell?.();
+      }
+      update();document.addEventListener("expense-alerts-updated",update);
+    },{once:true});
   }
   const fleetPage = config.route === "/maintenance/";
   if(config.office){
@@ -37,9 +74,12 @@ function startServiceLifeReference(config) {
       });
     }
     const office=window.SL_VIEW.office={state:config.office,save:draft=>request("save",{draft}),
-      pdf:fileId=>request("pdf",{fileId}),refresh:()=>request("refresh"),canOpenFleet:config.routes.includes("/maintenance/")};
+      pdf:fileId=>request("pdf",{fileId}),refresh:()=>request("refresh"),selectedExpense:config.expense,canOpenFleet:config.routes.includes("/maintenance/")};
     addEventListener("message",e=>{
       const reply=e.data;
+      if(e.source===parent && reply?.application==="servicelife-jp" && reply.type==="expense-open"){
+        document.dispatchEvent(new CustomEvent("expense-open",{detail:reply.expense}));return;
+      }
       if(e.source!==parent || reply?.type!=="office-result" || reply.token!==config.officeToken)return;
       if(reply.state){office.state=reply.state;document.dispatchEvent(new Event("office-updated"));}
       const task=pending.get(reply.requestId);
@@ -179,9 +219,9 @@ function startServiceLifeReference(config) {
     const rows=config.surface==="navigation" && p.includes("/notifications/") ? notificationRows : parsed;
     const variants=rows.filter(([k])=>k.pathname===p);
     const exact=variants.find(([k])=>queryKey(k.searchParams)===queryKey(u.searchParams));
-    if(config.fleet && /\/notifications\/unread-count\/$/.test(p)){
+    if((config.fleet || config.surface==="navigation") && /\/notifications\/unread-count\/$/.test(p)){
       const old=exact?.[1] || variants[0]?.[1] || {};
-      const count=Number(old.count || old.unread_count || 0)+window.SL_VIEW.fleet.state.alerts.length;
+      const count=Number(old.count || old.unread_count || 0)+(window.SL_VIEW.fleet?.state.alerts.length||0)+expenseAlerts.length;
       return response({...old,count,unread_count:count});
     }
     if(exact)return response(exact[1]);
@@ -217,7 +257,7 @@ function startServiceLifeReference(config) {
     let u;try{u=new URL(path,"https://reference.invalid"+config.route);}catch{return false}
     const choice=u.pathname.match(/^\/demo\/view\/(company_admin|csr|technician)\/$/);
     if(choice){send("role",{role:choice[1]});return true;}
-    if(routes.has(u.pathname)){send("route",{route:u.pathname,vehicle:Number(u.searchParams.get("vehicle")),menuTop:menuPosition()});return true;}
+    if(routes.has(u.pathname)){send("route",{route:u.pathname,vehicle:Number(u.searchParams.get("vehicle")),expense:u.searchParams.get("expense"),menuTop:menuPosition()});return true;}
     return false;
   }
   function openPanel(panel) {

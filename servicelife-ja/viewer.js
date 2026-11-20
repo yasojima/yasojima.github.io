@@ -27,13 +27,15 @@ const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,navigation,seq=0;
 const pendingMenuHashes=[];
-const dataVersion="?v=0cfa303ab103e347";
+const dataVersion="?v=0cb548aecb013e3f";
 const screenFile=id=>"screens/"+id+".bin"+dataVersion;
-const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"+dataVersion),read("inside.js?v=f37cac89f78a3aa4","text"),read("tech-map.js","text")]);
+const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"+dataVersion),read("inside.js?v=59f588b81eef1b91","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
-function routeHash(role,route,vehicle){
+const expenseKey=value=>typeof value==="string" && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(value)?value:null;
+function routeHash(role,route,vehicle,expense){
   const detail=["/maintenance/","/expenses/"].includes(route) && Number.isSafeInteger(vehicle) && vehicle>0;
-  return "#"+(role==="company_admin"?"":role)+route+(detail?"?vehicle="+vehicle:"");
+  const query=route==="/expenses/" && expenseKey(expense)?"?expense="+expense:detail?"?vehicle="+vehicle:"";
+  return "#"+(role==="company_admin"?"":role)+route+query;
 }
 function requested(hash){
   const [path,query]=hash.slice(1).split("?");
@@ -41,22 +43,24 @@ function requested(hash){
   const role=match?.[1]||"company_admin";
   const route=match?.[2]||initialRoute(role);
   if(catalog.files[role+"|"+route]){
-    const vehicle=Number(new URLSearchParams(query).get("vehicle"));
-    return {role,route,vehicle:["/maintenance/","/expenses/"].includes(route) && Number.isSafeInteger(vehicle) && vehicle>0 ? vehicle : null};
+    const params=new URLSearchParams(query), vehicle=Number(params.get("vehicle"));
+    return {role,route,expense:route==="/expenses/"?expenseKey(params.get("expense")):null,
+      vehicle:["/maintenance/","/expenses/"].includes(route) && Number.isSafeInteger(vehicle) && vehicle>0 ? vehicle : null};
   }
   const home=initialRoute(role);
   history.replaceState(null,"",routeHash(role,home));
   return {role,route:home};
 }
-function change(role,route,vehicle){
+function change(role,route,vehicle,expense){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
-  const hash=routeHash(role,route,vehicle);
+  const hash=routeHash(role,route,vehicle,expense);
   if(pendingMenuHashes.at(-1)===hash)return;
-  if(active && hash===routeHash(active.role,active.route,active.vehicle)){
+  if(active && hash===routeHash(active.role,active.route,active.vehicle,active.expense)){
     ++seq;
     pendingMenuHashes.length=0;
     discardPreparation();
     activateNavigation();
+    if(expenseKey(expense))frame.contentWindow.postMessage({application:"servicelife-jp",type:"expense-open",expense},"*");
     if(location.hash!==hash)history.replaceState(null,"",hash);
     return;
   }
@@ -90,6 +94,7 @@ function render(record,programs,language,inside,tech,place,surface){
   const conf={route:place.route,role:place.role,mode,surface,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,
     menuRoutes:catalog.roles[place.role].map(item=>item.route), fleet:surface==="navigation" ? fleetSummary(place.fleet) : place.fleet,
     fleetToken:place.fleetToken, vehicle:place.vehicle, menuTop:menuPositions.get(place.role),
+    expense:place.expense,corrections:surface==="navigation"?place.corrections:undefined,
     office:surface==="content"?place.office:undefined, officeToken:surface==="content"?place.officeToken:undefined};
   const skip=new Set(programs.skip);
   if(surface==="content"){
@@ -144,7 +149,7 @@ function fleetSummary(state){
 function activateNavigation(){
   if(!active||!navigation)return;
   navigation.element.contentWindow.postMessage({application:"servicelife-jp",type:"activate-shell",
-    route:active.route,notifications:active.notifications,fleet:fleetSummary(active.fleet)},"*");
+    route:active.route,notifications:active.notifications,fleet:fleetSummary(active.fleet),corrections:active.corrections},"*");
 }
 function discardPreparation(){
   if(!preparing)return;
@@ -169,17 +174,20 @@ async function openScreen(hash=location.hash){
     const [c,programs,language,inside,tech]=await common;catalog=c;
     if(turn!==seq)return;
     const place=requested(hash);const id=c.files[place.role+"|"+place.route];
+    place.account=OfficeStore.demoAccount(place.role);
     const hasFleet=Boolean(c.files[place.role+"|/maintenance/"]);
     if(hasFleet)place.fleetToken=crypto.randomUUID();
     if([OfficeStore.expenses,OfficeStore.documents].includes(place.route))place.officeToken=crypto.randomUUID();
-    const [record,fleet,office]=await Promise.all([
+    const [record,fleet,office,corrections]=await Promise.all([
       read(screenFile(id)).then(group=>reservationData(place,group[place.route])),
       hasFleet ? fleetSnapshot(place) : undefined,
       place.officeToken ? OfficeStore.snapshot(place).catch(()=>({records:[],cars:[],categories:[],statuses:[],
-        error:"このブラウザで試用データを読み込めませんでした。再読み込みしてください。"})) : undefined
+        error:"このブラウザで試用データを読み込めませんでした。再読み込みしてください。"})) : undefined,
+      OfficeStore.corrections(place).catch(()=>[])
     ]);
     place.fleet=fleet;
     place.office=office;
+    place.corrections=corrections;
     place.notifications=Object.fromEntries(Object.entries(record.fx || {}).filter(([url])=>url.includes("/notifications/")));
     if(turn!==seq)return;
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
@@ -217,6 +225,7 @@ function showPrepared(next){
   frame.dataset.route=active.route;frame.dataset.role=active.role;
   syncModalFocus();document.title=frame.title;notice.hidden=true;
   activateNavigation();
+  refreshCorrections(active);
   if(next.selection!==undefined)handleFleet(active,{action:"select",key:next.selection});
   // The next menu item is often in the next data file. Warm that one file after paint.
   const items=catalog.roles[active.role];
@@ -266,7 +275,7 @@ window.addEventListener("message",e=>{
     if(["menu-scroll","route"].includes(e.data.type) && Number.isFinite(e.data.menuTop))
       menuPositions.set(nav.role,Math.max(0,e.data.menuTop));
     if(e.data.type==="route-hint")warmRoute(nav.role,e.data.route);
-    if(e.data.type==="route")change(nav.role,e.data.route,e.data.vehicle);
+    if(e.data.type==="route")change(nav.role,e.data.route,e.data.vehicle,e.data.expense);
     return;
   }
   if(preparing && e.source===preparing.element.contentWindow){
@@ -283,7 +292,7 @@ window.addEventListener("message",e=>{
   if(e.source!==frame.contentWindow||!active)return;
   if(e.data.type==="content-modal"){frame.toggleAttribute("data-modal",e.data.open===true);syncModalFocus();}
   if(e.data.type==="content-pointer")navigation?.element.contentWindow.postMessage({application:"servicelife-jp",type:"content-pointer"},"*");
-  if(e.data.type==="route")change(active.role,e.data.route,e.data.vehicle);
+  if(e.data.type==="route")change(active.role,e.data.route,e.data.vehicle,e.data.expense);
   if(e.data.type==="fleet-request" && active.fleetToken && e.data.token===active.fleetToken){
     handleFleet(active,e.data);
   }
@@ -341,6 +350,16 @@ setInterval(()=>{if(active?.fleet && active.fleet.day!==FleetStore.today())refre
 const officeChannel=typeof BroadcastChannel==="function" ? new BroadcastChannel("exops-servicelife-office") : null;
 function refreshOffice(){
   if(active?.officeToken)handleOffice(active,{action:"refresh"});
+  if(active)refreshCorrections(active);
+}
+async function refreshCorrections(place){
+  const generation=place.correctionRead=(place.correctionRead||0)+1;
+  try{
+    const corrections=await OfficeStore.corrections(place);
+    if(active!==place || place.correctionRead!==generation)return;
+    place.corrections=corrections;
+    navigation?.element.contentWindow.postMessage({application:"servicelife-jp",type:"shell-expenses",corrections},"*");
+  }catch{/* Keep the last visible count if this browser's storage is temporarily unavailable. */}
 }
 if(officeChannel)officeChannel.onmessage=refreshOffice;
 let officeRead=0;
@@ -359,6 +378,7 @@ async function handleOffice(place,request){
     if(request.action==="save"){
       id=await OfficeStore.save(place,request.draft);
       officeChannel?.postMessage("changed");
+      if(active===place)refreshCorrections(place);
     }else if(request.action!=="refresh")return;
     const generation=++officeRead;
     const state=await OfficeStore.snapshot(place);
@@ -369,6 +389,8 @@ function showOfficePdf(file){
   const dialog=document.getElementById("office-pdf");
   if(dialog.open)dialog.close();
   const url=URL.createObjectURL(file.bytes), embed=dialog.querySelector("iframe");
+  dialog.setAttribute("aria-label",file.receipt?"経費の領収書":"書類の控え");
+  embed.title=file.receipt?"領収書":"控えのPDF";
   dialog.querySelector("strong").textContent=file.name;
   const [open,download]=dialog.querySelectorAll("a");
   open.href=url;download.href=url;download.download=file.name;
