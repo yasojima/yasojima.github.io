@@ -1,9 +1,10 @@
 /* ServiceLife public reference. Navigation remains in this browser tab. */
 "use strict";
 const base=new URL("./",document.baseURI);
-const frame=document.querySelector("#screen");
+let frame=document.querySelector("#screen");
 const notice=document.querySelector("#notice");
 const inFlight=new Map();
+const menuPositions=new Map();
 async function read(name,type) {
   if(!inFlight.has(name)){
     const request=(async()=>{
@@ -24,7 +25,7 @@ async function read(name,type) {
 }
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
-let catalog,active,seq=0;
+let catalog,active,preparing,seq=0;
 const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
 function requested(){
@@ -42,7 +43,7 @@ function requested(){
 function change(role,route,vehicle){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
   const hash=(role==="company_admin"?"":role)+route+(route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0 ? "?vehicle="+vehicle : "");
-  if(location.hash!=="#"+hash)location.hash=hash;else openScreen();
+  if(location.hash!=="#"+hash)location.hash=hash;
 }
 function inline(parent,code,first=false){
   const script=parent.ownerDocument.createElement("script");
@@ -69,11 +70,13 @@ function render(record,programs,language,inside,tech,place){
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
   const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,
-    fleet:place.fleet, fleetToken:place.fleetToken, vehicle:place.vehicle};
+    fleet:place.fleet, fleetToken:place.fleetToken, vehicle:place.vehicle, menuTop:menuPositions.get(place.role)};
   const skip=new Set(programs.skip);
   if(mode==="snapshot"){
     const drawer=Object.entries(programs.scripts).find(([,code])=>code.includes("function cbpToggleSidebar") || (code.includes('t.closest("#cbpHamburger")') && code.includes("cbpToggleSidebar()")));
     if(drawer)inline(doc.body,drawer[1]);
+    const tour=Object.values(programs.scripts).find(code=>code.includes("$('slt-fab').onclick = start;"));
+    if(tour && doc.getElementById("slt-fab"))inline(doc.body,tour);
     if(place.fleet){
       const bell=Object.values(programs.scripts).find(code=>code.includes("window.cbpToggleNotifBell = function"));
       if(bell){
@@ -99,13 +102,14 @@ function render(record,programs,language,inside,tech,place){
   const resources=base.href+"lib/";
   const css=doc.createElement("style");
   css.textContent='@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url("'+resources+'webfonts/inter-latin.woff2") format("woff2")}html{font-family:Inter,system-ui,sans-serif}.sl-map-pin{background:transparent;border:none}.leaflet-container{background:#e8eee9}[hidden]{display:none!important}';
+  css.textContent+=':root{--sidebar-w:220px}@media(min-width:768px){.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
   doc.head.append(css);
   const solid=doc.createElement("link");solid.rel="stylesheet";solid.href=resources+"css/solid.min.css";doc.head.append(solid);
   const leaflet=doc.createElement("link");leaflet.rel="stylesheet";leaflet.href=resources+"leaflet/leaflet.css";doc.head.append(leaflet);
   const l=doc.createElement("script");l.src=resources+"leaflet/leaflet.js";doc.head.prepend(l);
   inline(doc.head,"("+inside+")("+safeJson(conf)+");",true);
-  inline(doc.head,"(function(terms){"+language.charts+"})("+safeJson(language.terms)+");");
-  inline(doc.body,"(function(terms){"+language.localizer+"})("+safeJson(language.terms)+");");
+  inline(doc.head,"(function(terms){"+language.charts+"})(window.SL_VIEW.terms);");
+  inline(doc.body,"(function(terms){"+language.localizer+"})(window.SL_VIEW.terms);");
   const meta=doc.createElement("meta");meta.httpEquiv="Content-Security-Policy";
   meta.content="default-src 'none'; script-src 'unsafe-inline' "+resources+" "+base.href+"assets/; style-src 'unsafe-inline' "+resources+" "+base.href+"assets/; img-src data: blob: "+base.href+" https://tile.openstreetmap.org; font-src data: "+resources+"; connect-src 'none'; object-src 'none'; form-action 'none'; frame-src 'none'; base-uri 'none'";
   doc.head.prepend(meta);
@@ -114,27 +118,55 @@ function render(record,programs,language,inside,tech,place){
 }
 async function openScreen(){
   const turn=++seq;
+  if(preparing){preparing.element.remove();preparing=null;}
   try{
     const [c,programs,language,inside,tech]=await common;catalog=c;
     const place=requested();const id=c.files[place.role+"|"+place.route];
-    const group=await read("screens/"+id+".bin");
-    if(turn!==seq)return;
-    const record=await reservationData(place,group[place.route]);
-    if(c.files[place.role+"|/maintenance/"]){
-      place.fleetToken=crypto.randomUUID();
-      place.fleet=await fleetSnapshot(place);
-    }
+    const hasFleet=Boolean(c.files[place.role+"|/maintenance/"]);
+    if(hasFleet)place.fleetToken=crypto.randomUUID();
+    const [record,fleet]=await Promise.all([
+      read("screens/"+id+".bin").then(group=>reservationData(place,group[place.route])),
+      hasFleet ? fleetSnapshot(place) : undefined
+    ]);
+    place.fleet=fleet;
     if(turn!==seq)return;
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
-    document.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
-    active=place;
-    notice.hidden=true;
-    frame.title=document.title;
-    frame.srcdoc=render(record,programs,language,inside,tech,place);
-  }catch(e){console.error(e);notice.hidden=false;notice.textContent="画面を読み込めませんでした。再読み込みしてください。";}
+    const element=document.createElement("iframe");
+    element.className="screen";element.dataset.preparing="";element.inert=true;
+    element.setAttribute("aria-hidden","true");element.setAttribute("sandbox",frame.getAttribute("sandbox"));
+    element.referrerPolicy=frame.referrerPolicy;
+    element.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
+    element.srcdoc=render(record,programs,language,inside,tech,place);
+    preparing={element,place,turn};
+    frame.after(element);
+  }catch(e){
+    if(turn!==seq)return;
+    console.error(e);notice.hidden=false;notice.textContent="画面を読み込めませんでした。再読み込みしてください。";
+  }
+}
+function showPrepared(next){
+  if(preparing!==next || next.turn!==seq)return;
+  const previous=frame;
+  frame=next.element;active=next.place;preparing=null;
+  previous.remove();frame.id="screen";
+  delete frame.dataset.preparing;frame.inert=false;frame.removeAttribute("aria-hidden");
+  frame.dataset.route=active.route;document.title=frame.title;notice.hidden=true;
+  if(next.selection!==undefined)handleFleet(active,{action:"select",key:next.selection});
 }
 window.addEventListener("message",e=>{
-  if(e.source!==frame.contentWindow||e.data?.application!=="servicelife-jp"||!active)return;
+  if(e.data?.application!=="servicelife-jp")return;
+  if(preparing && e.source===preparing.element.contentWindow){
+    const next=preparing;
+    if(e.data.type==="ready" && e.data.route===next.place.route){
+      if(document.hidden)showPrepared(next);else requestAnimationFrame(()=>showPrepared(next));
+    }else if(e.data.type==="fleet-request" && e.data.token===next.place.fleetToken && e.data.action==="select"){
+      next.selection=e.data.key;
+    }
+    return;
+  }
+  if(e.source!==frame.contentWindow||!active)return;
+  if(["menu-scroll","route"].includes(e.data.type) && Number.isFinite(e.data.menuTop))
+    menuPositions.set(active.role,Math.max(0,e.data.menuTop));
   if(e.data.type==="route")change(active.role,e.data.route,e.data.vehicle);
   if(e.data.type==="fleet-request" && active.fleetToken && e.data.token===active.fleetToken){
     handleFleet(active,e.data);
@@ -144,7 +176,6 @@ window.addEventListener("message",e=>{
     const home=role==="technician"?"/my-day/":role==="csr"?"/csr-dashboard/":"/business-manager/";
     change(role,catalog.files[role+"|"+home]?home:initialRoute(role));
   }
-  if(e.data.type==="ready")frame.dataset.route=e.data.route;
 });
 window.addEventListener("hashchange",openScreen);
 openScreen();

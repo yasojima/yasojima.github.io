@@ -11,7 +11,7 @@ function startServiceLifeReference(config) {
       document.body.append(box);}
     box.textContent=message;clearTimeout(note.timer);note.timer=setTimeout(()=>box.remove(),3100);
   }
-  window.SL_VIEW={route:config.route,word,translate:async values=>values.map(word),note};
+  window.SL_VIEW={route:config.route,terms:config.terms,word,translate:async values=>values.map(word),note};
   const fleetPage = config.route === "/maintenance/";
   if (config.fleet) {
     const pending = new Map();
@@ -94,7 +94,6 @@ function startServiceLifeReference(config) {
   for(const id of ["localStorage","sessionStorage"]) {
     try{Object.defineProperty(window,id,{value:localMemory(),configurable:true});}catch{}
   }
-  try{window.localStorage.setItem("sl_demo_tour_v1","1");}catch{}
   try{Object.defineProperty(document,"cookie",{get:()=>"",set:()=>{},configurable:true});}catch{}
   const RealDate=Date, savedStamp=RealDate.parse(config.captured), began=performance.now();
   const clock=()=>savedStamp+performance.now()-began;
@@ -184,12 +183,13 @@ function startServiceLifeReference(config) {
   };
   const routes=new Set(config.routes);
   const send=(type,extra={})=>parent.postMessage({application:"servicelife-jp",type,...extra},"*");
+  const menuPosition=()=>document.querySelector(".sidebar-nav")?.scrollTop || 0;
   function go(path){
     if(!path)return false;
     let u;try{u=new URL(path,"https://reference.invalid"+config.route);}catch{return false}
     const choice=u.pathname.match(/^\/demo\/view\/(company_admin|csr|technician)\/$/);
     if(choice){send("role",{role:choice[1]});return true;}
-    if(routes.has(u.pathname)){send("route",{route:u.pathname,vehicle:Number(u.searchParams.get("vehicle"))});return true;}
+    if(routes.has(u.pathname)){send("route",{route:u.pathname,vehicle:Number(u.searchParams.get("vehicle")),menuTop:menuPosition()});return true;}
     return false;
   }
   function openPanel(panel) {
@@ -258,7 +258,6 @@ function startServiceLifeReference(config) {
   addEventListener("keydown",ev=>{if(ev.key==="Escape")closePanel(document.querySelector('[data-sl-opened="true"]'));});
   document.addEventListener("DOMContentLoaded",()=>{
     document.documentElement.dataset.referenceMode=config.mode;
-    if(config.mode==="snapshot")document.getElementById("slt-root")?.classList.remove("on");
     for(const el of document.querySelectorAll('a[href^="/demo/view/"]'))el.removeAttribute("target");
     if(config.mode==="snapshot"){
       document.querySelectorAll("[data-offline-map]").forEach(element=>{
@@ -267,6 +266,12 @@ function startServiceLifeReference(config) {
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
       });
     }
-    send("ready",{route:config.route});
+    const menu=document.querySelector(".sidebar-nav");
+    menu?.addEventListener("scroll",()=>send("menu-scroll",{menuTop:menu.scrollTop}),{passive:true});
+    // Run after the other DOMContentLoaded listeners have translated and laid out the page.
+    setTimeout(()=>{
+      if(menu && Number.isFinite(config.menuTop))menu.scrollTop=config.menuTop;
+      send("ready",{route:config.route});
+    },0);
   },{once:true});
 }
