@@ -28,10 +28,13 @@ let catalog,active,seq=0;
 const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
 function requested(){
-  const match=location.hash.slice(1).match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
+  const match=location.hash.slice(1).split("?")[0].match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
   const role=match?.[1]||"company_admin";
   const route=match?.[2]||initialRoute(role);
-  return {role,route:catalog.files[role+"|"+route]?route:initialRoute(role)};
+  if(catalog.files[role+"|"+route])return {role,route};
+  const home=initialRoute(role);
+  history.replaceState(null,"","#"+(role==="company_admin"?"":role)+home);
+  return {role,route:home};
 }
 function change(role,route){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
