@@ -239,7 +239,14 @@ function startServiceLifeReference(config) {
     const h=a?.getAttribute("href")||"";
     const action=el.getAttribute("onclick")||el.getAttribute("data-sl-click")||"";
     const nav=action.match(/(?:location(?:\.href)?\s*=|location\.(?:assign|replace)\()\s*['"](\/[^'"]*)['"]/);
-    if(nav&&go(nav[1]) || (h.startsWith("/")&&go(h))){ev.preventDefault();ev.stopImmediatePropagation();return;}
+    if(nav&&go(nav[1]) || (h.startsWith("/")&&go(h))){
+      const menu=a?.closest(".sidebar-nav");
+      if(menu){
+        menu.querySelector("a[aria-busy]")?.removeAttribute("aria-busy");
+        if(h!==config.route)a.setAttribute("aria-busy","true");
+      }
+      ev.preventDefault();ev.stopImmediatePropagation();return;
+    }
     if(a?.matches("[data-sl-external]")||/^(?:https?:|mailto:|tel:|\/logout\/)/.test(h)){
       ev.preventDefault();ev.stopImmediatePropagation();note("公開見本の外部リンクです。");return;
     }
@@ -268,10 +275,26 @@ function startServiceLifeReference(config) {
     }
     const menu=document.querySelector(".sidebar-nav");
     menu?.addEventListener("scroll",()=>send("menu-scroll",{menuTop:menu.scrollTop}),{passive:true});
-    // Run after the other DOMContentLoaded listeners have translated and laid out the page.
-    setTimeout(()=>{
-      if(menu && Number.isFinite(config.menuTop))menu.scrollTop=config.menuTop;
-      send("ready",{route:config.route});
+    function hint(event){
+      const link=event.target.closest?.("a[href]");
+      if(link && !link.contains(event.relatedTarget))send("route-hint",{route:link.getAttribute("href")});
+    }
+    menu?.addEventListener("pointerover",hint);
+    menu?.addEventListener("focusin",hint);
+    function restoreMenu(top){
+      if(menu)menu.scrollTop=top;
+      send("ready",{route:config.route,menuTop:top});
+    }
+    addEventListener("message",event=>{
+      const message=event.data;
+      if(event.source===parent && message?.application==="servicelife-jp" &&
+          message.type==="restore-menu" && Number.isFinite(message.menuTop))restoreMenu(message.menuTop);
+    });
+    // Measure after translation so the used text and icon fonts are known to the browser.
+    setTimeout(async()=>{
+      document.documentElement.getBoundingClientRect();
+      await document.fonts.ready;
+      restoreMenu(Number.isFinite(config.menuTop)?config.menuTop:0);
     },0);
   },{once:true});
 }

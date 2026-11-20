@@ -8,9 +8,10 @@
   <title>ServiceLife 日本語</title>
   <style>
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f4f6fa}
-    .screen{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
-    .screen[data-preparing]{opacity:0;pointer-events:none}
-    #notice{position:absolute;inset:0;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}
+    .screen{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;background:#f5f6fa}
+    #screen{z-index:1}
+    .screen[data-preparing]{z-index:0;pointer-events:none}
+    #notice{position:absolute;inset:0;z-index:2;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}
     #notice[hidden]{display:none}
   </style>
 </head>
@@ -18,6 +19,6 @@
   <iframe id="screen" class="screen" title="ServiceLife 日本語" sandbox="allow-scripts" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <p id="notice" role="status">ServiceLifeの日本語画面を読み込んでいます…</p>
   <script src="./fleet-store.js" defer></script>
-  <script src="./viewer.js" defer></script>
+  <script src="./viewer.js?v=df06a764c27feff8" defer></script>
 </body>
 </html>

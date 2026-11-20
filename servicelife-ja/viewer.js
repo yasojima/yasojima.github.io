@@ -26,7 +26,7 @@ async function read(name,type) {
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,seq=0;
-const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text")]);
+const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js?v=a7daf18789456248","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
 function requested(){
   const match=location.hash.slice(1).split("?")[0].match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
@@ -105,8 +105,11 @@ function render(record,programs,language,inside,tech,place){
   css.textContent+=':root{--sidebar-w:220px}@media(min-width:768px){.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
   doc.head.append(css);
   const solid=doc.createElement("link");solid.rel="stylesheet";solid.href=resources+"css/solid.min.css";doc.head.append(solid);
-  const leaflet=doc.createElement("link");leaflet.rel="stylesheet";leaflet.href=resources+"leaflet/leaflet.css";doc.head.append(leaflet);
-  const l=doc.createElement("script");l.src=resources+"leaflet/leaflet.js";doc.head.prepend(l);
+  if(doc.querySelector("[data-offline-map]")){
+    const leaflet=doc.createElement("link");leaflet.rel="stylesheet";leaflet.href=resources+"leaflet/leaflet.css";doc.head.append(leaflet);
+    const l=doc.createElement("script");l.src=resources+"leaflet/leaflet.js";doc.head.prepend(l);
+  }
+  css.textContent+=".sidebar-nav a[aria-busy=true]{color:#fff;background:rgba(255,255,255,.08);border-left-color:var(--accent)}";
   inline(doc.head,"("+inside+")("+safeJson(conf)+");",true);
   inline(doc.head,"(function(terms){"+language.charts+"})(window.SL_VIEW.terms);");
   inline(doc.body,"(function(terms){"+language.localizer+"})(window.SL_VIEW.terms);");
@@ -152,13 +155,37 @@ function showPrepared(next){
   delete frame.dataset.preparing;frame.inert=false;frame.removeAttribute("aria-hidden");
   frame.dataset.route=active.route;document.title=frame.title;notice.hidden=true;
   if(next.selection!==undefined)handleFleet(active,{action:"select",key:next.selection});
+  // The next menu item is often in the next data file. Warm that one file after paint.
+  const items=catalog.roles[active.role];
+  const index=items.findIndex(item=>item.route===active.route);
+  if(index>=0 && items[index+1]){
+    const warm=()=>{if(active===next.place)warmRoute(active.role,items[index+1].route);};
+    if(window.requestIdleCallback)requestIdleCallback(warm,{timeout:800});else setTimeout(warm,0);
+  }
+}
+function warmRoute(role,route){
+  const id=catalog.files[role+"|"+route];
+  if(id && !navigator.connection?.saveData && !inFlight.has("screens/"+id+".bin"))
+    read("screens/"+id+".bin").catch(()=>{});
+}
+function presentAtMenuPosition(next,appliedTop){
+  function present(){
+    if(preparing!==next || next.turn!==seq)return;
+    const latest=menuPositions.get(next.place.role);
+    if(Number.isFinite(appliedTop) && Number.isFinite(latest) && latest!==appliedTop){
+      next.element.contentWindow.postMessage({application:"servicelife-jp",type:"restore-menu",menuTop:latest},"*");
+      return;
+    }
+    showPrepared(next);
+  }
+  if(document.hidden)present();else requestAnimationFrame(present);
 }
 window.addEventListener("message",e=>{
   if(e.data?.application!=="servicelife-jp")return;
   if(preparing && e.source===preparing.element.contentWindow){
     const next=preparing;
     if(e.data.type==="ready" && e.data.route===next.place.route){
-      if(document.hidden)showPrepared(next);else requestAnimationFrame(()=>showPrepared(next));
+      presentAtMenuPosition(next,e.data.menuTop);
     }else if(e.data.type==="fleet-request" && e.data.token===next.place.fleetToken && e.data.action==="select"){
       next.selection=e.data.key;
     }
@@ -167,6 +194,7 @@ window.addEventListener("message",e=>{
   if(e.source!==frame.contentWindow||!active)return;
   if(["menu-scroll","route"].includes(e.data.type) && Number.isFinite(e.data.menuTop))
     menuPositions.set(active.role,Math.max(0,e.data.menuTop));
+  if(e.data.type==="route-hint")warmRoute(active.role,e.data.route);
   if(e.data.type==="route")change(active.role,e.data.route,e.data.vehicle);
   if(e.data.type==="fleet-request" && active.fleetToken && e.data.token===active.fleetToken){
     handleFleet(active,e.data);
