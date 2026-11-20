@@ -11,7 +11,22 @@ function startServiceLifeReference(config) {
       document.body.append(box);}
     box.textContent=message;clearTimeout(note.timer);note.timer=setTimeout(()=>box.remove(),3100);
   }
-  window.SL_VIEW={route:config.route,terms:config.terms,word,translate:async values=>values.map(word),note};
+  window.SL_VIEW={route:config.route,terms:config.terms,word,translate:async values=>values.map(word),note,menuRoutes:config.menuRoutes,go};
+  const fixtureRows = data => Object.entries(data || {}).map(([k,v])=>[new URL(k,"https://reference.invalid"),v]);
+  let notificationRows=fixtureRows(config.fixtures);
+  if(config.surface==="navigation"){
+    window.SL_VIEW.updateShell=(route,state,notifications)=>{
+      if(notifications)notificationRows=fixtureRows(notifications);
+      config.route=route;window.SL_VIEW.route=route;
+      if(state && window.SL_VIEW.fleet)window.SL_VIEW.fleet.state=state;
+      document.dispatchEvent(new Event("fleet-updated"));
+    };
+    addEventListener("message",event=>{
+      const m=event.data;
+      if(event.source===parent && m?.application==="servicelife-jp" && m.type==="shell-fleet")
+        window.SL_VIEW.updateShell(config.route,m.fleet);
+    });
+  }
   const fleetPage = config.route === "/maintenance/";
   if (config.fleet) {
     const pending = new Map();
@@ -61,25 +76,19 @@ function startServiceLifeReference(config) {
     }
     function mountAlerts(){
       const dropdown=document.getElementById("cbpNotifDropdown");
-      if(!dropdown)return;
+      if(!dropdown && config.route!=="/notifications/")return;
       const css=document.createElement("style");
       css.textContent=".sl-fleet-alerts{padding:10px 14px;display:grid;gap:4px;max-height:36vh;overflow:auto;background:white;border-bottom:1px solid #dce5df}.sl-fleet-alerts>strong{font-size:13px;color:#294f34}.sl-fleet-alerts a{display:grid;gap:3px;padding:7px 2px;color:#23362b;text-decoration:none;border-bottom:1px solid #e9eeeb;font-size:13px}.sl-fleet-alerts a:hover,.sl-fleet-alerts a:focus{background:#f0f6f0}.sl-fleet-alerts span{font-size:12px;color:#57635d}.sl-fleet-alerts .sl-fleet-overdue{color:#ad271d}";
       document.head.append(css);
       const section=document.createElement("section");
       section.className="sl-fleet-alerts notranslate";
       const list=document.getElementById("cbpNotifList");
-      dropdown.insertBefore(section,list);
-      if(fleetPage){
-        for(const el of dropdown.querySelectorAll(".head,.footer,#cbpNotifList"))el.hidden=true;
-      }
-      let overview;
-      if(config.route==="/notifications/"){
-        overview=section.cloneNode(false);
-        document.querySelector("main .content")?.prepend(overview);
-      }
+      if(dropdown)dropdown.insertBefore(section,list);
+      else document.querySelector("main .content")?.prepend(section);
       function update(){
+        for(const el of dropdown?.querySelectorAll(".head,.footer,#cbpNotifList")||[])
+          el.hidden=config.route==="/maintenance/";
         fillAlerts(section);
-        if(overview)fillAlerts(overview);
         window.cbpRefreshNotifBell?.();
       }
       update();document.addEventListener("fleet-updated",update);
@@ -101,7 +110,7 @@ function startServiceLifeReference(config) {
     window.Date=new Proxy(RealDate,{construct:(ctor,args)=>Reflect.construct(ctor,args.length?args:[clock()]),
       apply:()=>new RealDate(clock()).toString(),get:(ctor,k)=>k==="now"?clock:Reflect.get(ctor,k)});
   }
-  const data=config.fixtures||{}, parsed=Object.entries(data).map(([k,v])=>[new URL(k,"https://reference.invalid"),v]);
+  const parsed=fixtureRows(config.fixtures);
   const response=(obj,code=200)=>new Response(JSON.stringify(obj),{status:code,headers:{"Content-Type":"application/json; charset=utf-8"}});
   function localVisitDate(stamp, zone) {
     if (!stamp || !zone || /(?:Z|[+-]\d\d:\d\d)$/.test(stamp)) return stamp;
@@ -149,7 +158,8 @@ function startServiceLifeReference(config) {
     }
     let u;try{u=new URL(typeof input==="string"?input:input.url||String(input),"https://reference.invalid"+config.route);}catch{return response({},404);}
     const p=u.pathname;
-    const variants=parsed.filter(([k])=>k.pathname===p);
+    const rows=config.surface==="navigation" && p.includes("/notifications/") ? notificationRows : parsed;
+    const variants=rows.filter(([k])=>k.pathname===p);
     const exact=variants.find(([k])=>queryKey(k.searchParams)===queryKey(u.searchParams));
     if(config.fleet && /\/notifications\/unread-count\/$/.test(p)){
       const old=exact?.[1] || variants[0]?.[1] || {};
@@ -273,6 +283,25 @@ function startServiceLifeReference(config) {
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
       });
     }
+    if(config.surface==="content"){
+      let previous=false,queued=false;
+      function checkModal(){
+        queued=false;
+        // The navigation is a sibling document. Let the page's own modal/backdrop cover it.
+        const modal=[...document.querySelectorAll('dialog[open],[aria-modal=true],.modal-overlay,.modal-backdrop,.modal.show,.modal.open,[role=dialog]')]
+          .some(el=>{
+            const r=el.getBoundingClientRect(),s=getComputedStyle(el);
+            return r.width>0 && r.height>0 && s.visibility!=="hidden" && (el.matches("dialog:modal,[aria-modal=true]") || s.position==="fixed");
+          });
+        if(modal!==previous){previous=modal;send("content-modal",{open:modal});}
+      }
+      const queue=()=>{if(!queued){queued=true;requestAnimationFrame(checkModal);}};
+      new MutationObserver(queue).observe(document.body,{subtree:true,childList:true,attributes:true,
+        attributeFilter:["open","class","style","hidden","aria-modal"]});
+      document.addEventListener("pointerdown",()=>send("content-pointer"),true);
+      document.addEventListener("transitionend",queue,true);
+      checkModal();
+    }
     const menu=document.querySelector(".sidebar-nav");
     menu?.addEventListener("scroll",()=>send("menu-scroll",{menuTop:menu.scrollTop}),{passive:true});
     function hint(event){
@@ -285,11 +314,6 @@ function startServiceLifeReference(config) {
       if(menu)menu.scrollTop=top;
       send("ready",{route:config.route,menuTop:top});
     }
-    addEventListener("message",event=>{
-      const message=event.data;
-      if(event.source===parent && message?.application==="servicelife-jp" &&
-          message.type==="restore-menu" && Number.isFinite(message.menuTop))restoreMenu(message.menuTop);
-    });
     // Measure after translation so the used text and icon fonts are known to the browser.
     setTimeout(async()=>{
       document.documentElement.getBoundingClientRect();

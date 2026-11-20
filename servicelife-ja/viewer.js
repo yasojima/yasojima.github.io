@@ -25,9 +25,11 @@ async function read(name,type) {
 }
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
-let catalog,active,preparing,seq=0;
+let catalog,active,preparing,navigation,seq=0;
 const pendingMenuHashes=[];
-const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js?v=a7daf18789456248","text"),read("tech-map.js","text")]);
+const dataVersion="?v=ae7594b1d962a163";
+const screenFile=id=>"screens/"+id+".bin"+dataVersion;
+const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"),read("inside.js?v=ac4c2cfdc1ef71cc","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
 function routeHash(role,route,vehicle){
   const detail=route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0;
@@ -53,7 +55,8 @@ function change(role,route,vehicle){
   if(active && hash===routeHash(active.role,active.route,active.vehicle)){
     ++seq;
     pendingMenuHashes.length=0;
-    if(preparing){preparing.element.remove();preparing=null;}
+    discardPreparation();
+    activateNavigation();
     if(location.hash!==hash)history.replaceState(null,"",hash);
     return;
   }
@@ -73,34 +76,23 @@ async function reservationData(place, record) {
     if (route === place.route) continue;
     const groupId = catalog.files[place.role + "|" + route];
     if (!groupId) continue;
-    const group = await read("screens/" + groupId + ".bin");
+    const group = await read(screenFile(groupId));
     for (const [url, data] of Object.entries(group[route].fx)) {
       if (/\/(?:customers|scheduling\/(?:calendar|resource-day|appointments))\/(?:\?|$)/.test(url)) fixtures[url] = data;
     }
   }
   return {...record, fx: {...fixtures, ...record.fx}};
 }
-function render(record,programs,language,inside,tech,place){
+function render(record,programs,language,inside,tech,place,surface){
   const mode=record.mode,raw=mode==="active"?record.raw:record.view;
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
-  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,
-    fleet:place.fleet, fleetToken:place.fleetToken, vehicle:place.vehicle, menuTop:menuPositions.get(place.role)};
+  const conf={route:place.route,role:place.role,mode,surface,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,
+    menuRoutes:catalog.roles[place.role].map(item=>item.route), fleet:surface==="navigation" ? fleetSummary(place.fleet) : place.fleet,
+    fleetToken:place.fleetToken, vehicle:place.vehicle, menuTop:menuPositions.get(place.role)};
   const skip=new Set(programs.skip);
-  if(mode==="snapshot"){
-    const drawer=Object.entries(programs.scripts).find(([,code])=>code.includes("function cbpToggleSidebar") || (code.includes('t.closest("#cbpHamburger")') && code.includes("cbpToggleSidebar()")));
-    if(drawer)inline(doc.body,drawer[1]);
-    const tour=Object.values(programs.scripts).find(code=>code.includes("$('slt-fab').onclick = start;"));
-    if(tour && doc.getElementById("slt-fab"))inline(doc.body,tour);
-    if(place.fleet){
-      const bell=Object.values(programs.scripts).find(code=>code.includes("window.cbpToggleNotifBell = function"));
-      if(bell){
-        for(const el of doc.querySelectorAll("#cbpNotifBellWrap [data-sl-click]")){
-          el.setAttribute("onclick",el.getAttribute("data-sl-click"));el.removeAttribute("data-sl-click");
-        }
-        inline(doc.body,bell);
-      }
-    }
+  if(surface==="content"){
+    for(const el of doc.querySelectorAll(".sidebar,#cbpNotifBellWrap,#cbpSidebarBackdrop,#cbpHamburger,#slt-fab,#slt-root,#aiFabRoot"))el.remove();
   }
   for(const style of doc.querySelectorAll("style[data-sl-style]")){
     style.textContent=programs.styles[style.dataset.slStyle]||"";
@@ -109,6 +101,9 @@ function render(record,programs,language,inside,tech,place){
   for(const node of doc.querySelectorAll("script[data-sl-script]")){
     const h=node.dataset.slScript;let code=programs.scripts[h]||"";
     if(skip.has(h)||!code){node.remove();continue;}
+    if(surface==="content" && ["window.__cbpMobileNav","window.__cbpNotifBell","window._aiFabInit"].some(marker=>code.includes(marker))){
+      node.remove();continue;
+    }
     if(place.route==="/technicians/"&&code.includes("function renderCards()")&&code.includes("function focusTech(")){
       code=code.slice(0,code.indexOf("function focusTech("))+ "\n"+tech;
     }
@@ -118,6 +113,12 @@ function render(record,programs,language,inside,tech,place){
   const css=doc.createElement("style");
   css.textContent='@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url("'+resources+'webfonts/inter-latin.woff2") format("woff2")}html{font-family:Inter,system-ui,sans-serif}.sl-map-pin{background:transparent;border:none}.leaflet-container{background:#e8eee9}[hidden]{display:none!important}';
   css.textContent+=':root{--sidebar-w:220px}@media(min-width:768px){html{scrollbar-gutter:stable}.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
+  css.textContent+='html,body{background:transparent}';
+  if(surface==="navigation"){
+    css.textContent+='html,body{height:100%;overflow:hidden}#main-content{background:transparent;min-height:100vh;pointer-events:none}';
+  }else{
+    css.textContent+='.main{background:var(--bg,#f4f6fa)}';
+  }
   doc.head.append(css);
   const solid=doc.createElement("link");solid.rel="stylesheet";solid.href=resources+"css/solid.min.css";doc.head.append(solid);
   if(doc.querySelector("[data-offline-map]")){
@@ -128,15 +129,41 @@ function render(record,programs,language,inside,tech,place){
   inline(doc.head,"("+inside+")("+safeJson(conf)+");",true);
   inline(doc.head,"(function(terms){"+language.charts+"})(window.SL_VIEW.terms);");
   inline(doc.body,"(function(terms){"+language.localizer+"})(window.SL_VIEW.terms);");
+  if(surface==="navigation")inline(doc.body,"("+programs.shellCode+")();");
   const meta=doc.createElement("meta");meta.httpEquiv="Content-Security-Policy";
   meta.content="default-src 'none'; script-src 'unsafe-inline' "+resources+" "+base.href+"assets/; style-src 'unsafe-inline' "+resources+" "+base.href+"assets/; img-src data: blob: "+base.href+" https://tile.openstreetmap.org; font-src data: "+resources+"; connect-src 'none'; object-src 'none'; form-action 'none'; frame-src 'none'; base-uri 'none'";
   doc.head.prepend(meta);
   doc.documentElement.lang="ja";
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }
+function fleetSummary(state){
+  if(!state)return undefined;
+  return {day:state.day,alerts:state.alerts,error:state.error};
+}
+function activateNavigation(){
+  if(!active||!navigation)return;
+  navigation.element.contentWindow.postMessage({application:"servicelife-jp",type:"activate-shell",
+    route:active.route,notifications:active.notifications,fleet:fleetSummary(active.fleet)},"*");
+}
+function discardPreparation(){
+  if(!preparing)return;
+  preparing.element.remove();
+  preparing.newNavigation?.element.remove();
+  preparing=null;
+}
+function makeFrame(kind,title,source){
+  const el=document.createElement("iframe");
+  el.className=kind;el.dataset.preparing="";el.inert=true;el.setAttribute("aria-hidden","true");
+  el.setAttribute("sandbox","allow-scripts");el.referrerPolicy="strict-origin-when-cross-origin";
+  el.title=title;el.srcdoc=source;
+  return el;
+}
+function revealFrame(el,id){
+  el.id=id;delete el.dataset.preparing;el.inert=false;el.removeAttribute("aria-hidden");
+}
 async function openScreen(hash=location.hash){
   const turn=++seq;
-  if(preparing){preparing.element.remove();preparing=null;}
+  discardPreparation();
   try{
     const [c,programs,language,inside,tech]=await common;catalog=c;
     if(turn!==seq)return;
@@ -144,20 +171,23 @@ async function openScreen(hash=location.hash){
     const hasFleet=Boolean(c.files[place.role+"|/maintenance/"]);
     if(hasFleet)place.fleetToken=crypto.randomUUID();
     const [record,fleet]=await Promise.all([
-      read("screens/"+id+".bin").then(group=>reservationData(place,group[place.route])),
+      read(screenFile(id)).then(group=>reservationData(place,group[place.route])),
       hasFleet ? fleetSnapshot(place) : undefined
     ]);
     place.fleet=fleet;
+    place.notifications=Object.fromEntries(Object.entries(record.fx || {}).filter(([url])=>url.includes("/notifications/")));
     if(turn!==seq)return;
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
-    const element=document.createElement("iframe");
-    element.className="screen";element.dataset.preparing="";element.inert=true;
-    element.setAttribute("aria-hidden","true");element.setAttribute("sandbox",frame.getAttribute("sandbox"));
-    element.referrerPolicy=frame.referrerPolicy;
-    element.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
-    element.srcdoc=render(record,programs,language,inside,tech,place);
-    preparing={element,place,turn};
+    const title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
+    const element=makeFrame("screen",title,render(record,programs,language,inside,tech,place,"content"));
+    let newNavigation;
+    if(navigation?.role!==place.role){
+      const nav=makeFrame("navigation","共通メニュー",render(programs.shells[place.role],programs,language,inside,tech,place,"navigation"));
+      newNavigation={role:place.role,element:nav,ready:false};
+    }
+    preparing={element,place,turn,newNavigation,contentReady:false};
     frame.after(element);
+    if(newNavigation)element.after(newNavigation.element);
   }catch(e){
     if(turn!==seq)return;
     pendingMenuHashes.length=0;
@@ -173,9 +203,14 @@ function showPrepared(next){
   pendingMenuHashes.length=0;
   const previous=frame;
   frame=next.element;active=next.place;preparing=null;
-  previous.remove();frame.id="screen";
-  delete frame.dataset.preparing;frame.inert=false;frame.removeAttribute("aria-hidden");
-  frame.dataset.route=active.route;document.title=frame.title;notice.hidden=true;
+  previous.remove();revealFrame(frame,"screen");
+  if(next.newNavigation){
+    navigation?.element.remove();navigation=next.newNavigation;
+    revealFrame(navigation.element,"navigation");
+  }
+  frame.dataset.route=active.route;frame.dataset.role=active.role;
+  syncModalFocus();document.title=frame.title;notice.hidden=true;
+  activateNavigation();
   if(next.selection!==undefined)handleFleet(active,{action:"select",key:next.selection});
   // The next menu item is often in the next data file. Warm that one file after paint.
   const items=catalog.roles[active.role];
@@ -187,36 +222,61 @@ function showPrepared(next){
 }
 function warmRoute(role,route){
   const id=catalog.files[role+"|"+route];
-  if(id && !navigator.connection?.saveData && !inFlight.has("screens/"+id+".bin"))
-    read("screens/"+id+".bin").catch(()=>{});
+  if(id && !navigator.connection?.saveData && !inFlight.has(screenFile(id)))
+    read(screenFile(id)).catch(()=>{});
 }
-function presentAtMenuPosition(next,appliedTop){
-  function present(){
-    if(preparing!==next || next.turn!==seq)return;
-    const latest=menuPositions.get(next.place.role);
-    if(Number.isFinite(appliedTop) && Number.isFinite(latest) && latest!==appliedTop){
-      next.element.contentWindow.postMessage({application:"servicelife-jp",type:"restore-menu",menuTop:latest},"*");
-      return;
-    }
-    showPrepared(next);
-  }
+function presentWhenReady(next){
+  if(!next.contentReady || (next.newNavigation && !next.newNavigation.ready))return;
+  const present=()=>showPrepared(next);
   if(document.hidden)present();else requestAnimationFrame(present);
+}
+function syncModalFocus(){
+  if(!navigation || !active)return;
+  navigation.element.inert=frame.hasAttribute("data-modal");
+  frame.inert=!navigation.element.inert && navigation.overlay===true;
+}
+function updateRegions(el,rects){
+  if(!Array.isArray(rects)||rects.length>20)return;
+  const paths=[];
+  for(const rect of rects){
+    if(!Array.isArray(rect)||rect.length!==4||!rect.every(Number.isFinite))return;
+    const [x,y,right,bottom]=rect;
+    paths.push("M"+x+" "+y+" H"+right+" V"+bottom+" H"+x+" Z");
+  }
+  el.style.clipPath=paths.length?'path("'+paths.join(" ")+'")':"inset(100%)";
 }
 window.addEventListener("message",e=>{
   if(e.data?.application!=="servicelife-jp")return;
+  const incoming=preparing?.newNavigation;
+  const nav=incoming && e.source===incoming.element.contentWindow ? incoming :
+    navigation && e.source===navigation.element.contentWindow ? navigation : null;
+  if(nav){
+    if(e.data.type==="shell-regions"){
+      updateRegions(nav.element,e.data.rects);nav.overlay=e.data.overlay===true;
+      if(nav===navigation)syncModalFocus();
+    }
+    if(e.data.type==="ready" && nav===incoming){nav.ready=true;presentWhenReady(preparing);}
+    if(nav!==navigation || !active)return;
+    if(["menu-scroll","route"].includes(e.data.type) && Number.isFinite(e.data.menuTop))
+      menuPositions.set(nav.role,Math.max(0,e.data.menuTop));
+    if(e.data.type==="route-hint")warmRoute(nav.role,e.data.route);
+    if(e.data.type==="route")change(nav.role,e.data.route,e.data.vehicle);
+    return;
+  }
   if(preparing && e.source===preparing.element.contentWindow){
     const next=preparing;
     if(e.data.type==="ready" && e.data.route===next.place.route){
-      presentAtMenuPosition(next,e.data.menuTop);
+      next.contentReady=true;presentWhenReady(next);
+    }else if(e.data.type==="content-modal"){
+      next.element.toggleAttribute("data-modal",e.data.open===true);
     }else if(e.data.type==="fleet-request" && e.data.token===next.place.fleetToken && e.data.action==="select"){
       next.selection=e.data.key;
     }
     return;
   }
   if(e.source!==frame.contentWindow||!active)return;
-  if(["menu-scroll","route"].includes(e.data.type) && Number.isFinite(e.data.menuTop))
-    menuPositions.set(active.role,Math.max(0,e.data.menuTop));
-  if(e.data.type==="route-hint")warmRoute(active.role,e.data.route);
+  if(e.data.type==="content-modal"){frame.toggleAttribute("data-modal",e.data.open===true);syncModalFocus();}
+  if(e.data.type==="content-pointer")navigation?.element.contentWindow.postMessage({application:"servicelife-jp",type:"content-pointer"},"*");
   if(e.data.type==="route")change(active.role,e.data.route,e.data.vehicle);
   if(e.data.type==="fleet-request" && active.fleetToken && e.data.token===active.fleetToken){
     handleFleet(active,e.data);
@@ -258,6 +318,7 @@ async function handleFleet(place,request){
     }else if(request.action!=="refresh")return;
     place.fleet=await fleetSnapshot(place);
     respond({state:place.fleet,key});
+    if(active===place && navigation)navigation.element.contentWindow.postMessage({application:"servicelife-jp",type:"shell-fleet",fleet:fleetSummary(place.fleet)},"*");
   }catch(error){respond({error:error.message});}
 }
 function refreshFleet(){
