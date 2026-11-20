@@ -15,12 +15,19 @@
     iframe[data-preparing]{z-index:0;opacity:0;pointer-events:none}
     #notice{position:absolute;inset:0;z-index:4;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}
     #notice[hidden]{display:none}
+    #office-pdf{width:min(960px,94vw);height:85vh;box-sizing:border-box;padding:12px;border:1px solid #cbd6d0;border-radius:10px;font:14px system-ui;color:#23362b}
+    #office-pdf::backdrop{background:#19282099}
+    #office-pdf header{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:10px}
+    #office-pdf strong{flex:1;overflow-wrap:anywhere}
+    #office-pdf a,#office-pdf button{color:#225a37;font:inherit}#office-pdf iframe{border:0;width:100%;height:calc(100% - 54px)}
   </style>
 </head>
 <body>
   <iframe id="screen" class="screen" title="ServiceLife 日本語" sandbox="allow-scripts" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <p id="notice" role="status">ServiceLifeの日本語画面を読み込んでいます…</p>
+  <dialog id="office-pdf" aria-label="書類の控え"><header><strong></strong><a target="_blank" rel="noopener">別タブで開く</a><a download>ダウンロード</a><button type="button">閉じる</button></header><iframe title="控えのPDF"></iframe></dialog>
   <script src="./fleet-store.js" defer></script>
-  <script src="./viewer.js?v=2bf2fc26594c1ea2" defer></script>
+  <script src="./office-store.js?v=c3b53b173050fb39" defer></script>
+  <script src="./viewer.js?v=7781faeae869ba98" defer></script>
 </body>
 </html>

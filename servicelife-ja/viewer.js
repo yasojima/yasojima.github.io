@@ -27,12 +27,12 @@ const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,navigation,seq=0;
 const pendingMenuHashes=[];
-const dataVersion="?v=a3abf506117e5ab7";
+const dataVersion="?v=322a061db6c88926";
 const screenFile=id=>"screens/"+id+".bin"+dataVersion;
-const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"+dataVersion),read("inside.js?v=474ff85c1d69b718","text"),read("tech-map.js","text")]);
+const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"+dataVersion),read("inside.js?v=f37cac89f78a3aa4","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
 function routeHash(role,route,vehicle){
-  const detail=route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0;
+  const detail=["/maintenance/","/expenses/"].includes(route) && Number.isSafeInteger(vehicle) && vehicle>0;
   return "#"+(role==="company_admin"?"":role)+route+(detail?"?vehicle="+vehicle:"");
 }
 function requested(hash){
@@ -42,7 +42,7 @@ function requested(hash){
   const route=match?.[2]||initialRoute(role);
   if(catalog.files[role+"|"+route]){
     const vehicle=Number(new URLSearchParams(query).get("vehicle"));
-    return {role,route,vehicle:route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0 ? vehicle : null};
+    return {role,route,vehicle:["/maintenance/","/expenses/"].includes(route) && Number.isSafeInteger(vehicle) && vehicle>0 ? vehicle : null};
   }
   const home=initialRoute(role);
   history.replaceState(null,"",routeHash(role,home));
@@ -89,7 +89,8 @@ function render(record,programs,language,inside,tech,place,surface){
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
   const conf={route:place.route,role:place.role,mode,surface,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,
     menuRoutes:catalog.roles[place.role].map(item=>item.route), fleet:surface==="navigation" ? fleetSummary(place.fleet) : place.fleet,
-    fleetToken:place.fleetToken, vehicle:place.vehicle, menuTop:menuPositions.get(place.role)};
+    fleetToken:place.fleetToken, vehicle:place.vehicle, menuTop:menuPositions.get(place.role),
+    office:surface==="content"?place.office:undefined, officeToken:surface==="content"?place.officeToken:undefined};
   const skip=new Set(programs.skip);
   if(surface==="content"){
     for(const el of doc.querySelectorAll(".sidebar,#cbpNotifBellWrap,#cbpSidebarBackdrop,#cbpHamburger"))el.remove();
@@ -170,11 +171,15 @@ async function openScreen(hash=location.hash){
     const place=requested(hash);const id=c.files[place.role+"|"+place.route];
     const hasFleet=Boolean(c.files[place.role+"|/maintenance/"]);
     if(hasFleet)place.fleetToken=crypto.randomUUID();
-    const [record,fleet]=await Promise.all([
+    if([OfficeStore.expenses,OfficeStore.documents].includes(place.route))place.officeToken=crypto.randomUUID();
+    const [record,fleet,office]=await Promise.all([
       read(screenFile(id)).then(group=>reservationData(place,group[place.route])),
-      hasFleet ? fleetSnapshot(place) : undefined
+      hasFleet ? fleetSnapshot(place) : undefined,
+      place.officeToken ? OfficeStore.snapshot(place).catch(()=>({records:[],cars:[],categories:[],statuses:[],
+        error:"このブラウザで試用データを読み込めませんでした。再読み込みしてください。"})) : undefined
     ]);
     place.fleet=fleet;
+    place.office=office;
     place.notifications=Object.fromEntries(Object.entries(record.fx || {}).filter(([url])=>url.includes("/notifications/")));
     if(turn!==seq)return;
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
@@ -202,6 +207,7 @@ function showPrepared(next){
   }
   pendingMenuHashes.length=0;
   const previous=frame;
+  if(document.getElementById("office-pdf")?.open)document.getElementById("office-pdf").close();
   frame=next.element;active=next.place;preparing=null;
   previous.remove();revealFrame(frame,"screen");
   if(next.newNavigation){
@@ -281,6 +287,9 @@ window.addEventListener("message",e=>{
   if(e.data.type==="fleet-request" && active.fleetToken && e.data.token===active.fleetToken){
     handleFleet(active,e.data);
   }
+  if(e.data.type==="office-request" && active.officeToken && e.data.token===active.officeToken){
+    handleOffice(active,e.data);
+  }
   if(e.data.type==="role"&&Object.hasOwn(catalog.roles,e.data.role)){
     const role=e.data.role;
     const home=role==="technician"?"/my-day/":role==="csr"?"/csr-dashboard/":"/business-manager/";
@@ -323,7 +332,51 @@ async function handleFleet(place,request){
 }
 function refreshFleet(){
   if(active?.fleetToken)handleFleet(active,{action:"refresh"});
+  refreshOffice();
 }
 if(fleetChannel)fleetChannel.onmessage=refreshFleet;
 window.addEventListener("focus",refreshFleet);
 setInterval(()=>{if(active?.fleet && active.fleet.day!==FleetStore.today())refreshFleet();},60000);
+
+const officeChannel=typeof BroadcastChannel==="function" ? new BroadcastChannel("exops-servicelife-office") : null;
+function refreshOffice(){
+  if(active?.officeToken)handleOffice(active,{action:"refresh"});
+}
+if(officeChannel)officeChannel.onmessage=refreshOffice;
+let officeRead=0;
+async function handleOffice(place,request){
+  const reply=payload=>{
+    if(active===place)frame.contentWindow.postMessage({application:"servicelife-jp",type:"office-result",
+      token:place.officeToken,requestId:request.requestId,...payload},"*");
+  };
+  try{
+    let id;
+    if(request.action==="pdf"){
+      const file=await OfficeStore.attachment(place,request.fileId);
+      if(active===place)showOfficePdf(file);
+      reply({});return;
+    }
+    if(request.action==="save"){
+      id=await OfficeStore.save(place,request.draft);
+      officeChannel?.postMessage("changed");
+    }else if(request.action!=="refresh")return;
+    const generation=++officeRead;
+    const state=await OfficeStore.snapshot(place);
+    reply(generation===officeRead?{state,id}:{id});
+  }catch(error){reply({error:error.message});}
+}
+function showOfficePdf(file){
+  const dialog=document.getElementById("office-pdf");
+  if(dialog.open)dialog.close();
+  const url=URL.createObjectURL(file.bytes), embed=dialog.querySelector("iframe");
+  dialog.querySelector("strong").textContent=file.name;
+  const [open,download]=dialog.querySelectorAll("a");
+  open.href=url;download.href=url;download.download=file.name;
+  embed.src=url;
+  dialog.querySelector("button").onclick=()=>dialog.close();
+  dialog.addEventListener("close",()=>{
+    embed.removeAttribute("src");open.removeAttribute("href");download.removeAttribute("href");
+    URL.revokeObjectURL(url);
+  },{once:true});
+  dialog.showModal();
+}

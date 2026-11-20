@@ -28,6 +28,24 @@ function startServiceLifeReference(config) {
     });
   }
   const fleetPage = config.route === "/maintenance/";
+  if(config.office){
+    const pending=new Map();let sequence=0;
+    function request(action,data={}){
+      return new Promise((resolve,reject)=>{
+        const requestId=++sequence;pending.set(requestId,{resolve,reject});
+        send("office-request",{action,requestId,token:config.officeToken,...data});
+      });
+    }
+    const office=window.SL_VIEW.office={state:config.office,save:draft=>request("save",{draft}),
+      pdf:fileId=>request("pdf",{fileId}),refresh:()=>request("refresh"),canOpenFleet:config.routes.includes("/maintenance/")};
+    addEventListener("message",e=>{
+      const reply=e.data;
+      if(e.source!==parent || reply?.type!=="office-result" || reply.token!==config.officeToken)return;
+      if(reply.state){office.state=reply.state;document.dispatchEvent(new Event("office-updated"));}
+      const task=pending.get(reply.requestId);
+      if(task){pending.delete(reply.requestId);if(reply.error)task.reject(Error(reply.error));else task.resolve(reply.id);}
+    });
+  }
   if (config.fleet) {
     const pending = new Map();
     let sequence = 0;
@@ -240,6 +258,7 @@ function startServiceLifeReference(config) {
   }
   addEventListener("submit",ev=>{
     if(fleetPage && ev.target.closest("#fleet"))return;
+    if(config.office && ev.target.closest("#office"))return;
     ev.preventDefault();ev.stopImmediatePropagation();note("閲覧用の見本です。変更や送信は記録されません。");
   },true);
   addEventListener("click",ev=>{
