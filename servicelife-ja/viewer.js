@@ -27,7 +27,7 @@ const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,navigation,seq=0;
 const pendingMenuHashes=[];
-const dataVersion="?v=ae7594b1d962a163";
+const dataVersion="?v=5ffcb0bd96c2436f";
 const screenFile=id=>"screens/"+id+".bin"+dataVersion;
 const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"),read("inside.js?v=ac4c2cfdc1ef71cc","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
@@ -112,7 +112,7 @@ function render(record,programs,language,inside,tech,place,surface){
   const resources=base.href+"lib/";
   const css=doc.createElement("style");
   css.textContent='@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url("'+resources+'webfonts/inter-latin.woff2") format("woff2")}html{font-family:Inter,system-ui,sans-serif}.sl-map-pin{background:transparent;border:none}.leaflet-container{background:#e8eee9}[hidden]{display:none!important}';
-  css.textContent+=':root{--sidebar-w:220px}@media(min-width:768px){html{scrollbar-gutter:stable}.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
+  css.textContent+=':root{--sidebar-w:220px}@media (min-width: 768px){html{scrollbar-gutter:stable}.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
   css.textContent+='html,body{background:transparent}';
   if(surface==="navigation"){
     css.textContent+='html,body{height:100%;overflow:hidden}#main-content{background:transparent;min-height:100vh;pointer-events:none}';
