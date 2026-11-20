@@ -218,6 +218,7 @@ function startServiceLifeReference(config) {
   }
   function previewAction(el) {
     const spec=el.getAttribute("data-sl-click")||"",label=el.textContent.trim();
+    if(spec==="openLogCall()")return openPanel(document.getElementById("callModal"));
     if(/close|dismiss|hideModal/i.test(spec)||/^(閉じる|キャンセル|×|✕|Close|Cancel)$/i.test(label)){if(closePanel(el))return;}
     if(/send|delete|remove|save|submit|payNow|charge|signup|purchase|confirmPayment/i.test(spec)){note("閲覧用の見本です。変更や送信は記録されません。");return;}
     const key=spec.match(/['"]([A-Za-z][\w-]+)['"]/);

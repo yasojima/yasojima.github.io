@@ -27,9 +27,9 @@ const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,preparing,navigation,seq=0;
 const pendingMenuHashes=[];
-const dataVersion="?v=5ffcb0bd96c2436f";
+const dataVersion="?v=a3abf506117e5ab7";
 const screenFile=id=>"screens/"+id+".bin"+dataVersion;
-const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"),read("inside.js?v=ac4c2cfdc1ef71cc","text"),read("tech-map.js","text")]);
+const common=Promise.all([read("catalog.json"+dataVersion,"json"),read("programs.bin"+dataVersion),read("language.bin"+dataVersion),read("inside.js?v=474ff85c1d69b718","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
 function routeHash(role,route,vehicle){
   const detail=route==="/maintenance/" && Number.isSafeInteger(vehicle) && vehicle>0;
@@ -92,7 +92,7 @@ function render(record,programs,language,inside,tech,place,surface){
     fleetToken:place.fleetToken, vehicle:place.vehicle, menuTop:menuPositions.get(place.role)};
   const skip=new Set(programs.skip);
   if(surface==="content"){
-    for(const el of doc.querySelectorAll(".sidebar,#cbpNotifBellWrap,#cbpSidebarBackdrop,#cbpHamburger,#slt-fab,#slt-root,#aiFabRoot"))el.remove();
+    for(const el of doc.querySelectorAll(".sidebar,#cbpNotifBellWrap,#cbpSidebarBackdrop,#cbpHamburger"))el.remove();
   }
   for(const style of doc.querySelectorAll("style[data-sl-style]")){
     style.textContent=programs.styles[style.dataset.slStyle]||"";
@@ -101,7 +101,7 @@ function render(record,programs,language,inside,tech,place,surface){
   for(const node of doc.querySelectorAll("script[data-sl-script]")){
     const h=node.dataset.slScript;let code=programs.scripts[h]||"";
     if(skip.has(h)||!code){node.remove();continue;}
-    if(surface==="content" && ["window.__cbpMobileNav","window.__cbpNotifBell","window._aiFabInit"].some(marker=>code.includes(marker))){
+    if(surface==="content" && ["window.__cbpMobileNav","window.__cbpNotifBell"].some(marker=>code.includes(marker))){
       node.remove();continue;
     }
     if(place.route==="/technicians/"&&code.includes("function renderCards()")&&code.includes("function focusTech(")){
@@ -115,7 +115,7 @@ function render(record,programs,language,inside,tech,place,surface){
   css.textContent+=':root{--sidebar-w:220px}@media (min-width: 768px){html{scrollbar-gutter:stable}.sidebar{width:220px;transform:none}.main{margin-left:220px}#cbpHamburger{display:none}#cbp-topbar>.topbar{padding-left:28px}}';
   css.textContent+='html,body{background:transparent}';
   if(surface==="navigation"){
-    css.textContent+='html,body{height:100%;overflow:hidden}#main-content{background:transparent;min-height:100vh;pointer-events:none}';
+    css.textContent+='html,body{height:100%;overflow:hidden}';
   }else{
     css.textContent+='.main{background:var(--bg,#f4f6fa)}';
   }
