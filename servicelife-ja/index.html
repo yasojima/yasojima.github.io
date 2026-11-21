@@ -18,14 +18,21 @@
     #office-pdf strong{flex:1;overflow-wrap:anywhere}
     #office-pdf a,#office-pdf button{color:#225a37;font:inherit}#office-pdf iframe{border:0;width:100%;height:calc(100% - 54px)}
     #office-pdf img{width:100%;height:calc(100% - 54px);object-fit:contain}
+    #viewport-hud{
+      position:fixed;right:1px;bottom:1px;z-index:2147483647;
+      padding:1px 3px;border-radius:2px;background:#000;color:#fff;
+      font:10px/12px ui-monospace,monospace;white-space:nowrap;
+      pointer-events:none;user-select:none;
+    }
   </style>
 </head>
 <body>
   <iframe id="screen" title="ServiceLife 日本語" sandbox="allow-scripts" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <p id="notice" role="status">ServiceLifeの日本語画面を読み込んでいます…</p>
   <dialog id="office-pdf" aria-label="書類の控え"><header><strong></strong><a target="_blank" rel="noopener">別タブで開く</a><a download>ダウンロード</a><button type="button">閉じる</button></header><img hidden alt="保管した写真"></dialog>
-  <script src="./fleet-store.js?v=28196fb94fa122ff" defer></script>
-  <script src="./office-store.js?v=28196fb94fa122ff" defer></script>
-  <script src="./viewer.js?v=28196fb94fa122ff" defer></script>
+  <span id="viewport-hud" aria-hidden="true"></span>
+  <script src="./fleet-store.js?v=1d53144b09b0f826" defer></script>
+  <script src="./office-store.js?v=1d53144b09b0f826" defer></script>
+  <script src="./viewer.js?v=1d53144b09b0f826" defer></script>
 </body>
 </html>

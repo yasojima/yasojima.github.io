@@ -5,6 +5,15 @@ const assetVersion=new URL(document.currentScript.src).search;
 let frame=document.querySelector("#screen");
 const emptyFrame=frame.cloneNode(false);
 const notice=document.querySelector("#notice");
+const viewportHud=document.getElementById("viewport-hud");
+function updateViewportHud(){
+  const width=window.innerWidth;
+  const breakpoint=width < 768 ? "MOBILE" : width <= 1024 ? "TABLET" : "DESKTOP";
+  viewportHud.textContent=`${width} × ${window.innerHeight} px · ${breakpoint}`;
+}
+updateViewportHud();
+window.addEventListener("resize",updateViewportHud);
+
 const inFlight=new Map();
 async function read(name,type) {
   if(!inFlight.has(name)){
@@ -412,10 +421,13 @@ function showOfficePdf(file){
   dialog.querySelector("button").onclick=()=>dialog.close();
   dialog.addEventListener("close",()=>{
     embed.remove();
+    if(!dialog.open)dialog.after(viewportHud);
     if(!dialog.open && open.href===url){
       photo.removeAttribute("src");open.removeAttribute("href");download.removeAttribute("href");
     }
     URL.revokeObjectURL(url);
   },{once:true});
+  // A modal is in the browser's top layer, above the main page's HUD.
+  dialog.append(viewportHud);
   dialog.showModal();
 }
