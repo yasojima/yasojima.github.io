@@ -30,6 +30,7 @@ const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,account,seq=0;
 let sidebarTop=null;
+let pending=null;
 const home = {company_admin:"/business-manager/",csr:"/csr-dashboard/",technician:"/my-day/"};
 const sampleLogin = {company_admin:"demo_owner",csr:"demo_csr",technician:"demo_tech_kevin"};
 const roleName = {company_admin:"会社管理者",csr:"受付担当",technician:"現場スタッフ"};
@@ -65,10 +66,11 @@ function requested(){
   if(url.href!==location.href) history.replaceState(null,"",url);
   return {role,route};
 }
-function change(role,route){
+function change(role,route,fromSidebar){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
   const hash=routeHash(role,route);
-  if(location.hash!==hash)location.hash=hash;else openScreen();
+  if(location.hash!==hash)location.hash=hash;
+  else if(!fromSidebar)openScreen();
 }
 function inline(parent,code,first=false){
   const script=parent.ownerDocument.createElement("script");
@@ -150,10 +152,13 @@ function render(record,programs,language,inside,tech,place){
   doc.documentElement.lang="ja";
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }
-async function openScreen(){
+async function openScreen(navigation=false){
   const turn=++seq;
+  if(pending){pending.frame.remove();pending=null;}
   try{
-    const [c,programs,language,inside,tech]=await common;catalog=c;
+    const [c,programs,language,inside,tech]=await common;
+    if(turn!==seq)return;
+    catalog=c;
     const place=requested();
     if(!place){
       active=null;frame.hidden=true;notice.hidden=false;
@@ -164,22 +169,44 @@ async function openScreen(){
       sidebarTop=null;
       frame.hidden=true;frame.removeAttribute("srcdoc");delete frame.dataset.route;active=null;
     }
+    if(navigation && active?.role===place.role && active.route===place.route){
+      notice.hidden=true;
+      return;
+    }
     const id=c.files[place.role+"|"+place.route];
     const group=await read("screens/"+id+".bin");
     if(turn!==seq)return;
     const record=await reservationData(place,group[place.route]);
     if(turn!==seq)return;
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
-    document.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
-    active=place;
-    // Only the outer route belongs in Back/Forward history.
+    // Prepare the next document at its final viewport size while the current one stays visible.
     const nextFrame=emptyFrame.cloneNode(false);
-    nextFrame.title=document.title;
+    nextFrame.removeAttribute("id");
+    nextFrame.inert=true;
+    nextFrame.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
     nextFrame.srcdoc=render(record,programs,language,inside,tech,place);
-    frame.replaceWith(nextFrame);
-    frame=nextFrame;
-    notice.hidden=true;
-  }catch(e){console.error(e);notice.hidden=false;notice.textContent="画面を読み込めませんでした。再読み込みしてください。";}
+    pending={frame:nextFrame,place};
+    frame.after(nextFrame);
+  }catch(e){
+    if(turn!==seq)return;
+    console.error(e);notice.hidden=false;notice.textContent="画面を読み込めませんでした。再読み込みしてください。";
+  }
+}
+function showPendingScreen(){
+  const {frame:nextFrame,place}=pending;
+  if(grantedRole(account)!==place.role){openScreen();return;}
+  if(location.hash!==routeHash(place.role,place.route))return;
+  // Moving a connected iframe would reload it. Reveal it in place.
+  frame.remove();
+  frame=nextFrame;
+  frame.id="screen";
+  frame.inert=false;
+  frame.dataset.route=place.route;
+  frame.dataset.role=place.role;
+  document.title=frame.title;
+  active=place;
+  pending=null;
+  notice.hidden=true;
 }
 function sendStaffUpdate(message=""){
   frame.contentWindow.postMessage({application:"servicelife-ja-grants",staff:staffList(),message},"*");
@@ -204,11 +231,16 @@ async function saveGrant({login,role,previous}){
   else save();
 }
 window.addEventListener("message",e=>{
-  if(e.source!==frame.contentWindow||e.data?.application!=="servicelife-jp"||!active)return;
+  if(e.data?.application!=="servicelife-jp")return;
+  if(pending && e.source===pending.frame.contentWindow){
+    if(e.data.type==="ready" && e.data.route===pending.place.route)showPendingScreen();
+    return;
+  }
+  if(e.source!==frame.contentWindow||!active)return;
   if(e.data.type==="sidebar-position" && e.data.route===active.route && e.data.role===active.role && Number.isFinite(e.data.top)){
     sidebarTop=Math.max(0,e.data.top);
   }
-  if(e.data.type==="route")change(active.role,e.data.route);
+  if(e.data.type==="route")change(active.role,e.data.route,e.data.fromSidebar);
   if(e.data.type==="grant" && canAssign()) saveGrant(e.data);
   if(e.data.type==="view-account" && canAssign() && Object.hasOwn(catalog.accounts,e.data.login)){
     const url=new URL(location.href),role=grantedRole(e.data.login);
@@ -217,10 +249,6 @@ window.addEventListener("message",e=>{
     url.hash=routeHash(role,home[role]);
     location.assign(url);
   }
-  if(e.data.type==="ready" && e.data.route===active.route){
-    frame.dataset.route=active.route;
-    frame.dataset.role=active.role;
-  }
 });
 window.addEventListener("storage",e=>{
   if(!active || (e.key!==null && !e.key.startsWith(grantPrefix)))return;
@@ -228,5 +256,5 @@ window.addEventListener("storage",e=>{
   else if(canAssign())sendStaffUpdate("最新の権限を表示しています。");
 });
 window.addEventListener("pageshow",e=>{if(e.persisted)openScreen();});
-window.addEventListener("hashchange",openScreen);
+window.addEventListener("hashchange",()=>openScreen(true));
 openScreen();

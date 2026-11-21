@@ -139,8 +139,7 @@ function startServiceLifeReference(config) {
     const nav=document.querySelector(".sidebar-nav");
     if(nav)send("sidebar-position",{role:config.role,route:config.route,top:nav.scrollTop});
   }
-  // The document's Japanese labels are applied before DOMContentLoaded bubbles to the window.
-  addEventListener("DOMContentLoaded",()=>{
+  function restoreSidebar(){
     const nav=document.querySelector(".sidebar-nav");
     if(!nav)return;
     if(config.sidebarTop!==null){
@@ -150,13 +149,20 @@ function startServiceLifeReference(config) {
       if(selected)nav.scrollTop=Math.max(0,selected.getBoundingClientRect().bottom-nav.getBoundingClientRect().bottom);
     }
     nav.addEventListener("scroll",rememberSidebar,{passive:true});
+  }
+  // Reveal only after the document listeners have translated the menu and initialized the page.
+  addEventListener("DOMContentLoaded",()=>{
+    restoreSidebar();
+    send("ready",{route:config.route});
   },{once:true});
-  function go(path){
+  function go(path,element){
     if(!path)return false;
     let u;try{u=new URL(path,"https://reference.invalid"+config.route);}catch{return false}
     if(routes.has(u.pathname)){
+      const sidebar=element.closest(".sidebar-nav");
       rememberSidebar();
-      send("route",{route:u.pathname});
+      if(sidebar?.closest(".sidebar.cbp-open"))window.cbpToggleSidebar?.();
+      send("route",{route:u.pathname,fromSidebar:!!sidebar});
       return true;
     }
     return false;
@@ -235,7 +241,7 @@ function startServiceLifeReference(config) {
     const h=a?.getAttribute("href")||"";
     const action=el.getAttribute("onclick")||el.getAttribute("data-sl-click")||"";
     const nav=action.match(/(?:location(?:\.href)?\s*=|location\.(?:assign|replace)\()\s*['"](\/[^'"]*)['"]/);
-    if(nav&&go(nav[1]) || (h.startsWith("/")&&go(h))){ev.preventDefault();ev.stopImmediatePropagation();return;}
+    if(nav&&go(nav[1],el) || (h.startsWith("/")&&go(h,el))){ev.preventDefault();ev.stopImmediatePropagation();return;}
     if(a?.matches("[data-sl-external]")||/^(?:https?:|mailto:|tel:|\/logout\/)/.test(h)){
       ev.preventDefault();ev.stopImmediatePropagation();note("公開見本の外部リンクです。");return;
     }
@@ -262,6 +268,5 @@ function startServiceLifeReference(config) {
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
       });
     }
-    send("ready",{route:config.route});
   },{once:true});
 }
