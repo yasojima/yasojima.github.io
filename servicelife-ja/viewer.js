@@ -97,6 +97,7 @@ function render(record,programs,language,inside,tech,place){
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
   const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,sidebarTop};
+  if(place.route==="/customers/")conf.directoryQuery=history.state?.customerDirectoryQuery || "";
   const person=catalog.accounts[account];
   const profile=doc.querySelector(".sidebar-user");
   if(profile){
@@ -237,6 +238,9 @@ window.addEventListener("message",e=>{
     return;
   }
   if(e.source!==frame.contentWindow||!active)return;
+  if(e.data.type==="customer-directory-page" && active.route==="/customers/" && typeof e.data.query==="string"){
+    history.replaceState({...history.state,customerDirectoryQuery:e.data.query},"");
+  }
   if(e.data.type==="sidebar-position" && e.data.route===active.route && e.data.role===active.role && Number.isFinite(e.data.top)){
     sidebarTop=Math.max(0,e.data.top);
   }

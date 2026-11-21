@@ -73,6 +73,10 @@ function startServiceLifeReference(config) {
       return !search || Object.values(row).some(value=>typeof value==="string" && normalize(value).includes(search));
     });
     matching.sort((a,b)=>RealDate.parse(b.start_datetime)-RealDate.parse(a.start_datetime));
+    return paginate(matching,url);
+  }
+  function paginate(matching,url) {
+    const query=url.searchParams;
     const size=Math.max(1,Number(query.get("page_size")) || 25);
     const page=Math.max(1,Number(query.get("page")) || 1);
     const offset=(page-1)*size;
@@ -95,6 +99,18 @@ function startServiceLifeReference(config) {
     if(text && "count" in out)out.count=filtered.length;
     return out;
   }
+  function customerPage(variants,url) {
+    const query=url.searchParams,type=query.get("customer_type");
+    const byId=new Map();
+    for(const [,page] of variants)for(const row of page.results || [])byId.set(row.id,row);
+    const matches=searchIn([...byId.values()].filter(row=>!type || row.customer_type===type),query);
+    const order=query.get("ordering") || "-created_at",field=order.replace(/^-/,"");
+    if(["created_at","last_name"].includes(field)){
+      const direction=order.startsWith("-")?-1:1;
+      matches.sort((a,b)=>direction*String(a[field] || "").localeCompare(String(b[field] || ""),"en"));
+    }
+    return paginate(matches,url);
+  }
   window.fetch=async (input,options={})=>{
     const method=String(options.method||input?.method||"GET").toUpperCase();
     if(method!=="GET" && method!=="HEAD"){
@@ -109,6 +125,7 @@ function startServiceLifeReference(config) {
       return response(appointmentPage(variants,u));
     }
     if(exact)return response(exact[1]);
+    if(config.route==="/customers/" && p==="/api/v1/customers/" && variants.length)return response(customerPage(variants,u));
     if(variants.length){
       const best=variants.map(([k,v])=>[v,[...u.searchParams].filter(([a,b])=>k.searchParams.get(a)===b).length]).sort((a,b)=>b[1]-a[1])[0][0];
       if(/\/customers\/$|\/appointments\/$/.test(p))return response(searchIn(best,u.searchParams));
@@ -135,6 +152,13 @@ function startServiceLifeReference(config) {
   };
   const routes=new Set(config.routes);
   const send=(type,extra={})=>parent.postMessage({application:"servicelife-jp",type,...extra},"*");
+  if(config.route==="/customers/"){
+    window.SL_VIEW.directoryQuery=config.directoryQuery;
+    window.SL_VIEW.saveDirectoryQuery=query=>{
+      window.SL_VIEW.directoryQuery=query;
+      send("customer-directory-page",{query});
+    };
+  }
   function rememberSidebar(){
     const nav=document.querySelector(".sidebar-nav");
     if(nav)send("sidebar-position",{role:config.role,route:config.route,top:nav.scrollTop});
@@ -215,9 +239,20 @@ function startServiceLifeReference(config) {
   }
   function previewAction(el) {
     const spec=el.getAttribute("data-sl-click")||"",label=el.textContent.trim();
+    const root=el.closest("#cdRoot");
+    if(root && config.route==="/customers/"+root.dataset.customerId+"/" &&
+       el.matches(".cd-tab") && ["overview","documents","invoices","payments"].includes(el.dataset.pane)){
+      const name=el.dataset.pane,target=root.querySelector("#pane"+name[0].toUpperCase()+name.slice(1));
+      if(target){
+        for(const tab of root.querySelectorAll(".cd-tab"))tab.classList.toggle("active",tab===el);
+        for(const pane of root.querySelectorAll(".cd-pane"))pane.classList.toggle("active",pane===target);
+        return;
+      }
+    }
     if(spec==="openLogCall()" && openPanel(document.getElementById("callModal")))return;
     if(/close|dismiss|hideModal/i.test(spec)||/^(閉じる|キャンセル|×|✕|Close|Cancel)$/i.test(label)){if(closePanel(el))return;}
-    if(/send|delete|remove|save|submit|payNow|charge|signup|purchase|confirmPayment/i.test(spec)){note("閲覧用の見本です。変更や送信は記録されません。");return;}
+    if(/send|delete|remove|save|submit|payNow|charge|signup|purchase|confirmPayment/i.test(spec) ||
+       el.closest("#paneInvoices") && spec.startsWith("openTakePay(")){note("閲覧用の見本です。変更や送信は記録されません。");return;}
     const key=spec.match(/['"]([A-Za-z][\w-]+)['"]/);
     if(key){
       const names=[key[1],"tab-"+key[1],"panel-"+key[1],"pane-"+key[1],key[1]+"Modal"];
