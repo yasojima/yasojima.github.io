@@ -27,19 +27,46 @@ async function read(name,type) {
 }
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
-let catalog,active,seq=0;
+let catalog,active,account,seq=0;
+const home = {company_admin:"/business-manager/",csr:"/csr-dashboard/",technician:"/my-day/"};
+const sampleLogin = {company_admin:"demo_owner",csr:"demo_csr",technician:"demo_tech_kevin"};
+const roleName = {company_admin:"会社管理者",csr:"受付担当",technician:"現場スタッフ"};
+const grantPrefix = "servicelife-ja:staff-access:v1:";
 const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text")]);
-function initialRoute(role){return catalog.roles[role][0].route;}
+function grantedRole(login){
+  const initial = catalog.accounts[login].role;
+  try {
+    const saved = localStorage.getItem(grantPrefix + login);
+    return Object.hasOwn(roleName,saved) ? saved : initial;
+  } catch { return initial; }
+}
+function staffList(){
+  return Object.entries(catalog.accounts).map(([login,person])=>({login,name:person.name,role:grantedRole(login)}));
+}
+function routeHash(role,route){return "#"+(role==="company_admin"?"":role)+route;}
 function requested(){
   const match=location.hash.slice(1).match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
-  const role=match?.[1]||"company_admin";
-  const route=match?.[2]||initialRoute(role);
-  return {role,route:catalog.files[role+"|"+route]?route:initialRoute(role)};
+  const url = new URL(location.href);
+  // Old bookmarks identify a sample account on entry. Subsequent routes use that account's grant.
+  if(account===undefined){
+    account=url.searchParams.get("account") ?? sampleLogin[match?.[1] || "company_admin"];
+    if(!url.searchParams.has("account") && account===sampleLogin.company_admin && grantedRole(account)!=="company_admin"){
+      account=staffList().find(person=>person.role==="company_admin")?.login ?? account;
+    }
+  }
+  if (!Object.hasOwn(catalog.accounts,account)) return null;
+  const role = grantedRole(account);
+  const target = match?.[2];
+  const route = catalog.files[role+"|"+target] ? target : home[role];
+  if(account!==sampleLogin.company_admin || role!=="company_admin") url.searchParams.set("account",account);
+  url.hash=routeHash(role,route);
+  if(url.href!==location.href) history.replaceState(null,"",url);
+  return {role,route};
 }
 function change(role,route){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
-  const hash=(role==="company_admin"?"":role)+route;
-  if(location.hash!=="#"+hash)location.hash=hash;else openScreen();
+  const hash=routeHash(role,route);
+  if(location.hash!==hash)location.hash=hash;else openScreen();
 }
 function inline(parent,code,first=false){
   const script=parent.ownerDocument.createElement("script");
@@ -66,6 +93,28 @@ function render(record,programs,language,inside,tech,place){
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
   const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes};
+  const person=catalog.accounts[account];
+  const profile=doc.querySelector(".sidebar-user");
+  if(profile){
+    profile.querySelector(".name").textContent=person.name;
+    profile.querySelector(".role").textContent=roleName[place.role];
+    profile.querySelector(".avatar").textContent=person.name.split(/\s+/).map(n=>n[0]).slice(0,2).join("");
+  }
+  if(place.role==="company_admin" && place.route==="/settings/"){
+    conf.staff=staffList();
+    conf.openStaffPanel=new URLSearchParams(location.search).get("panel")==="users";
+  }
+  if(place.route==="/users/"){
+    for(const row of doc.querySelectorAll("#tableBody tr")){
+      const login=row.cells[0]?.querySelector("div")?.textContent.trim().replace(/^@/,"");
+      const badge=row.cells[3]?.querySelector(".badge");
+      if(badge && Object.hasOwn(catalog.accounts,login) && grantedRole(login)!==catalog.accounts[login].role){
+        const role=grantedRole(login);
+        badge.textContent=roleName[role];
+        badge.className="badge "+({company_admin:"badge-blue",csr:"badge-green",technician:"badge-orange"}[role]);
+      }
+    }
+  }
   const skip=new Set(programs.skip);
   if(mode==="snapshot"){
     const drawer=Object.entries(programs.scripts).find(([,code])=>code.includes("function cbpToggleSidebar") || (code.includes('t.closest("#cbpHamburger")') && code.includes("cbpToggleSidebar()")));
@@ -103,7 +152,16 @@ async function openScreen(){
   const turn=++seq;
   try{
     const [c,programs,language,inside,tech]=await common;catalog=c;
-    const place=requested();const id=c.files[place.role+"|"+place.route];
+    const place=requested();
+    if(!place){
+      active=null;frame.hidden=true;notice.hidden=false;
+      notice.textContent="このデモアカウントは利用できません。";
+      return;
+    }
+    if(active && place.role!==active.role){
+      frame.hidden=true;frame.removeAttribute("srcdoc");delete frame.dataset.route;active=null;
+    }
+    const id=c.files[place.role+"|"+place.route];
     const group=await read("screens/"+id+".bin");
     if(turn!==seq)return;
     const record=await reservationData(place,group[place.route]);
@@ -111,20 +169,54 @@ async function openScreen(){
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
     document.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
     active=place;
-    notice.hidden=true;
+    notice.hidden=true;frame.hidden=false;
     frame.title=document.title;
     frame.srcdoc=render(record,programs,language,inside,tech,place);
   }catch(e){console.error(e);notice.hidden=false;notice.textContent="画面を読み込めませんでした。再読み込みしてください。";}
 }
+function sendStaffUpdate(message=""){
+  frame.contentWindow.postMessage({application:"servicelife-ja-grants",staff:staffList(),message},"*");
+}
+function canAssign(){
+  return active?.route==="/settings/" && active.role==="company_admin" && grantedRole(account)==="company_admin";
+}
+async function saveGrant({login,role,previous}){
+  if(!Object.hasOwn(catalog.accounts,login) || !Object.hasOwn(roleName,role))return;
+  const save=()=>{
+    if(!canAssign())return;
+    if(grantedRole(login)!==previous){sendStaffUpdate("権限が更新されました。現在の内容を確認してください。");return;}
+    if(role!=="company_admin" && !staffList().some(p=>p.login!==login && p.role==="company_admin")){
+      sendStaffUpdate("先に別のスタッフに管理者権限を付与してください。");return;
+    }
+    try {localStorage.setItem(grantPrefix+login,role);}
+    catch {sendStaffUpdate("このブラウザで変更を保存できませんでした。");return;}
+    if(grantedRole(account)!==active.role){openScreen();return;}
+    sendStaffUpdate(catalog.accounts[login].name+" の権限を保存しました。");
+  };
+  if(navigator.locks)await navigator.locks.request(grantPrefix,save);
+  else save();
+}
 window.addEventListener("message",e=>{
   if(e.source!==frame.contentWindow||e.data?.application!=="servicelife-jp"||!active)return;
   if(e.data.type==="route")change(active.role,e.data.route);
-  if(e.data.type==="role"&&Object.hasOwn(catalog.roles,e.data.role)){
-    const role=e.data.role;
-    const home=role==="technician"?"/my-day/":role==="csr"?"/csr-dashboard/":"/business-manager/";
-    change(role,catalog.files[role+"|"+home]?home:initialRoute(role));
+  if(e.data.type==="grant" && canAssign()) saveGrant(e.data);
+  if(e.data.type==="view-account" && canAssign() && Object.hasOwn(catalog.accounts,e.data.login)){
+    const url=new URL(location.href),role=grantedRole(e.data.login);
+    url.searchParams.set("account",e.data.login);
+    url.searchParams.delete("panel");
+    url.hash=routeHash(role,home[role]);
+    location.assign(url);
   }
-  if(e.data.type==="ready")frame.dataset.route=e.data.route;
+  if(e.data.type==="ready" && e.data.route===active.route){
+    frame.dataset.route=active.route;
+    frame.dataset.role=active.role;
+  }
 });
+window.addEventListener("storage",e=>{
+  if(!active || (e.key!==null && !e.key.startsWith(grantPrefix)))return;
+  if(grantedRole(account)!==active.role || active.route==="/users/")openScreen();
+  else if(canAssign())sendStaffUpdate("最新の権限を表示しています。");
+});
+window.addEventListener("pageshow",e=>{if(e.persisted)openScreen();});
 window.addEventListener("hashchange",openScreen);
 openScreen();

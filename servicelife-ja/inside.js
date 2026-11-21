@@ -138,8 +138,6 @@ function startServiceLifeReference(config) {
   function go(path){
     if(!path)return false;
     let u;try{u=new URL(path,"https://reference.invalid"+config.route);}catch{return false}
-    const choice=u.pathname.match(/^\/demo\/view\/(company_admin|csr|technician)\/$/);
-    if(choice){send("role",{role:choice[1]});return true;}
     if(routes.has(u.pathname)){send("route",{route:u.pathname});return true;}
     return false;
   }
@@ -157,8 +155,39 @@ function startServiceLifeReference(config) {
     else{panel.style.display="none";panel.classList.remove("show","active","open");}
     delete panel.dataset.slOpened;return true;
   }
+  function bindStaffPermissions(){
+    const panel=document.getElementById("staffPermissions");
+    if(!panel || !config.staff)return;
+    const staff=panel.querySelector("#grantStaff"), role=panel.querySelector("#grantRole");
+    const save=panel.querySelector("#grantSave"), preview=panel.querySelector("#grantPreview");
+    const status=panel.querySelector("#grantStatus");
+    let people=config.staff;
+    for(const person of people)staff.add(new Option(person.name+"（"+person.login+"）",person.login));
+    staff.value=people.find(person=>person.role!=="company_admin")?.login || people[0].login;
+    const selected=()=>people.find(person=>person.login===staff.value);
+    function buttons(){
+      const changed=role.value!==selected().role;
+      save.disabled=!changed;
+      preview.disabled=changed;
+    }
+    function show(){role.value=selected().role;buttons();}
+    show();
+    staff.addEventListener("change",()=>{show();status.textContent="";});
+    role.addEventListener("change",()=>{buttons();status.textContent="";});
+    save.addEventListener("click",()=>{
+      save.disabled=true;
+      send("grant",{login:staff.value,role:role.value,previous:selected().role});
+    });
+    preview.addEventListener("click",()=>send("view-account",{login:staff.value}));
+    addEventListener("message",event=>{
+      if(event.source!==parent || event.data?.application!=="servicelife-ja-grants")return;
+      people=event.data.staff;show();status.textContent=event.data.message;
+    });
+    if(config.openStaffPanel)document.querySelector('a[href="#users"]')?.click();
+  }
   function previewAction(el) {
     const spec=el.getAttribute("data-sl-click")||"",label=el.textContent.trim();
+    if(spec==="openLogCall()" && openPanel(document.getElementById("callModal")))return;
     if(/close|dismiss|hideModal/i.test(spec)||/^(閉じる|キャンセル|×|✕|Close|Cancel)$/i.test(label)){if(closePanel(el))return;}
     if(/send|delete|remove|save|submit|payNow|charge|signup|purchase|confirmPayment/i.test(spec)){note("閲覧用の見本です。変更や送信は記録されません。");return;}
     const key=spec.match(/['"]([A-Za-z][\w-]+)['"]/);
@@ -205,7 +234,7 @@ function startServiceLifeReference(config) {
   addEventListener("keydown",ev=>{if(ev.key==="Escape")closePanel(document.querySelector('[data-sl-opened="true"]'));});
   document.addEventListener("DOMContentLoaded",()=>{
     document.documentElement.dataset.referenceMode=config.mode;
-    for(const el of document.querySelectorAll('a[href^="/demo/view/"]'))el.removeAttribute("target");
+    bindStaffPermissions();
     if(config.mode==="snapshot"){
       document.querySelectorAll("[data-offline-map]").forEach(element=>{
         if(!window.L || !element.clientWidth || !element.clientHeight)return;
