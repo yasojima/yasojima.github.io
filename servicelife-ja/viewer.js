@@ -2,7 +2,8 @@
 "use strict";
 const base=new URL("./",document.baseURI);
 const assetVersion=new URL(document.currentScript.src).search;
-const frame=document.querySelector("#screen");
+let frame=document.querySelector("#screen");
+const emptyFrame=frame.cloneNode(false);
 const notice=document.querySelector("#notice");
 const inFlight=new Map();
 async function read(name,type) {
@@ -28,6 +29,7 @@ async function read(name,type) {
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,account,seq=0;
+let sidebarTop=null;
 const home = {company_admin:"/business-manager/",csr:"/csr-dashboard/",technician:"/my-day/"};
 const sampleLogin = {company_admin:"demo_owner",csr:"demo_csr",technician:"demo_tech_kevin"};
 const roleName = {company_admin:"会社管理者",csr:"受付担当",technician:"現場スタッフ"};
@@ -92,7 +94,7 @@ function render(record,programs,language,inside,tech,place){
   const mode=record.mode,raw=mode==="active"?record.raw:record.view;
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
-  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes};
+  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,sidebarTop};
   const person=catalog.accounts[account];
   const profile=doc.querySelector(".sidebar-user");
   if(profile){
@@ -159,6 +161,7 @@ async function openScreen(){
       return;
     }
     if(active && place.role!==active.role){
+      sidebarTop=null;
       frame.hidden=true;frame.removeAttribute("srcdoc");delete frame.dataset.route;active=null;
     }
     const id=c.files[place.role+"|"+place.route];
@@ -169,9 +172,13 @@ async function openScreen(){
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
     document.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
     active=place;
-    notice.hidden=true;frame.hidden=false;
-    frame.title=document.title;
-    frame.srcdoc=render(record,programs,language,inside,tech,place);
+    // Only the outer route belongs in Back/Forward history.
+    const nextFrame=emptyFrame.cloneNode(false);
+    nextFrame.title=document.title;
+    nextFrame.srcdoc=render(record,programs,language,inside,tech,place);
+    frame.replaceWith(nextFrame);
+    frame=nextFrame;
+    notice.hidden=true;
   }catch(e){console.error(e);notice.hidden=false;notice.textContent="画面を読み込めませんでした。再読み込みしてください。";}
 }
 function sendStaffUpdate(message=""){
@@ -198,6 +205,9 @@ async function saveGrant({login,role,previous}){
 }
 window.addEventListener("message",e=>{
   if(e.source!==frame.contentWindow||e.data?.application!=="servicelife-jp"||!active)return;
+  if(e.data.type==="sidebar-position" && e.data.route===active.route && e.data.role===active.role && Number.isFinite(e.data.top)){
+    sidebarTop=Math.max(0,e.data.top);
+  }
   if(e.data.type==="route")change(active.role,e.data.route);
   if(e.data.type==="grant" && canAssign()) saveGrant(e.data);
   if(e.data.type==="view-account" && canAssign() && Object.hasOwn(catalog.accounts,e.data.login)){

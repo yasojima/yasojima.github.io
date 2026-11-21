@@ -135,10 +135,30 @@ function startServiceLifeReference(config) {
   };
   const routes=new Set(config.routes);
   const send=(type,extra={})=>parent.postMessage({application:"servicelife-jp",type,...extra},"*");
+  function rememberSidebar(){
+    const nav=document.querySelector(".sidebar-nav");
+    if(nav)send("sidebar-position",{role:config.role,route:config.route,top:nav.scrollTop});
+  }
+  // The document's Japanese labels are applied before DOMContentLoaded bubbles to the window.
+  addEventListener("DOMContentLoaded",()=>{
+    const nav=document.querySelector(".sidebar-nav");
+    if(!nav)return;
+    if(config.sidebarTop!==null){
+      nav.scrollTop=config.sidebarTop;
+    }else{
+      const selected=nav.querySelector("a.active");
+      if(selected)nav.scrollTop=Math.max(0,selected.getBoundingClientRect().bottom-nav.getBoundingClientRect().bottom);
+    }
+    nav.addEventListener("scroll",rememberSidebar,{passive:true});
+  },{once:true});
   function go(path){
     if(!path)return false;
     let u;try{u=new URL(path,"https://reference.invalid"+config.route);}catch{return false}
-    if(routes.has(u.pathname)){send("route",{route:u.pathname});return true;}
+    if(routes.has(u.pathname)){
+      rememberSidebar();
+      send("route",{route:u.pathname});
+      return true;
+    }
     return false;
   }
   function openPanel(panel) {
