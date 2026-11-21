@@ -28,9 +28,6 @@ async function read(name,type) {
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 let catalog,active,seq=0;
-const tourKey="servicelife-ja:sl_demo_tour_v1";
-let tourSeen=false;
-try{tourSeen=localStorage.getItem(tourKey)==="1";}catch{}
 const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text")]);
 function initialRoute(role){return catalog.roles[role][0].route;}
 function requested(){
@@ -68,14 +65,11 @@ function render(record,programs,language,inside,tech,place){
   const mode=record.mode,raw=mode==="active"?record.raw:record.view;
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
-  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,tourSeen};
+  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes};
   const skip=new Set(programs.skip);
   if(mode==="snapshot"){
     const drawer=Object.entries(programs.scripts).find(([,code])=>code.includes("function cbpToggleSidebar") || (code.includes('t.closest("#cbpHamburger")') && code.includes("cbpToggleSidebar()")));
     if(drawer)inline(doc.body,drawer[1]);
-    const tour=Object.values(programs.scripts).find(code=>code.includes("sl_demo_tour_v1") && code.includes("slt-skip"));
-    doc.getElementById("slt-root")?.classList.remove("on");
-    if(tour)inline(doc.body,tour);
   }
   for(const style of doc.querySelectorAll("style[data-sl-style]")){
     style.textContent=programs.styles[style.dataset.slStyle]||"";
@@ -124,10 +118,6 @@ async function openScreen(){
 }
 window.addEventListener("message",e=>{
   if(e.source!==frame.contentWindow||e.data?.application!=="servicelife-jp"||!active)return;
-  if(e.data.type==="tour-seen"){
-    tourSeen=true;
-    try{localStorage.setItem(tourKey,"1");}catch{}
-  }
   if(e.data.type==="route")change(active.role,e.data.route);
   if(e.data.type==="role"&&Object.hasOwn(catalog.roles,e.data.role)){
     const role=e.data.role;

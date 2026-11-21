@@ -12,17 +12,14 @@ function startServiceLifeReference(config) {
     box.textContent=message;clearTimeout(note.timer);note.timer=setTimeout(()=>box.remove(),3100);
   }
   window.SL_VIEW={route:config.route,word,translate:async values=>values.map(word),note};
-  function localMemory(local) {
+  function localMemory() {
     const values=new Map();
-    if(local && config.tourSeen)values.set("sl_demo_tour_v1","1");
     return {get length(){return values.size;},getItem:k=>values.has(String(k))?values.get(String(k)):null,
-      setItem(k,v){
-        values.set(String(k),String(v));
-        if(local && k==="sl_demo_tour_v1" && v==="1")send("tour-seen");
-      },removeItem:k=>values.delete(String(k)),clear:()=>values.clear(),key:i=>[...values.keys()][i]??null};
+      setItem:(k,v)=>{values.set(String(k),String(v));},
+      removeItem:k=>values.delete(String(k)),clear:()=>values.clear(),key:i=>[...values.keys()][i]??null};
   }
   for(const id of ["localStorage","sessionStorage"]) {
-    try{Object.defineProperty(window,id,{value:localMemory(id==="localStorage"),configurable:true});}catch{}
+    try{Object.defineProperty(window,id,{value:localMemory(),configurable:true});}catch{}
   }
   try{Object.defineProperty(document,"cookie",{get:()=>"",set:()=>{},configurable:true});}catch{}
   const RealDate=Date, savedStamp=RealDate.parse(config.captured), began=performance.now();
@@ -208,7 +205,6 @@ function startServiceLifeReference(config) {
   addEventListener("keydown",ev=>{if(ev.key==="Escape")closePanel(document.querySelector('[data-sl-opened="true"]'));});
   document.addEventListener("DOMContentLoaded",()=>{
     document.documentElement.dataset.referenceMode=config.mode;
-    if(config.mode==="snapshot")document.getElementById("slt-root")?.classList.remove("on");
     for(const el of document.querySelectorAll('a[href^="/demo/view/"]'))el.removeAttribute("target");
     if(config.mode==="snapshot"){
       document.querySelectorAll("[data-offline-map]").forEach(element=>{
