@@ -142,6 +142,8 @@ function startServiceLifeReference(config) {
   function restoreSidebar(){
     const nav=document.querySelector(".sidebar-nav");
     if(!nav)return;
+    // Keep the restored position when the browser swaps in the menu fonts.
+    nav.style.overflowAnchor="none";
     if(config.sidebarTop!==null){
       nav.scrollTop=config.sidebarTop;
     }else{
