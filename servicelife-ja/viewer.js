@@ -46,9 +46,15 @@ function grantedRole(login){
 function staffList(){
   return Object.entries(catalog.accounts).map(([login,person])=>({login,name:person.name,role:grantedRole(login)}));
 }
-function routeHash(role,route){return "#"+(role==="company_admin"?"":role)+route;}
+const expenseKey=value=>typeof value==="string" && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(value)?value:null;
+function routeHash(role,route,vehicle,expense){
+  const detail=["/vehicles/","/expenses/"].includes(route) && Number.isSafeInteger(vehicle) && vehicle>0;
+  const query=route==="/expenses/" && expenseKey(expense)?"?expense="+expense:detail?"?vehicle="+vehicle:"";
+  return "#"+(role==="company_admin"?"":role)+route+query;
+}
 function requested(){
-  const match=location.hash.slice(1).match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
+  const [path,query]=location.hash.slice(1).split("?");
+  const match=path.match(/^(?:(company_admin|csr|technician))?(\/[A-Za-z0-9/_-]*\/)$/);
   const url = new URL(location.href);
   // Old bookmarks identify a sample account on entry. Subsequent routes use that account's grant.
   if(account===undefined){
@@ -62,13 +68,17 @@ function requested(){
   const target = match?.[2];
   const route = catalog.files[role+"|"+target] ? target : home[role];
   if(account!==sampleLogin.company_admin || role!=="company_admin") url.searchParams.set("account",account);
-  url.hash=routeHash(role,route);
+  const params=new URLSearchParams(query);
+  const vehicleKey=Number(params.get("vehicle"));
+  const vehicle=["/vehicles/","/expenses/"].includes(route) && Number.isSafeInteger(vehicleKey) && vehicleKey>0 ? vehicleKey : null;
+  const expense=route==="/expenses/"?expenseKey(params.get("expense")):null;
+  url.hash=routeHash(role,route,vehicle,expense);
   if(url.href!==location.href) history.replaceState(null,"",url);
-  return {role,route};
+  return {role,route,vehicle,expense,account:{id:account,name:catalog.accounts[account].name}};
 }
-function change(role,route,fromSidebar,backToCustomers){
+function change(role,route,{fromSidebar,backToCustomers,vehicle,expense}){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
-  const hash=routeHash(role,route);
+  const hash=routeHash(role,route,vehicle,expense);
   if(location.hash!==hash){
     const openingCustomer=active.route==="/customers/" && /^\/customers\/[\da-f-]{36}\/$/.test(route);
     const returningToList=backToCustomers && route==="/customers/";
@@ -76,6 +86,7 @@ function change(role,route,fromSidebar,backToCustomers){
     location.hash=hash;
     if(query)history.replaceState({...history.state,customerDirectoryQuery:query},"");
   }
+  else if(expenseKey(expense))frame.contentWindow.postMessage({application:"servicelife-jp",type:"expense-open",expense},"*");
   else if(!fromSidebar)openScreen();
 }
 function inline(parent,code,first=false){
@@ -98,11 +109,34 @@ async function reservationData(place, record) {
   }
   return {...record, fx: {...fixtures, ...record.fx}};
 }
+function sectionMenu(doc,place){
+  const nav=doc.querySelector(".sidebar-nav");
+  if(!nav)return;
+  const links=catalog.roles[place.role];
+  const icons={"/vehicles/":"fa-truck","/expenses/":"fa-receipt","/compliance/audit-log/":"fa-folder-open"};
+  for(const [index,item] of links.entries()){
+    if(!Object.hasOwn(icons,item.route))continue;
+    let link=nav.querySelector('a[href="'+item.route+'"]');
+    if(!link){
+      const previous=nav.querySelector('a[href="'+links[index-1].route+'"]');
+      if(!previous)continue;
+      link=doc.createElement("a");link.setAttribute("href",item.route);
+      previous.after(link);
+    }
+    const icon=doc.createElement("i");icon.className="fas "+icons[item.route];
+    link.replaceChildren(icon," "+item.label);
+  }
+  if(Object.hasOwn(icons,place.route)){
+    for(const link of nav.querySelectorAll("a"))link.classList.toggle("active",link.getAttribute("href")===place.route);
+  }
+}
 function render(record,programs,language,inside,tech,place){
   const mode=record.mode,raw=mode==="active"?record.raw:record.view;
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
-  const conf={route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,sidebarTop};
+  sectionMenu(doc,place);
+  const conf={fleet:place.fleet,fleetToken:place.fleetToken,vehicle:place.vehicle,office:place.office,officeToken:place.officeToken,
+    expense:place.expense,corrections:place.corrections,route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,sidebarTop};
   if(place.route==="/customers/")conf.directoryQuery=history.state?.customerDirectoryQuery || "";
   const person=catalog.accounts[account];
   const profile=doc.querySelector(".sidebar-user");
@@ -130,6 +164,8 @@ function render(record,programs,language,inside,tech,place){
   if(mode==="snapshot"){
     const drawer=Object.entries(programs.scripts).find(([,code])=>code.includes("function cbpToggleSidebar") || (code.includes('t.closest("#cbpHamburger")') && code.includes("cbpToggleSidebar()")));
     if(drawer)inline(doc.body,drawer[1]);
+    const bell=Object.values(programs.scripts).find(code=>code.includes("if (window.__cbpNotifBell) return;"));
+    if(bell && doc.getElementById("cbpNotifBellBtn"))inline(doc.body,bell);
   }
   for(const style of doc.querySelectorAll("style[data-sl-style]")){
     style.textContent=programs.styles[style.dataset.slStyle]||"";
@@ -173,17 +209,26 @@ async function openScreen(navigation=false){
       return;
     }
     if(active && place.role!==active.role){
+      const preview=document.getElementById("office-pdf");
+      if(preview.open)preview.close();
       sidebarTop=null;
       frame.hidden=true;frame.removeAttribute("srcdoc");delete frame.dataset.route;active=null;
     }
-    if(navigation && active?.role===place.role && active.route===place.route){
+    if(navigation && active?.role===place.role && active.route===place.route && active.vehicle===place.vehicle && active.expense===place.expense){
       notice.hidden=true;
       return;
     }
     const id=c.files[place.role+"|"+place.route];
-    const group=await read("screens/"+id+".bin");
-    if(turn!==seq)return;
-    const record=await reservationData(place,group[place.route]);
+    if(c.files[place.role+"|/vehicles/"])place.fleetToken=crypto.randomUUID();
+    if([OfficeStore.expenses,OfficeStore.documents].includes(place.route))place.officeToken=crypto.randomUUID();
+    const [record,fleet,office,corrections]=await Promise.all([
+      read("screens/"+id+".bin").then(group=>reservationData(place,group[place.route])),
+      place.fleetToken?fleetSnapshot(place):undefined,
+      place.officeToken?OfficeStore.snapshot(place).catch(()=>({records:[],cars:[],categories:[],statuses:[],
+        error:"このブラウザで試用データを読み込めませんでした。再読み込みしてください。"})):undefined,
+      c.files[place.role+"|/expenses/"]?OfficeStore.corrections(place).catch(()=>[]):[]
+    ]);
+    Object.assign(place,{fleet,office,corrections});
     if(turn!==seq)return;
     const label=c.roles[place.role].find(i=>i.route===place.route)?.label||record.title;
     // Prepare the next document at its final viewport size while the current one stays visible.
@@ -202,7 +247,9 @@ async function openScreen(navigation=false){
 function showPendingScreen(){
   const {frame:nextFrame,place}=pending;
   if(grantedRole(account)!==place.role){openScreen();return;}
-  if(location.hash!==routeHash(place.role,place.route))return;
+  if(location.hash!==routeHash(place.role,place.route,place.vehicle,place.expense))return;
+  const preview=document.getElementById("office-pdf");
+  if(preview.open)preview.close();
   // Moving a connected iframe would reload it. Reveal it in place.
   frame.remove();
   frame=nextFrame;
@@ -212,7 +259,9 @@ function showPendingScreen(){
   frame.dataset.role=place.role;
   document.title=frame.title;
   active=place;
+  const selection=pending.selection;
   pending=null;
+  if(selection!==undefined)handleFleet(place,{action:"select",key:selection});
   notice.hidden=true;
 }
 function sendStaffUpdate(message=""){
@@ -241,9 +290,13 @@ window.addEventListener("message",e=>{
   if(e.data?.application!=="servicelife-jp")return;
   if(pending && e.source===pending.frame.contentWindow){
     if(e.data.type==="ready" && e.data.route===pending.place.route)showPendingScreen();
+    else if(e.data.type==="fleet-request" && pending.place.fleetToken && e.data.token===pending.place.fleetToken &&
+            pending.place.route==="/vehicles/" && e.data.action==="select")pending.selection=e.data.key;
     return;
   }
-  if(e.source!==frame.contentWindow||!active)return;
+  if(e.source!==frame.contentWindow || !active || grantedRole(account)!==active.role)return;
+  if(e.data.type==="fleet-request" && active.fleetToken && e.data.token===active.fleetToken)handleFleet(active,e.data);
+  if(e.data.type==="office-request" && active.officeToken && e.data.token===active.officeToken)handleOffice(active,e.data);
   if(e.data.type==="customer-directory-page" && active.route==="/customers/" &&
      location.hash===routeHash(active.role,active.route) && typeof e.data.query==="string"){
     history.replaceState({...history.state,customerDirectoryQuery:e.data.query},"");
@@ -251,7 +304,7 @@ window.addEventListener("message",e=>{
   if(e.data.type==="sidebar-position" && e.data.route===active.route && e.data.role===active.role && Number.isFinite(e.data.top)){
     sidebarTop=Math.max(0,e.data.top);
   }
-  if(e.data.type==="route")change(active.role,e.data.route,e.data.fromSidebar,e.data.backToCustomers);
+  if(e.data.type==="route")change(active.role,e.data.route,e.data);
   if(e.data.type==="grant" && canAssign()) saveGrant(e.data);
   if(e.data.type==="view-account" && canAssign() && Object.hasOwn(catalog.accounts,e.data.login)){
     const url=new URL(location.href),role=grantedRole(e.data.login);
@@ -269,3 +322,100 @@ window.addEventListener("storage",e=>{
 window.addEventListener("pageshow",e=>{if(e.persisted)openScreen();});
 window.addEventListener("hashchange",()=>openScreen(true));
 openScreen();
+
+async function fleetSnapshot(place){
+  try{return await FleetStore.snapshot(place.route==="/vehicles/");}
+  catch{return {day:FleetStore.today(),alerts:[],vehicles:[],error:"このブラウザの試用データを読み込めませんでした。再読み込みしてください。"};}
+}
+const fleetChannel=typeof BroadcastChannel==="function" ? new BroadcastChannel("exops-servicelife-vehicles") : null;
+async function handleFleet(place,request){
+  const respond=(payload)=>{
+    if(active!==place || grantedRole(account)!==place.role)return;
+    frame.contentWindow.postMessage({application:"servicelife-jp",type:"fleet-result",token:place.fleetToken,
+      requestId:request.requestId,...payload},"*");
+  };
+  try{
+    let key;
+    if(request.action==="save"){
+      if(place.route!=="/vehicles/" || place.role!=="company_admin")throw Error("車両の登録・更新は会社管理者が行えます。");
+      key=await FleetStore.save(request.draft);
+      fleetChannel?.postMessage("changed");
+    }else if(request.action==="select" && place.route==="/vehicles/"){
+      const vehicle=Number(request.key);
+      place.vehicle=Number.isSafeInteger(vehicle)&&vehicle>0?vehicle:null;
+      history.replaceState(history.state,"",routeHash(place.role,place.route,place.vehicle));
+      return;
+    }else if(request.action!=="refresh")return;
+    place.fleet=await fleetSnapshot(place);
+    respond({state:place.fleet,key});
+  }catch(error){respond({error:error.message});}
+}
+function refreshFleet(){
+  if(active?.fleetToken)handleFleet(active,{action:"refresh"});
+  refreshOffice();
+}
+if(fleetChannel)fleetChannel.onmessage=refreshFleet;
+window.addEventListener("focus",refreshFleet);
+setInterval(()=>{if(active?.fleet && active.fleet.day!==FleetStore.today())refreshFleet();},60000);
+
+const officeChannel=typeof BroadcastChannel==="function" ? new BroadcastChannel("exops-servicelife-office") : null;
+function refreshOffice(){
+  if(active?.officeToken)handleOffice(active,{action:"refresh"});
+  if(active && catalog.files[active.role+"|/expenses/"])refreshCorrections(active);
+}
+async function refreshCorrections(place){
+  const generation=place.correctionRead=(place.correctionRead||0)+1;
+  try{
+    const corrections=await OfficeStore.corrections(place);
+    if(active!==place || grantedRole(account)!==place.role || place.correctionRead!==generation)return;
+    place.corrections=corrections;
+    frame.contentWindow.postMessage({application:"servicelife-jp",type:"expense-alerts",corrections},"*");
+  }catch{/* Keep the last visible count if this browser's storage is temporarily unavailable. */}
+}
+if(officeChannel)officeChannel.onmessage=refreshOffice;
+let officeRead=0;
+async function handleOffice(place,request){
+  const reply=payload=>{
+    if(active===place && grantedRole(account)===place.role)frame.contentWindow.postMessage({application:"servicelife-jp",type:"office-result",
+      token:place.officeToken,requestId:request.requestId,...payload},"*");
+  };
+  try{
+    let id;
+    if(request.action==="pdf"){
+      const file=await OfficeStore.attachment(place,request.fileId);
+      if(active===place && grantedRole(account)===place.role)showOfficePdf(file);
+      reply({});return;
+    }
+    if(request.action==="save"){
+      id=await OfficeStore.save(place,request.draft);
+      officeChannel?.postMessage("changed");
+      if(active===place)refreshCorrections(place);
+    }else if(request.action!=="refresh")return;
+    const generation=++officeRead;
+    const state=await OfficeStore.snapshot(place);
+    reply(generation===officeRead?{state,id}:{id});
+  }catch(error){reply({error:error.message});}
+}
+function showOfficePdf(file){
+  const dialog=document.getElementById("office-pdf");
+  if(dialog.open)dialog.close();
+  const url=URL.createObjectURL(file.bytes), photo=dialog.querySelector("img");
+  const embed=document.createElement("iframe");
+  const isPhoto=file.bytes.type.startsWith("image/");
+  dialog.setAttribute("aria-label",file.receipt?"経費の領収書":"書類の控え");
+  embed.title=file.receipt?"領収書":"控えのPDF";
+  dialog.querySelector("strong").textContent=file.name;
+  const [open,download]=dialog.querySelectorAll("a");
+  open.href=url;download.href=url;download.download=file.name;
+  photo.hidden=!isPhoto;
+  if(isPhoto){photo.alt=file.name;photo.src=url;}else{embed.src=url;dialog.append(embed);}
+  dialog.querySelector("button").onclick=()=>dialog.close();
+  dialog.addEventListener("close",()=>{
+    embed.remove();
+    if(!dialog.open && open.href===url){
+      photo.removeAttribute("src");open.removeAttribute("href");download.removeAttribute("href");
+    }
+    URL.revokeObjectURL(url);
+  },{once:true});
+  dialog.showModal();
+}

@@ -8,15 +8,24 @@
   <title>ServiceLife 日本語</title>
   <style>
     html,body{margin:0;width:100%;height:100%;background:#f4f6fa}
-    iframe{display:block;width:100%;height:100%;border:0}
+    body>iframe{display:block;width:100%;height:100%;border:0}
     iframe[inert]{position:absolute;inset:0;opacity:0;pointer-events:none}
     #notice{position:absolute;inset:0;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}
     #notice[hidden],#screen[hidden]{display:none}
+    #office-pdf{width:min(960px,94vw);height:85vh;box-sizing:border-box;padding:12px;border:1px solid #cbd6d0;border-radius:10px;font:14px system-ui;color:#23362b}
+    #office-pdf::backdrop{background:#19282099}
+    #office-pdf header{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:10px}
+    #office-pdf strong{flex:1;overflow-wrap:anywhere}
+    #office-pdf a,#office-pdf button{color:#225a37;font:inherit}#office-pdf iframe{border:0;width:100%;height:calc(100% - 54px)}
+    #office-pdf img{width:100%;height:calc(100% - 54px);object-fit:contain}
   </style>
 </head>
 <body>
   <iframe id="screen" title="ServiceLife 日本語" sandbox="allow-scripts" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <p id="notice" role="status">ServiceLifeの日本語画面を読み込んでいます…</p>
-  <script src="./viewer.js?v=965dc0dbe17e1f68" defer></script>
+  <dialog id="office-pdf" aria-label="書類の控え"><header><strong></strong><a target="_blank" rel="noopener">別タブで開く</a><a download>ダウンロード</a><button type="button">閉じる</button></header><img hidden alt="保管した写真"></dialog>
+  <script src="./fleet-store.js?v=28196fb94fa122ff" defer></script>
+  <script src="./office-store.js?v=28196fb94fa122ff" defer></script>
+  <script src="./viewer.js?v=28196fb94fa122ff" defer></script>
 </body>
 </html>

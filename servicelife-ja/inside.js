@@ -12,6 +12,131 @@ function startServiceLifeReference(config) {
     box.textContent=message;clearTimeout(note.timer);note.timer=setTimeout(()=>box.remove(),3100);
   }
   window.SL_VIEW={route:config.route,word,translate:async values=>values.map(word),note};
+  let expenseAlerts=config.corrections || [];
+  addEventListener("message",event=>{
+    const message=event.data;
+    if(event.source!==parent || message?.application!=="servicelife-jp" || message.type!=="expense-alerts")return;
+    expenseAlerts=message.corrections;
+    document.dispatchEvent(new Event("expense-alerts-updated"));
+  });
+  document.addEventListener("DOMContentLoaded",()=>{
+    const menu=document.querySelector('.sidebar-nav a[href="/expenses/"]');
+    const dropdown=document.getElementById("cbpNotifDropdown");
+    if(!menu || !dropdown)return;
+    const badge=document.createElement("span"), section=document.createElement("section");
+    badge.id="expense-badge";badge.className="notranslate";menu.append(badge);
+    section.id="expense-bell-requests";section.className="notranslate";
+    dropdown.insertBefore(section,document.getElementById("cbpNotifList"));
+    const css=document.createElement("style");
+    css.textContent="#expense-badge{margin-inline-start:auto;padding:1px 7px;background:#b42328;color:white;border-radius:12px;font:600 12px/1.5 system-ui}#expense-bell-requests{padding:10px 14px;max-height:32vh;overflow:auto;border-bottom:1px solid #dce5df}#expense-bell-requests a{display:block;color:#234c32;padding:7px 0;overflow-wrap:anywhere}#expense-bell-requests small{display:block;color:#48544b}";
+    document.head.append(css);
+    function update(){
+      const count=expenseAlerts.length;
+      badge.hidden=!count;badge.textContent=String(count);
+      badge.setAttribute("aria-label","修正が必要な経費 "+count+"件");
+      section.hidden=!count;
+      const title=document.createElement("strong");title.textContent="経費の修正依頼";
+      section.replaceChildren(title);
+      for(const row of expenseAlerts){
+        const link=document.createElement("a"), reason=document.createElement("small");
+        link.href="/expenses/?expense="+encodeURIComponent(row.id);
+        link.append(row.date+"　"+row.category);
+        reason.textContent=row.reason||"明細を確認してください。";
+        link.append(reason);section.append(link);
+      }
+      window.cbpRefreshNotifBell?.();
+    }
+    update();document.addEventListener("expense-alerts-updated",update);
+  },{once:true});
+  const fleetPage = config.route === "/vehicles/";
+  if(config.office){
+    const pending=new Map();let sequence=0;
+    function request(action,data={}){
+      return new Promise((resolve,reject)=>{
+        const requestId=++sequence;pending.set(requestId,{resolve,reject});
+        send("office-request",{action,requestId,token:config.officeToken,...data});
+      });
+    }
+    const office=window.SL_VIEW.office={state:config.office,save:draft=>request("save",{draft}),
+      pdf:fileId=>request("pdf",{fileId}),refresh:()=>request("refresh"),selectedExpense:config.expense,canOpenFleet:config.routes.includes("/vehicles/")};
+    addEventListener("message",e=>{
+      const reply=e.data;
+      if(e.source===parent && reply?.application==="servicelife-jp" && reply.type==="expense-open"){
+        document.dispatchEvent(new CustomEvent("expense-open",{detail:reply.expense}));return;
+      }
+      if(e.source!==parent || reply?.type!=="office-result" || reply.token!==config.officeToken)return;
+      if(reply.state){office.state=reply.state;document.dispatchEvent(new Event("office-updated"));}
+      const task=pending.get(reply.requestId);
+      if(task){pending.delete(reply.requestId);if(reply.error)task.reject(Error(reply.error));else task.resolve(reply.id);}
+    });
+  }
+  if (config.fleet) {
+    const pending = new Map();
+    let sequence = 0;
+    function request(action, draft) {
+      return new Promise((resolve, reject) => {
+        const requestId = ++sequence;
+        pending.set(requestId, {resolve, reject});
+        send("fleet-request", {token:config.fleetToken, requestId, action, draft});
+      });
+    }
+    const fleet = window.SL_VIEW.fleet = {state:config.fleet, vehicle:config.vehicle, canEdit:config.role==="company_admin",
+      refresh:()=>request("refresh"), save:draft=>request("save",draft),
+      select:key=>send("fleet-request",{token:config.fleetToken,action:"select",key})};
+    window.addEventListener("message", event => {
+      const reply=event.data;
+      if(event.source!==parent || reply?.type!=="fleet-result" || reply.token!==config.fleetToken)return;
+      if(reply.state){
+        fleet.state=reply.state;
+        document.dispatchEvent(new Event("fleet-updated"));
+      }
+      const task=pending.get(reply.requestId);
+      if(task){
+        pending.delete(reply.requestId);
+        if(reply.error)task.reject(Error(reply.error));else task.resolve(reply.key);
+      }
+    });
+    function fillAlerts(container) {
+      const title = document.createElement("strong");
+      title.textContent = "車両の期限";
+      container.replaceChildren(title);
+      if(!fleet.state.alerts.length){
+        const empty=document.createElement("span");
+        empty.textContent=fleet.state.error || "お知らせする期限はありません。";
+        container.append(empty);
+      }
+      for(const item of fleet.state.alerts){
+        const a=document.createElement("a");
+        a.href="/vehicles/?vehicle="+item.key;
+        const heading=document.createElement("b"), sub=document.createElement("span");
+        heading.textContent=item.plate+"　"+item.model;
+        const stage={overdue:"期限超過",m1:"1か月以内",m3:"3か月以内",m6:"6か月以内"}[item.bucket];
+        sub.textContent=item.kind+"　"+item.due+"　"+stage;
+        if(item.bucket==="overdue")sub.className="sl-fleet-overdue";
+        a.append(heading,sub);container.append(a);
+      }
+    }
+    function mountAlerts(){
+      const dropdown=document.getElementById("cbpNotifDropdown");
+      if(!dropdown && config.route!=="/notifications/")return;
+      const css=document.createElement("style");
+      css.textContent=".sl-fleet-alerts{padding:10px 14px;display:grid;gap:4px;max-height:36vh;overflow:auto;background:white;border-bottom:1px solid #dce5df}.sl-fleet-alerts>strong{font-size:13px;color:#294f34}.sl-fleet-alerts a{display:grid;gap:3px;padding:7px 2px;color:#23362b;text-decoration:none;border-bottom:1px solid #e9eeeb;font-size:13px}.sl-fleet-alerts a:hover,.sl-fleet-alerts a:focus{background:#f0f6f0}.sl-fleet-alerts span{font-size:12px;color:#57635d}.sl-fleet-alerts .sl-fleet-overdue{color:#ad271d}";
+      document.head.append(css);
+      const section=document.createElement("section");
+      section.className="sl-fleet-alerts notranslate";
+      const list=document.getElementById("cbpNotifList");
+      if(dropdown)dropdown.insertBefore(section,list);
+      const pageSection=config.route==="/notifications/"?section.cloneNode(false):null;
+      if(pageSection)document.querySelector("main .content")?.prepend(pageSection);
+      function update(){
+        if(pageSection)fillAlerts(pageSection);
+        fillAlerts(section);
+        window.cbpRefreshNotifBell?.();
+      }
+      update();document.addEventListener("fleet-updated",update);
+    }
+    document.addEventListener("DOMContentLoaded",mountAlerts,{once:true});
+  }
   function localMemory() {
     const values=new Map();
     return {get length(){return values.size;},getItem:k=>values.has(String(k))?values.get(String(k)):null,
@@ -124,6 +249,11 @@ function startServiceLifeReference(config) {
     if(config.route==="/appointments/" && p==="/api/v1/scheduling/appointments/" && variants.length){
       return response(appointmentPage(variants,u));
     }
+    if((config.fleet || expenseAlerts.length) && /\/notifications\/unread-count\/$/.test(p)){
+      const old=exact?.[1] || variants[0]?.[1] || {};
+      const count=Number(old.count || old.unread_count || 0)+(window.SL_VIEW.fleet?.state.alerts.length||0)+expenseAlerts.length;
+      return response({...old,count,unread_count:count});
+    }
     if(exact)return response(exact[1]);
     if(config.route==="/customers/" && p==="/api/v1/customers/" && variants.length)return response(customerPage(variants,u));
     if(variants.length){
@@ -201,7 +331,7 @@ function startServiceLifeReference(config) {
       if(config.route==="/customers/" && u.pathname!==config.route)window.SL_VIEW.saveDirectoryQuery(window.SL_VIEW.directoryQuery);
       rememberSidebar();
       if(sidebar?.closest(".sidebar.cbp-open"))window.cbpToggleSidebar?.();
-      send("route",{route:u.pathname,fromSidebar:!!sidebar,backToCustomers:element.matches("a.cd-back")});
+      send("route",{route:u.pathname,vehicle:Number(u.searchParams.get("vehicle")),expense:u.searchParams.get("expense"),fromSidebar:!!sidebar,backToCustomers:element.matches("a.cd-back")});
       return true;
     }
     return false;
@@ -283,7 +413,9 @@ function startServiceLifeReference(config) {
     }
     if(spec)note("この操作は元のデモのサーバーに接続する機能です。");
   }
-  addEventListener("submit",ev=>{ev.preventDefault();ev.stopImmediatePropagation();note("閲覧用の見本です。変更や送信は記録されません。");},true);
+  addEventListener("submit",ev=>{
+    if(fleetPage && ev.target.closest("#fleet") || config.office && ev.target.closest("#office"))return;
+    ev.preventDefault();ev.stopImmediatePropagation();note("閲覧用の見本です。変更や送信は記録されません。");},true);
   addEventListener("click",ev=>{
     const el=ev.target.closest?.("a,button,[onclick],[data-sl-click],input[type=submit]");if(!el)return;
     if(el.closest(".leaflet-control-attribution"))return;
@@ -297,6 +429,9 @@ function startServiceLifeReference(config) {
     }
     if(h.startsWith("/")&&!routes.has(h.split("?")[0])){
       ev.preventDefault();ev.stopImmediatePropagation();note("このリンクは元のデモのサーバーに接続する機能です。");return;
+    }
+    if(config.mode==="snapshot" && el.id==="cbpNotifBellBtn" && window.cbpToggleNotifBell){
+      ev.preventDefault();ev.stopImmediatePropagation();window.cbpToggleNotifBell();return;
     }
     if(config.mode==="snapshot"&&action){ev.preventDefault();ev.stopImmediatePropagation();previewAction(el);}
   },true);
