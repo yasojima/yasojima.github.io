@@ -66,10 +66,16 @@ function requested(){
   if(url.href!==location.href) history.replaceState(null,"",url);
   return {role,route};
 }
-function change(role,route,fromSidebar){
+function change(role,route,fromSidebar,backToCustomers){
   if(!catalog.roles[role]||!catalog.files[role+"|"+route])return;
   const hash=routeHash(role,route);
-  if(location.hash!==hash)location.hash=hash;
+  if(location.hash!==hash){
+    const openingCustomer=active.route==="/customers/" && /^\/customers\/[\da-f-]{36}\/$/.test(route);
+    const returningToList=backToCustomers && route==="/customers/";
+    const query=(openingCustomer || returningToList) && history.state?.customerDirectoryQuery;
+    location.hash=hash;
+    if(query)history.replaceState({...history.state,customerDirectoryQuery:query},"");
+  }
   else if(!fromSidebar)openScreen();
 }
 function inline(parent,code,first=false){
@@ -238,13 +244,14 @@ window.addEventListener("message",e=>{
     return;
   }
   if(e.source!==frame.contentWindow||!active)return;
-  if(e.data.type==="customer-directory-page" && active.route==="/customers/" && typeof e.data.query==="string"){
+  if(e.data.type==="customer-directory-page" && active.route==="/customers/" &&
+     location.hash===routeHash(active.role,active.route) && typeof e.data.query==="string"){
     history.replaceState({...history.state,customerDirectoryQuery:e.data.query},"");
   }
   if(e.data.type==="sidebar-position" && e.data.route===active.route && e.data.role===active.role && Number.isFinite(e.data.top)){
     sidebarTop=Math.max(0,e.data.top);
   }
-  if(e.data.type==="route")change(active.role,e.data.route,e.data.fromSidebar);
+  if(e.data.type==="route")change(active.role,e.data.route,e.data.fromSidebar,e.data.backToCustomers);
   if(e.data.type==="grant" && canAssign()) saveGrant(e.data);
   if(e.data.type==="view-account" && canAssign() && Object.hasOwn(catalog.accounts,e.data.login)){
     const url=new URL(location.href),role=grantedRole(e.data.login);

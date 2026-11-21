@@ -154,9 +154,20 @@ function startServiceLifeReference(config) {
   const send=(type,extra={})=>parent.postMessage({application:"servicelife-jp",type,...extra},"*");
   if(config.route==="/customers/"){
     window.SL_VIEW.directoryQuery=config.directoryQuery;
+    const filters={search:"search",customer_type:"filterType"};
+    document.addEventListener("DOMContentLoaded",()=>{
+      const params=new URLSearchParams(config.directoryQuery);
+      for(const [key,id] of Object.entries(filters))document.getElementById(id).value=params.get(key) || "";
+    },{once:true});
     window.SL_VIEW.saveDirectoryQuery=query=>{
-      window.SL_VIEW.directoryQuery=query;
-      send("customer-directory-page",{query});
+      const params=new URLSearchParams(query);
+      for(const [key,id] of Object.entries(filters)){
+        const value=document.getElementById(id).value;
+        if(value!==(params.get(key) || ""))params.delete("page");
+        if(value)params.set(key,value);else params.delete(key);
+      }
+      window.SL_VIEW.directoryQuery=params.toString();
+      send("customer-directory-page",{query:window.SL_VIEW.directoryQuery});
     };
   }
   function rememberSidebar(){
@@ -186,9 +197,11 @@ function startServiceLifeReference(config) {
     let u;try{u=new URL(path,"https://reference.invalid"+config.route);}catch{return false}
     if(routes.has(u.pathname)){
       const sidebar=element.closest(".sidebar-nav");
+      // A row can be opened before the directory's debounced search runs.
+      if(config.route==="/customers/" && u.pathname!==config.route)window.SL_VIEW.saveDirectoryQuery(window.SL_VIEW.directoryQuery);
       rememberSidebar();
       if(sidebar?.closest(".sidebar.cbp-open"))window.cbpToggleSidebar?.();
-      send("route",{route:u.pathname,fromSidebar:!!sidebar});
+      send("route",{route:u.pathname,fromSidebar:!!sidebar,backToCustomers:element.matches("a.cd-back")});
       return true;
     }
     return false;
