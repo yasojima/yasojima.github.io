@@ -197,6 +197,33 @@ function startServiceLifeReference(config) {
     return null;
   }
   function queryKey(q){return [...q.entries()].filter(([k])=>!["_","ts","t","cache_bust"].includes(k)).sort().map(x=>x.join("=")).join("&");}
+  function appointmentPage(variants, url) {
+    const query=url.searchParams;
+    const jobs=new Set(query.getAll("job_type_any").flatMap(value=>value.split(",")).filter(Boolean));
+    const status=query.get("status"), tech=query.get("technician"), day=query.get("date");
+    const search=normalize(query.get("search"));
+    const appointments=new Map();
+    for(const [,page] of variants) {
+      for(const row of page.results || []) appointments.set(row.id,row);
+    }
+    const matching=[...appointments.values()].filter(row=>{
+      if(jobs.size && !jobs.has(row.job_type) && !(row.job_types || []).some(job=>jobs.has(job.id || job)))return false;
+      if(status && row.status!==status || tech && row.technician!==tech)return false;
+      if(day && (row.start_datetime || "").slice(0,10)!==day)return false;
+      return !search || Object.values(row).some(value=>typeof value==="string" && normalize(value).includes(search));
+    });
+    matching.sort((a,b)=>RealDate.parse(b.start_datetime)-RealDate.parse(a.start_datetime));
+    const size=Math.max(1,Number(query.get("page_size")) || 25);
+    const page=Math.max(1,Number(query.get("page")) || 1);
+    const offset=(page-1)*size;
+    function link(number) {
+      const target=new URL(url);
+      target.searchParams.set("page",number);
+      return target.pathname+target.search;
+    }
+    return {count:matching.length,results:matching.slice(offset,offset+size),
+      next:offset+size<matching.length?link(page+1):null,previous:page>1?link(page-1):null};
+  }
   function searchIn(value,query) {
     const rows=Array.isArray(value)?value:["results","customers","appointments","items","data"].map(k=>value&&value[k]).find(Array.isArray);
     if(!rows)return value;
@@ -219,6 +246,9 @@ function startServiceLifeReference(config) {
     const rows=config.surface==="navigation" && p.includes("/notifications/") ? notificationRows : parsed;
     const variants=rows.filter(([k])=>k.pathname===p);
     const exact=variants.find(([k])=>queryKey(k.searchParams)===queryKey(u.searchParams));
+    if(config.route==="/appointments/" && p==="/api/v1/scheduling/appointments/" && variants.length) {
+      return response(appointmentPage(variants,u));
+    }
     if((config.fleet || config.surface==="navigation") && /\/notifications\/unread-count\/$/.test(p)){
       const old=exact?.[1] || variants[0]?.[1] || {};
       const count=Number(old.count || old.unread_count || 0)+(window.SL_VIEW.fleet?.state.alerts.length||0)+expenseAlerts.length;
@@ -284,6 +314,16 @@ function startServiceLifeReference(config) {
       const names=[key[1],"tab-"+key[1],"panel-"+key[1],"pane-"+key[1],key[1]+"Modal"];
       const target=names.map(id=>document.getElementById(id)).find(Boolean);
       if(target && /modal|dialog|overlay/i.test(target.id+" "+target.className)){openPanel(target);return;}
+      if(target?.matches(".report-section,.settings-panel")) {
+        const panelClass=target.matches(".report-section")?".report-section":".settings-panel";
+        target.parentElement.querySelectorAll(":scope > "+panelClass).forEach(panel=>{
+          panel.style.removeProperty("display");
+          panel.classList.toggle("active",panel===target);
+        });
+        const controls=el.closest("nav,.report-tabs") || el.parentElement;
+        controls.querySelectorAll("a,button").forEach(control=>control.classList.toggle("active",control===el));
+        return;
+      }
       if(target&&/tab|view|switch|show/i.test(spec)){
         for(const sib of target.parentElement.children)if(sib!==target && /pane|tab-content|tab-pane/.test(String(sib.className)))sib.style.display="none";
         target.hidden=false;target.style.display="block";target.classList.add("active");return;
@@ -337,6 +377,24 @@ function startServiceLifeReference(config) {
     document.documentElement.dataset.referenceMode=config.mode;
     for(const el of document.querySelectorAll('a[href^="/demo/view/"]'))el.removeAttribute("target");
     if(config.mode==="snapshot"){
+      if(config.route==="/notifications/"){
+        const unread=document.getElementById("filterUnread"), category=document.getElementById("filterCategory");
+        const rows=[...document.querySelectorAll("#notifTbody tr[data-notification-category]")];
+        const pager=document.getElementById("pagination");
+        function filterNotifications(){
+          let count=0;
+          for(const row of rows){
+            row.hidden=Boolean(unread.value && !row.classList.contains("unread")
+              || category.value && row.dataset.notificationCategory!==category.value);
+            if(!row.hidden)count++;
+          }
+          if(pager)pager.textContent="表示中 "+count+"件";
+        }
+        if(unread && category){
+          unread.addEventListener("change",filterNotifications);
+          category.addEventListener("change",filterNotifications);
+        }
+      }
       document.querySelectorAll("[data-offline-map]").forEach(element=>{
         if(!window.L || !element.clientWidth || !element.clientHeight)return;
         const map=L.map(element,{scrollWheelZoom:false}).setView([39.966,-75.26],11);
