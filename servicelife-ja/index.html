@@ -6,29 +6,11 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>ServiceLife 日本語</title>
-  <style>
-    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f4f6fa}
-    .screen,.navigation{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;background:transparent}
-    #screen{z-index:1}
-    .navigation{z-index:2;clip-path:inset(100%)}
-    #screen[data-modal]{z-index:3}
-    iframe[data-preparing]{z-index:0;opacity:0;pointer-events:none}
-    #notice{position:absolute;inset:0;z-index:4;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}
-    #notice[hidden]{display:none}
-    #office-pdf{width:min(960px,94vw);height:85vh;box-sizing:border-box;padding:12px;border:1px solid #cbd6d0;border-radius:10px;font:14px system-ui;color:#23362b}
-    #office-pdf::backdrop{background:#19282099}
-    #office-pdf header{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:10px}
-    #office-pdf strong{flex:1;overflow-wrap:anywhere}
-    #office-pdf a,#office-pdf button{color:#225a37;font:inherit}#office-pdf iframe{border:0;width:100%;height:calc(100% - 54px)}
-    #office-pdf img{width:100%;height:calc(100% - 54px);object-fit:contain}
-  </style>
+  <style>html,body{margin:0;width:100%;height:100%;background:#f4f6fa}#screen{display:block;width:100%;height:100%;border:0}#notice{position:absolute;inset:0;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}#notice[hidden]{display:none}</style>
 </head>
 <body>
-  <iframe id="screen" class="screen" title="ServiceLife 日本語" sandbox="allow-scripts" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <iframe id="screen" title="ServiceLife 日本語" sandbox="allow-scripts" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <p id="notice" role="status">ServiceLifeの日本語画面を読み込んでいます…</p>
-  <dialog id="office-pdf" aria-label="書類の控え"><header><strong></strong><a target="_blank" rel="noopener">別タブで開く</a><a download>ダウンロード</a><button type="button">閉じる</button></header><iframe title="控えのPDF"></iframe><img hidden alt="保管した写真"></dialog>
-  <script src="./fleet-store.js" defer></script>
-  <script src="./office-store.js?v=73956204d5f6e6d0" defer></script>
-  <script src="./viewer.js?v=8bc1921a0986d59c" defer></script>
+  <script src="./viewer.js?v=127dba217337e410" defer></script>
 </body>
 </html>
