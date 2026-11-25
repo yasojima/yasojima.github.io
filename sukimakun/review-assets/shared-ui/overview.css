@@ -1,0 +1,26 @@
+/* Adopted dimensions and role-based type scale remain unchanged. */
+#overviewCustomerState .ov-row{min-height:34px}
+.overview-marker{display:inline-block;box-sizing:border-box;width:104px;padding:3px 8px;background:#fbe9e7;color:#aa332d;font-size:11px;text-align:center;line-height:1.5;border-radius:0}
+#overviewFlag{color:#000}
+.overview-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px}
+.overview-controls{display:flex;justify-content:flex-end;gap:8px;margin-left:auto}
+.overview-controls .cd-act{height:37px;min-width:100px;justify-content:center;font-size:12px}
+#overviewFeedback{font-size:12px;color:var(--text-light)}
+.overview-input{box-sizing:border-box;width:100%;min-height:37px;padding:7px 10px;border:1px solid var(--border);border-radius:5px;background:white;color:var(--text);font:inherit;font-size:13.5px}
+textarea.overview-input{min-height:90px;resize:vertical}
+.customer-delete-dialog{position:fixed;inset:0;margin:auto;box-sizing:border-box;width:360px;max-width:calc(100vw - 32px);padding:22px;border:1px solid var(--border);border-radius:8px;color:var(--text);background:white;box-shadow:0 12px 40px #20342830;text-align:center}
+.customer-delete-dialog::backdrop{background:rgba(28,37,41,.24)}
+.customer-delete-dialog h2{font-size:16px;margin:0 0 14px}
+.customer-delete-dialog p{font-size:13.5px;line-height:1.6;margin:8px 0}
+#customerDeleteName{font-weight:700!important}
+.delete-choices{display:flex;justify-content:center;gap:8px;margin-top:22px}
+.delete-choices .cd-act{width:100px;height:37px;justify-content:center;font-size:13px}
+.delete-choices .danger{background:#bd292c;border-color:#bd292c;color:#fff}
+.overview-deleted{padding:24px;border:1px solid var(--border);border-radius:8px;background:white;font-size:13.5px}
+#cdKpis .refund-kpi .cd-kpi-lbl,#cdKpis .refund-kpi .cd-kpi-val{color:#c62828}
+#cdKpis .cd-kpi{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+#cdKpis .cd-kpi-lbl{margin:0}
+#cdKpis .cd-kpi-val{margin:0;font-size:22px;line-height:1.2}
+
+.overview-controls .overview-delete{background:white;color:#bd292c}
+#cdHeader .rough-address[aria-disabled="true"]{color:var(--text-light);text-decoration:none;cursor:default}

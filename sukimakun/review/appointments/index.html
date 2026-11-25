@@ -1,0 +1,540 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>予約一覧｜スキマくん確認ページ</title><link rel="stylesheet" href="/sukimakun/review-assets/review.css"><link rel="stylesheet" href="/sukimakun/review-assets/sections.css"></head><body><nav class="section-nav" aria-label="確認する区分"><a href="/sukimakun/">目次</a><a href="/sukimakun/review/customers/">一覧・詳細検索</a><a href="/sukimakun/review/overview/">概要</a><a href="/sukimakun/review/timeline/">MSG</a><a href="/sukimakun/review/appointments/" aria-current="page">予約一覧</a></nav><header class="page-header"><p class="eyebrow">スキマくん · 04 / 4</p><h1>予約一覧</h1><p>受付番号ごとに予約内容・PDF・写真動画・入金・返金を確認。</p><div class="page-actions"><a href="/sukimakun/">目次へ戻る</a><a class="primary" href="/sukimakun/review/appointments/play/" target="_blank" rel="noopener">操作画面を開く ↗</a><a href="/sukimakun/review-assets/shared-ui/customer.html" target="_blank" rel="noopener">お客様の確認画面 ↗</a></div><nav id="scene-nav" aria-label="この区分の場面"></nav></header><main><p id="page-error" class="error" hidden></p><div id="scenes"></div><section class="flows"><div id="flow-list"></div></section><nav class="sequence section-sequence" aria-label="前後の区分"><a href="/sukimakun/review/timeline/">← MSG</a></nav></main><footer>同じ区分の場面をまとめています。上部のメニューから別の区分へ移動できます。</footer><script id="review-data" type="application/json">{
+  "schemaVersion": 1,
+  "project": "スキマくん",
+  "purpose": "受付番号ごとに予約内容・PDF・写真動画・入金・返金を確認。",
+  "scenes": [
+    {
+      "id": "J03",
+      "title": "予約一覧",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/J03.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "M02",
+      "next": "A01"
+    },
+    {
+      "id": "A01",
+      "title": "予約ごとの見積書PDF",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/A01.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "J03",
+      "next": "A02"
+    },
+    {
+      "id": "A02",
+      "title": "予約ごとの請求書PDF",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/A02.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "A01",
+      "next": "A03"
+    },
+    {
+      "id": "A03",
+      "title": "予約の詳細と関連する履歴",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/A03.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "A02",
+      "next": "F01"
+    },
+    {
+      "id": "F01",
+      "title": "返金履歴へ切り替え",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/F01.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "A03",
+      "next": "F02"
+    },
+    {
+      "id": "F02",
+      "title": "返金履歴の詳細",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/F02.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "F01",
+      "next": "V01"
+    },
+    {
+      "id": "V01",
+      "title": "受付番号ごとの写真を開く",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/V01.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "F02",
+      "next": "V02"
+    },
+    {
+      "id": "V02",
+      "title": "保存期限を過ぎた写真・動画",
+      "description": "共通ヘッダーは最新版です。本文・操作は確認用の原稿です。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理者PC版の確認用。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/V02.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "V01",
+      "next": "P01"
+    },
+    {
+      "id": "P01",
+      "title": "Stripe・金額と請求書を確認",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P01.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "V02",
+      "next": "P02"
+    },
+    {
+      "id": "P02",
+      "title": "案内送信後・確認待ちと未入金",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P02.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P01",
+      "next": "P03"
+    },
+    {
+      "id": "P03",
+      "title": "送信後の予約と入金状況",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P03.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P02",
+      "next": "P04"
+    },
+    {
+      "id": "P04",
+      "title": "本人確認と入金が揃った状態",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。 撮影用に確認済み・入金済みの状態を設定した例。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P04.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P03",
+      "next": "P05"
+    },
+    {
+      "id": "P05",
+      "title": "本人氏名・確認日時を反映した請求書",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。 撮影用サンプルの本人確認結果。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P05.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P04",
+      "next": "P07"
+    },
+    {
+      "id": "P07",
+      "title": "入金記録を編集",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P07.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P05",
+      "next": "P08"
+    },
+    {
+      "id": "P08",
+      "title": "現金・受領を記録する",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P08.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P07",
+      "next": "P09"
+    },
+    {
+      "id": "P09",
+      "title": "Square・金額と請求書を確認",
+      "description": "精算の流れを確認するためのサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "精算対象は固定の確認用サンプル。実際の送信・決済・顧客側連携は未実装。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P09.png",
+            "width": 1540,
+            "height": 974
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P08",
+      "next": "P11"
+    },
+    {
+      "id": "P11",
+      "title": "お客様の氏名入力・確認後・請求書への反映",
+      "description": "お客様が確認する画面のサンプルです。",
+      "entryAction": "同じ区分の場面を順に確認します。",
+      "referenceAndSave": "実際の送信・決済は行わない確認用の画面です。",
+      "cancelFailureAndReturn": "前後の場面、または上部の区分から移動できます。",
+      "approval": {
+        "state": "managerReview",
+        "date": "2026-11-25"
+      },
+      "roles": {
+        "manager": {
+          "note": "管理側とは独立した確認用状態。実際の入金は行わない。",
+          "image": {
+            "path": "/sukimakun/review-assets/images/P11.png",
+            "width": 1540,
+            "height": 1431
+          }
+        },
+        "staff": {
+          "note": "一般スタッフ版は制作・確認待ち。",
+          "image": null
+        }
+      },
+      "previous": "P09",
+      "next": null
+    }
+  ],
+  "sceneUrls": {
+    "C01": "/sukimakun/review/customers/#C01",
+    "C04": "/sukimakun/review/customers/#C04",
+    "C05": "/sukimakun/review/customers/#C05",
+    "C06": "/sukimakun/review/customers/#C06",
+    "C02": "/sukimakun/review/customers/#C02",
+    "C03": "/sukimakun/review/customers/#C03",
+    "J01": "/sukimakun/review/overview/#J01",
+    "J24": "/sukimakun/review/overview/#J24",
+    "O02": "/sukimakun/review/overview/#O02",
+    "J25": "/sukimakun/review/overview/#J25",
+    "J02": "/sukimakun/review/timeline/#J02",
+    "M01": "/sukimakun/review/timeline/#M01",
+    "M02": "/sukimakun/review/timeline/#M02",
+    "J03": "/sukimakun/review/appointments/#J03",
+    "A01": "/sukimakun/review/appointments/#A01",
+    "A02": "/sukimakun/review/appointments/#A02",
+    "A03": "/sukimakun/review/appointments/#A03",
+    "F01": "/sukimakun/review/appointments/#F01",
+    "F02": "/sukimakun/review/appointments/#F02",
+    "V01": "/sukimakun/review/appointments/#V01",
+    "V02": "/sukimakun/review/appointments/#V02",
+    "P01": "/sukimakun/review/appointments/#P01",
+    "P02": "/sukimakun/review/appointments/#P02",
+    "P03": "/sukimakun/review/appointments/#P03",
+    "P04": "/sukimakun/review/appointments/#P04",
+    "P05": "/sukimakun/review/appointments/#P05",
+    "P07": "/sukimakun/review/appointments/#P07",
+    "P08": "/sukimakun/review/appointments/#P08",
+    "P09": "/sukimakun/review/appointments/#P09",
+    "P11": "/sukimakun/review/appointments/#P11"
+  },
+  "flows": [
+    {
+      "title": "予約一覧",
+      "explanation": "受付番号ごとに予約内容・PDF・写真動画・入金・返金を確認。",
+      "sceneIds": [
+        "J03",
+        "A01",
+        "A02",
+        "A03",
+        "F01",
+        "F02",
+        "V01",
+        "V02",
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P07",
+        "P08",
+        "P09",
+        "P11"
+      ]
+    }
+  ]
+}</script><script src="/sukimakun/review-assets/review.js"></script></body></html>
