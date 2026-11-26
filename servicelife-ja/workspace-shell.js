@@ -28,6 +28,12 @@ function startSukimakunWorkspace(config) {
   role.addEventListener("change", () => send("workspace-role", { role: role.value }));
 
   document.addEventListener("click", event => {
+    const a=event.target.closest("a[href]");if(!a)return;
+    const u=new URL(a.getAttribute("href"),config.base);
+    if(u.protocol!=="blob:"&&(u.origin!==host.origin||!u.pathname.startsWith(host.pathname))){event.preventDefault();event.stopImmediatePropagation();}
+  },true);
+
+  document.addEventListener("click", event => {
     const anchor = event.target.closest("a[href]");
     if (!anchor || anchor.hasAttribute("download") || anchor.target === "_blank") return;
     const target = new URL(anchor.href, config.base);

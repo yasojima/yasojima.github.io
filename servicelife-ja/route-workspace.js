@@ -433,9 +433,7 @@
     let layer;
     if (window.L) {
       map = L.map(mapRoot, { zoomControl: true, scrollWheelZoom: false });
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map);
+      installReferenceMap(map);
       layer = L.layerGroup().addTo(map);
     } else {
       mapRoot.append(makeNode('p', 'sk-route-empty', '地図を読み込めませんでした。訪問一覧から訪問先を確認できます。'));

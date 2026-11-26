@@ -3,9 +3,7 @@ window.initTechMap = function () {
   const element = document.getElementById("techMap");
   if (!element || !window.L) return;
   map = L.map(element, {scrollWheelZoom:false});
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom:19, attribution:'&copy; <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(map);
+  installReferenceMap(map);
   loadLive();
 };
 function focusTech(lat,lng) {

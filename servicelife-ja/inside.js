@@ -18,7 +18,7 @@ function startServiceLifeReference(config){
   const originalOpen=window.open.bind(window);
   function openView(value,target,features){
     const url=new URL(value,current);
-    if(url.origin!==sourceOrigin)return originalOpen(url.href,target,features);
+    if(url.origin!==sourceOrigin){const local=new URL(config.publicBase);return (url.protocol==="blob:"||(url.origin===local.origin&&url.pathname.startsWith(new URL("./",local).pathname)))?originalOpen(url.href,target,features):null;}
     if(url.pathname.startsWith('/api/')){
       fetch(url.href).then(async result=>{if(result.ok)send('file',{blob:await result.blob(),filename:url.pathname.split('/').filter(Boolean).slice(-2).join('-')+'.pdf'});});
       return null;
@@ -36,7 +36,7 @@ function startServiceLifeReference(config){
     class MapView{
       constructor(element,options={}){
         this.element=element;this.layer=L.map(element,{scrollWheelZoom:!!options.scrollwheel,zoomControl:options.zoomControl!==false});
-        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(this.layer);
+        installReferenceMap(this.layer);
         if(options.center)this.layer.setView(point(options.center),options.zoom||11);
         element.dataset.referenceMap="recorded-coordinates";
       }
@@ -301,24 +301,11 @@ function startServiceLifeReference(config){
     const link=number=>{if(number<1||number>Math.ceil(total/size))return null;const next=new URL(url);next.searchParams.set("page",number);return next.pathname+next.search};
     return {...matching[0][1],count:total,results:values.slice((page-1)*size,page*size),next:link(page+1),previous:link(page-1)};
   }
-  const availabilityRequests=new Map();let availabilitySequence=0;
-  addEventListener('message',event=>{
-    if(event.source!==parent||event.data?.application!=='sukimakun-availability')return;
-    const pending=availabilityRequests.get(event.data.id);if(!pending)return;
-    clearTimeout(pending.timer);availabilityRequests.delete(event.data.id);
-    pending.resolve(response(event.data.body,event.data.status));
-  });
-  function liveAvailability(url){return new Promise(resolve=>{
-    const id=++availabilitySequence;
-    const timer=setTimeout(()=>{availabilityRequests.delete(id);resolve(response({error:'Availability search timed out. Please try again.'},504))},75000);
-    availabilityRequests.set(id,{resolve,timer});send('availability-query',{id,query:url.search});
-  })}
   let querySupport;
   window.fetch=async(input,options={})=>{
     const method=String(options.method||input?.method||"GET").toUpperCase();
     if(!["GET","HEAD"].includes(method))return response({detail:"This action is disabled in the read-only demo.",error:"This action is disabled in the read-only demo."},403);
     let url;try{url=new URL(typeof input==="string"?input:input.url||String(input),current)}catch{return response({detail:"Not found."},404)}
-    if(config.liveAvailability&&url.pathname==='/api/v1/tech-funnel/slots/')return liveAvailability(url);
     const variants=parsed.filter(([key])=>key.pathname===url.pathname);
     const exactResponse=recorded.find(([key])=>key.pathname===url.pathname&&queryKey(key.searchParams)===queryKey(url.searchParams));
     // The three captured full lists use one stable set across every page/filter;
@@ -359,6 +346,7 @@ function startServiceLifeReference(config){
     if(href.startsWith("#")){event.preventDefault();return;}
     if(href.startsWith("javascript:"))return;
     let url;try{url=new URL(href,current)}catch{return;}
+    if(url.origin!==sourceOrigin){event.preventDefault();event.stopImmediatePropagation();return;}
     if(url.origin===sourceOrigin&&url.pathname.startsWith("/api/")){
       event.preventDefault();event.stopImmediatePropagation();
       fetch(url.href).then(async result=>{
