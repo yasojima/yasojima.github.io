@@ -12,6 +12,7 @@
   }
   replace(navigator, 'sendBeacon', () => false);
   replace(navigator, 'serviceWorker', undefined);
+  replace(navigator, 'geolocation', undefined);
   replace(HTMLFormElement.prototype, 'submit', blocked);
   // The source-page adapter replaces fetch with its saved-data lookup.
   // Workspace pages keep this rejecting implementation.
