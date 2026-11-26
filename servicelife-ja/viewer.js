@@ -193,8 +193,10 @@ function renderWorkspace(place, record, language, brand) {
 
 function restoreSidebar(doc,brand,place){
   for(const header of doc.querySelectorAll(".sidebar-brand"))header.innerHTML=brand;
+  const selectedAccount=catalog.accounts?.[new URL(location.href).searchParams.get("account")];
+  const account=selectedAccount?.role===place.role?selectedAccount:catalog.accounts?.[samples[place.role]];
   for(const footer of doc.querySelectorAll(".sidebar-user")){
-    const name=footer.querySelector(".name")?.textContent.trim()||catalog.accounts?.[new URL(location.href).searchParams.get("account")]?.name||"";
+    const name=account?.name||footer.querySelector(".name")?.textContent.trim()||"";
     const label=doc.createElement("span");label.className="sukimakun-login-name";label.textContent=name;
     const logout=doc.createElement("button");logout.type="button";logout.className="sukimakun-logout";logout.title="ログアウト";logout.setAttribute("aria-label","ログアウト");
     logout.innerHTML='<i class="fas fa-sign-out-alt" aria-hidden="true"></i>';
