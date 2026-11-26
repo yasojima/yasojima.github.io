@@ -63,7 +63,7 @@ function createReferenceQueries(config){
   if(format==='pdf'){
    const PDFLib=await import(config.pdfLibUrl);
    const pdf=await PDFLib.PDFDocument.create(),font=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);let page,y=0;
-   for(const [key,val]of [[kind.toUpperCase()+' REPORT',''],...rows]){if(y<45){page=pdf.addPage([595,842]);y=800;}const text=(key+'    '+val).replace(/[^\x20-\x7e]/g,'?');for(let i=0;i<text.length;i+=96){page.drawText(text.slice(i,i+96),{x:30,y,size:9,font});y-=14;}}
+   for(const row of [[kind.toUpperCase()+' REPORT'],...rows]){if(y<45){page=pdf.addPage([595,842]);y=800;}const text=row.map(value=>String(value??'')).join('    ').replace(/[^\x20-\x7e]/g,'?');for(let i=0;i<text.length;i+=96){page.drawText(text.slice(i,i+96),{x:30,y,size:9,font});y-=14;}}
    return new Response(await pdf.save(),{headers:{'Content-Type':'application/pdf'}});
   }
   return null;
