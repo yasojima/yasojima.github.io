@@ -402,7 +402,7 @@
       <div class="sk-route-toolbar">
         <div class="sk-route-date-control">
           <button type="button" id="sk-route-previous" class="sk-route-control" aria-label="前日">‹</button>
-          <label for="sk-route-date"><span>訪問日</span><input id="sk-route-date" type="date" value="${defaultDate}"></label>
+          <label for="sk-route-date"><span>訪問日</span><input id="sk-route-date" type="date" value="${defaultDate}" required></label>
           <button type="button" id="sk-route-next" class="sk-route-control" aria-label="翌日">›</button>
         </div>
         <label for="sk-route-staff"><span>担当スタッフ</span><select id="sk-route-staff"><option value="">全スタッフ</option></select></label>
@@ -449,7 +449,10 @@
 
     let selectedDate = defaultDate;
     function showDate() {
-      if (!date.value) return;
+      if (!date.value) {
+        date.value = selectedDate;
+        return;
+      }
       selectedDate = date.value;
       const jobs = model.jobs.filter(job => job.date === selectedDate && (!staff.value || job.staff === staff.value));
       const groups = groupJobs(jobs, model.staff);
