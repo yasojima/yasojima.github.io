@@ -45,7 +45,7 @@ function parseHash(){
   const hash=location.hash.slice(1),match=hash.match(/^(?:(company_admin|csr|technician))?(\/[^#]*)/);
   const url=new URL(location.href),person=catalog.accounts?.[url.searchParams.get("account")];
   const role=match?.[1] || person?.role || "company_admin";
-  const target=new URL(match?.[2]||home[role],"https://demo.servicelife.app");
+  const target=new URL(match?.[2]||home[role],"https://reference.invalid");
   const captureRoute=findRoute(role,target);
   if(!captureRoute)return {role,route:home[role],captureRoute:home[role],query:"",fragment:""};
   const fragmentIndex=hash.indexOf("#");
@@ -57,7 +57,7 @@ function findRoute(role,url){
 }
 function targetHash(role,url){return "#"+(role==="company_admin"?"":role)+url.pathname+url.search+url.hash;}
 function navigate(role,path,{replace=false,reload=false}={}){
-  let url;try{url=new URL(path,"https://demo.servicelife.app"+(active?.route||home[role]));}catch{return;}
+  let url;try{url=new URL(path,"https://reference.invalid"+(active?.route||home[role]));}catch{return;}
   if(!findRoute(role,url)){showNotice("この原本ページはまだ取得されていません："+url.pathname);return;}
   const hash=targetHash(role,url);
   if(replace){history.replaceState(null,"",hash);openScreen();}
@@ -166,9 +166,9 @@ function renderWorkspace(place, record, language, brand) {
   const config = { ...place, base: base.href, version: assetVersion, links, data, terms: language.terms };
   const vendor = base.href + "lib/";
   const csp = "default-src 'none'; script-src 'unsafe-inline' " + vendor + " " + base.href + workspace + ".js " +
-    base.href + "workspace-shell.js " + base.href + "offline-map.js; style-src 'unsafe-inline' " + vendor + " " + base.href + workspace + ".css " +
+    base.href + "workspace-shell.js " + base.href + "privacy-guard.js " + base.href + "offline-map.js; style-src 'unsafe-inline' " + vendor + " " + base.href + workspace + ".css " +
     base.href + "workspace-shell.css; img-src data: " + base.href + "; font-src " +
-    vendor + "; base-uri 'none'; form-action 'none'; frame-src 'none'";
+    vendor + "; base-uri 'none'; form-action 'none'; worker-src 'none'; frame-src 'none'";
   const maps = routeView
     ? '<link rel="stylesheet" href="' + viewerAsset("lib/leaflet/leaflet.css") + '"><script src="' + viewerAsset("lib/leaflet/leaflet.js") + '"></script><script src="' + viewerAsset("offline-map.js") + '"></script>'
     : "";
@@ -176,7 +176,7 @@ function renderWorkspace(place, record, language, brand) {
     vendor + 'webfonts/inter-latin.woff2") format("woff2")}</style>';
 
   return '<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<meta http-equiv="Content-Security-Policy" content="' + escapeHtml(csp) + '"><title>' + title + '｜SUKIMAKUN</title>' +
+    '<meta http-equiv="Content-Security-Policy" content="' + escapeHtml(csp) + '"><script src="' + viewerAsset('privacy-guard.js') + '"></script><title>' + title + '｜SUKIMAKUN</title>' +
     font + '<link rel="stylesheet" href="' + viewerAsset("lib/css/fontawesome.min.css") + '">' +
     '<link rel="stylesheet" href="' + viewerAsset("lib/css/solid.min.css") + '">' + maps +
     '<link rel="stylesheet" href="' + viewerAsset("workspace-shell.css") + '"><link rel="stylesheet" href="' + viewerAsset(workspace + ".css") + '">' +
@@ -218,7 +218,7 @@ function render(record,programs,language,inside,tech,place,brand){
   for(const style of doc.querySelectorAll("style[data-sl-style]")){style.textContent=programs.styles[style.dataset.slStyle]||"";style.removeAttribute("data-sl-style");}
   const skip=new Set(programs.skip);
   for(const node of doc.querySelectorAll("script[data-sl-script]")){
-    let code=programs.scripts[node.dataset.slScript];if(!code||skip.has(node.dataset.slScript)){node.remove();continue;}
+    let code=programs.scripts[node.dataset.slScript]?.replaceAll("@@FILES@@",base.href);if(!code||skip.has(node.dataset.slScript)){node.remove();continue;}
     if(place.route==="/technicians/"&&code.includes("function renderCards()")&&code.includes("function focusTech("))code=code.slice(0,code.indexOf("function focusTech("))+"\n"+tech;
     node.textContent=scriptText(code);node.removeAttribute("data-sl-script");
   }
@@ -255,8 +255,9 @@ function render(record,programs,language,inside,tech,place,brand){
   inline(doc.head,"(function(terms){"+language.charts+"})("+safeJson(language.terms)+");");
   inline(doc.body,"(function(terms){"+language.localizer+"})("+safeJson(language.terms)+");");
   const meta=doc.createElement("meta");meta.httpEquiv="Content-Security-Policy";
-  meta.content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' "+resources+" "+base.href+"query-support.js "+base.href+"offline-map.js "+base.href+"assets/; style-src 'unsafe-inline' "+resources+" "+base.href+"assets/; img-src data: blob: "+base.href+"; font-src data: "+resources+"; connect-src 'none'; object-src 'none'; form-action 'none'; frame-src 'none'; base-uri 'none'";
-  doc.head.prepend(meta);doc.documentElement.lang="ja";
+  meta.content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' "+resources+" "+base.href+"query-support.js "+base.href+"offline-map.js "+base.href+"privacy-guard.js "+base.href+"assets/; style-src 'unsafe-inline' "+resources+" "+base.href+"assets/; img-src data: blob: "+base.href+"; font-src data: "+resources+"; connect-src 'none'; object-src 'none'; form-action 'none'; worker-src 'none'; frame-src 'none'; base-uri 'none'";
+  const guard=doc.createElement("script");guard.src=base.href+"privacy-guard.js"+assetVersion;doc.head.prepend(guard);
+  doc.head.prepend(meta);doc.title=doc.title.replace(/ServiceLife/gi,"SUKIMAKUN");doc.documentElement.lang="ja";
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }
 async function openScreen(){
@@ -293,14 +294,14 @@ addEventListener("message",event=>{
   const message=event.data;
   if(message?.application==="reference-role"){
     const role=message.role;if(!home[role])return;
-    const url=new URL(location.href);url.searchParams.set("account",samples[role]);url.hash=targetHash(role,new URL(home[role],"https://demo.servicelife.app"));location.assign(url.href);return;
+    const url=new URL(location.href);url.searchParams.set("account",samples[role]);url.hash=targetHash(role,new URL(home[role],"https://reference.invalid"));location.assign(url.href);return;
   }
   if(message?.application!=="servicelife-jp")return;
   if (message.type === "workspace-role" && workspaceFiles[active.route]) {
     const role = message.role;
     if (!Object.hasOwn(home, role)) return;
     const currentPath = active.route === contractDocumentsRoute && role !== "csr" ? "/contracts/" : active.route;
-    const route = findRoute(role, new URL(currentPath, "https://demo.servicelife.app")) ? currentPath : home[role];
+    const route = findRoute(role, new URL(currentPath, "https://reference.invalid")) ? currentPath : home[role];
     const url = new URL(workspaceUrl(role, route));
     url.searchParams.set("account", samples[role]);
     location.assign(url.href);
@@ -314,7 +315,7 @@ addEventListener("message",event=>{
   if(message.type==="file"){previewFile(message);return;}
   if(message.type==="route")navigate(active.role,message.url,{replace:!!message.replace,reload:true});
   if(message.type==="history"){
-    const url=new URL(message.url,"https://demo.servicelife.app");
+    const url=new URL(message.url,"https://reference.invalid");
     if(url.pathname!==active.route)return;
     const hash=targetHash(active.role,url);history[message.replace?"replaceState":"pushState"](message.state||null,"",hash);
     active.query=url.search;active.fragment=url.hash;

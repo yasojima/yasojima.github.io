@@ -1,11 +1,11 @@
 function startServiceLifeReference(config){
-  const sourceOrigin="https://demo.servicelife.app";
+  const sourceOrigin="https://reference.invalid";
   const normalize=s=>String(s||"").trim().replace(/\s+/g," ").replace(/[’‘]/g,"'").toLowerCase();
   const terms=new Map(Object.entries(config.terms||{}).map(([key,value])=>[normalize(key),value]));
   const word=value=>terms.get(normalize(value))||value;
   const send=(type,extra={})=>parent.postMessage({application:"servicelife-jp",type,...extra},"*");
   let current=new URL(config.route+(config.query||"")+(config.fragment||""),sourceOrigin);
-  const locationView={get href(){return current.href},set href(value){navigate(value)},get pathname(){return current.pathname},get search(){return current.search},get hash(){return current.hash},set hash(value){const url=new URL(current);url.hash=value;historyView.pushState(null,"",url.href)},origin:sourceOrigin,host:"demo.servicelife.app",hostname:"demo.servicelife.app",protocol:"https:",assign:value=>navigate(value),replace:value=>navigate(value,true),reload:()=>navigate(current.href,true),toString:()=>current.href};
+  const locationView={get href(){return current.href},set href(value){navigate(value)},get pathname(){return current.pathname},get search(){return current.search},get hash(){return current.hash},set hash(value){const url=new URL(current);url.hash=value;historyView.pushState(null,"",url.href)},origin:sourceOrigin,host:"reference.invalid",hostname:"reference.invalid",protocol:"https:",assign:value=>navigate(value),replace:value=>navigate(value,true),reload:()=>navigate(current.href,true),toString:()=>current.href};
   const historyView={state:null,pushState:(state,title,path)=>saveHistory(state,path,false),replaceState:(state,title,path)=>saveHistory(state,path,true),back:()=>history.back(),forward:()=>history.forward(),go:n=>history.go(n)};
   function saveHistory(state,path,replace){current=new URL(path||current.href,current);historyView.state=state;send("history",{url:current.pathname+current.search+current.hash,state,replace});}
   function navigate(value,replace=false){
@@ -26,7 +26,7 @@ function startServiceLifeReference(config){
     const app=new URL(config.publicBase);app.hash=(config.role==='company_admin'?'':config.role)+url.pathname+url.search+url.hash;
     return originalOpen(app.href,target||'_blank',features);
   }
-  window.open=openView;
+  Object.defineProperty(window,"open",{value:openView,writable:false,configurable:false});
   window.SL_VIEW={route:config.route,word,translate:async values=>values.map(word),location:locationView,history:historyView,navigate};
   // Keep the original marker/route UI and its recorded coordinates. Only the
   // map renderer is local, so no upstream Google API key is reused.
@@ -306,6 +306,7 @@ function startServiceLifeReference(config){
     const method=String(options.method||input?.method||"GET").toUpperCase();
     if(!["GET","HEAD"].includes(method))return response({detail:"This action is disabled in the read-only demo.",error:"This action is disabled in the read-only demo."},403);
     let url;try{url=new URL(typeof input==="string"?input:input.url||String(input),current)}catch{return response({detail:"Not found."},404)}
+    if(url.origin!==sourceOrigin)return response({detail:"External connections are disabled."},403);
     const variants=parsed.filter(([key])=>key.pathname===url.pathname);
     const exactResponse=recorded.find(([key])=>key.pathname===url.pathname&&queryKey(key.searchParams)===queryKey(url.searchParams));
     // The three captured full lists use one stable set across every page/filter;
@@ -316,7 +317,7 @@ function startServiceLifeReference(config){
     }
     if(exactResponse){
       const value=exactResponse[1],status=value.status||200;
-      const body=[204,205,304].includes(status)||method==="HEAD"?null:(value.bodyBase64?Uint8Array.from(atob(value.bodyBase64),char=>char.charCodeAt(0)):(typeof value.body==="string"?value.body:JSON.stringify(value.body??null)));
+      const body=[204,205,304].includes(status)||method==="HEAD"?null:(value.bodyBase64?Uint8Array.from(atob(value.bodyBase64),char=>char.charCodeAt(0)):(typeof value.body==="string"?value.body.replaceAll("@@FILES@@",new URL("./",config.publicBase).href):JSON.stringify(value.body??null)));
       return new Response(body,{status,headers:{"Content-Type":value.contentType||value.content_type||"application/json; charset=utf-8"}});
     }
     const exact=variants.find(([key])=>queryKey(key.searchParams)===queryKey(url.searchParams));
@@ -340,6 +341,7 @@ function startServiceLifeReference(config){
     send("missing-get",{url:url.pathname+url.search});
     return response({detail:"This response was not captured from the public demo."},404);
   };
+  Object.defineProperty(window,"fetch",{value:window.fetch,writable:false,configurable:false});
   addEventListener("click",event=>{
     const link=event.target.closest?.("a[href]");if(!link)return;
     const href=link.getAttribute("href");if(!href)return;
