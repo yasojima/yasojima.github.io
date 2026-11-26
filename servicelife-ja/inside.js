@@ -301,11 +301,24 @@ function startServiceLifeReference(config){
     const link=number=>{if(number<1||number>Math.ceil(total/size))return null;const next=new URL(url);next.searchParams.set("page",number);return next.pathname+next.search};
     return {...matching[0][1],count:total,results:values.slice((page-1)*size,page*size),next:link(page+1),previous:link(page-1)};
   }
+  const availabilityRequests=new Map();let availabilitySequence=0;
+  addEventListener('message',event=>{
+    if(event.source!==parent||event.data?.application!=='sukimakun-availability')return;
+    const pending=availabilityRequests.get(event.data.id);if(!pending)return;
+    clearTimeout(pending.timer);availabilityRequests.delete(event.data.id);
+    pending.resolve(response(event.data.body,event.data.status));
+  });
+  function liveAvailability(url){return new Promise(resolve=>{
+    const id=++availabilitySequence;
+    const timer=setTimeout(()=>{availabilityRequests.delete(id);resolve(response({error:'Availability search timed out. Please try again.'},504))},75000);
+    availabilityRequests.set(id,{resolve,timer});send('availability-query',{id,query:url.search});
+  })}
   let querySupport;
   window.fetch=async(input,options={})=>{
     const method=String(options.method||input?.method||"GET").toUpperCase();
     if(!["GET","HEAD"].includes(method))return response({detail:"This action is disabled in the read-only demo.",error:"This action is disabled in the read-only demo."},403);
     let url;try{url=new URL(typeof input==="string"?input:input.url||String(input),current)}catch{return response({detail:"Not found."},404)}
+    if(config.liveAvailability&&url.pathname==='/api/v1/tech-funnel/slots/')return liveAvailability(url);
     const variants=parsed.filter(([key])=>key.pathname===url.pathname);
     const exactResponse=recorded.find(([key])=>key.pathname===url.pathname&&queryKey(key.searchParams)===queryKey(url.searchParams));
     // The three captured full lists use one stable set across every page/filter;

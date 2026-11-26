@@ -35,6 +35,7 @@ const samples={company_admin:"demo_owner",csr:"demo_csr",technician:"demo_tech_k
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
 const catalogRequest = read("catalog.json", "json");
+const availabilityConfigRequest=read("availability-config.json","json");
 const contractDocumentsRoute = "/contracts/documents/";
 const workspaceFiles = {
   "/routes/": "route-workspace",
@@ -249,7 +250,7 @@ function render(record,programs,language,inside,tech,place,brand){
     if(value.status===200&&value.contentType?.includes('json')&&Object.hasOwn(fixtures,url)&&value.body===JSON.stringify(fixtures[url]))continue;
     responses[url]=value;
   }
-  const conf={...place,mode:"active",pdfLibUrl:resources+"pdf-lib-1.17.1.min.js",publicBase:new URL(location.href).href,captured:record.captured,terms:language.terms,fixtures,responses,routes};
+  const conf={...place,mode:"active",liveAvailability:true,pdfLibUrl:resources+"pdf-lib-1.17.1.min.js",publicBase:new URL(location.href).href,captured:record.captured,terms:language.terms,fixtures,responses,routes};
   inline(doc.head,"("+inside+")("+safeJson(conf)+");",true);
   inline(doc.head,"(function(terms){"+language.charts+"})("+safeJson(language.terms)+");");
   inline(doc.body,"(function(terms){"+language.localizer+"})("+safeJson(language.terms)+");");
@@ -303,6 +304,23 @@ addEventListener("message",event=>{
     const url = new URL(workspaceUrl(role, route));
     url.searchParams.set("account", samples[role]);
     location.assign(url.href);
+    return;
+  }
+  if(message.type==='availability-query'){
+    const target=frame.contentWindow;
+    (async()=>{
+      let status=502,body={error:'Availability search could not connect. Please try again.'};
+      try{
+        const config=await availabilityConfigRequest;
+        const endpoint=new URL(config.endpoint);
+        const local=['127.0.0.1','localhost'].includes(location.hostname);
+        if(endpoint.protocol!=='https:'&&!(local&&endpoint.hostname==='127.0.0.1'))throw Error('Invalid availability endpoint');
+        endpoint.search=new URLSearchParams(message.query).toString();
+        const result=await fetch(endpoint,{method:'GET',credentials:'omit',signal:AbortSignal.timeout(70000)});
+        body=await result.json();status=result.status;
+      }catch{}
+      if(target===frame.contentWindow)target.postMessage({application:'sukimakun-availability',id:message.id,status,body},'*');
+    })();
     return;
   }
   if(message.type==="ready"){frame.hidden=false;return;}
