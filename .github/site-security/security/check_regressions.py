@@ -77,6 +77,15 @@ writer = PdfWriter(); writer.add_blank_page(width=300, height=300)
 writer._add_object(DictionaryObject({NameObject('/S'):NameObject('/JavaScript'),NameObject('/JS'):TextStringObject('app.launchURL("https://audit.example.invalid/")')}))
 stream = io.BytesIO(); writer.write(stream)
 rejects('PDF unreferenced JavaScript', lambda: validate_pdf(stream.getvalue()))
+for subtype in ['/Launch','/GoToR','/GoToE','/SubmitForm','/ImportData']:
+    writer=PdfWriter();writer.add_blank_page(width=100,height=100)
+    writer._add_object(DictionaryObject({NameObject('/S'):NameObject(subtype),NameObject('/F'):TextStringObject('https://audit.example.invalid/document')}))
+    stream=io.BytesIO();writer.write(stream)
+    rejects('PDF unreferenced action subtype '+subtype,lambda data=stream.getvalue():validate_pdf(data))
+writer=PdfWriter();writer.add_blank_page(width=100,height=100)
+writer._root_object[NameObject('/A')]=DictionaryObject({NameObject('/S'):NameObject('/GoTo'),NameObject('/D'):TextStringObject('page1')})
+stream=io.BytesIO();writer.write(stream);validate_pdf(stream.getvalue())
+checks.append({'name':'PDF ordinary internal destination remains valid','passed':True})
 
 with tempfile.TemporaryDirectory(prefix='sukimakun-regression-') as temp:
     clone = Path(temp) / 'public'; shutil.copytree(source, clone)

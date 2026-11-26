@@ -10,12 +10,15 @@ from pypdf import PdfReader
 from pypdf.generic import ArrayObject, DictionaryObject, IndirectObject
 
 FORBIDDEN_KEYS = {
-    '/OpenAction', '/AA', '/A', '/JS', '/JavaScript', '/URI', '/Launch',
+    '/OpenAction', '/AA', '/JS', '/JavaScript', '/URI', '/Launch',
     '/SubmitForm', '/ImportData', '/GoToR', '/GoToE', '/RichMedia',
     '/RichMediaContent', '/EmbeddedFiles', '/EF', '/XFA', '/AcroForm',
     '/Collection', '/3D', '/Sound', '/Movie', '/Rendition', '/FFilter',
 }
 FORBIDDEN_TYPES = {'/Filespec', '/EmbeddedFile', '/RichMedia', '/3D', '/Movie', '/Sound'}
+FORBIDDEN_ACTIONS = {'/JavaScript','/URI','/Launch','/SubmitForm','/ImportData',
+                     '/GoToR','/GoToE','/Rendition','/Movie','/Sound','/Named',
+                     '/ResetForm','/Hide','/SetOCGState','/Trans','/GoTo3DView'}
 
 
 @lru_cache(maxsize=128)
@@ -43,6 +46,13 @@ def validate_pdf(data):
             if count > 100000:
                 raise ValueError('PDF object limit')
             if isinstance(obj, DictionaryObject):
+                if str(obj.get('/S','')) in FORBIDDEN_ACTIONS:
+                    raise ValueError('External or active PDF action subtype')
+                if '/A' in obj:
+                    action=obj['/A']
+                    # Ordinary same-document page links remain usable.
+                    if not isinstance(action,DictionaryObject) or str(action.get('/S',''))!='/GoTo' or '/D' not in action or set(action)-{'/S','/D','/Type'}:
+                        raise ValueError('Unapproved PDF action')
                 bad = FORBIDDEN_KEYS.intersection(obj.keys())
                 if bad or str(obj.get('/Type', '')) in FORBIDDEN_TYPES:
                     raise ValueError('Active PDF object: ' + ', '.join(sorted(bad or {str(obj.get('/Type'))})))
