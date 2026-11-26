@@ -39,5 +39,14 @@ function startSukimakunWorkspace(config) {
   });
 
   if (config.route === "/routes/") mountRouteWorkspace(root, config);
-  else mountServiceWorkspace(root, config);
+  else if (config.route === "/contracts/documents/") {
+    mountContractWorkspace(root, {
+      ...config,
+      openPdf({ filename, data, pages }) {
+        const bytes = Uint8Array.from(atob(data), character => character.charCodeAt(0));
+        const blob = new Blob([bytes], { type: "application/pdf" });
+        send("file", { filename, blob, pageImages: pages });
+      }
+    });
+  } else mountServiceWorkspace(root, config);
 }
