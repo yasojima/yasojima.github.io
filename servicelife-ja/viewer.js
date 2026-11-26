@@ -44,7 +44,7 @@ const home = {company_admin:"/business-manager/",csr:"/csr-dashboard/",technicia
 const sampleLogin = {company_admin:"demo_owner",csr:"demo_csr",technician:"demo_tech_kevin"};
 const roleName = {company_admin:"会社管理者",csr:"受付担当",technician:"現場スタッフ"};
 const grantPrefix = "servicelife-ja:staff-access:v1:";
-const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text")]);
+const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text"),read("brand.svg","text")]);
 function grantedRole(login){
   const initial = catalog.accounts[login].role;
   try {
@@ -139,7 +139,32 @@ function sectionMenu(doc,place){
     for(const link of nav.querySelectorAll("a"))link.classList.toggle("active",link.getAttribute("href")===place.route);
   }
 }
-function render(record,programs,language,inside,tech,place){
+function styleSidebar(doc,brand,name){
+  for(const header of doc.querySelectorAll(".sidebar-brand"))header.innerHTML=brand;
+  for(const footer of doc.querySelectorAll(".sidebar-user")){
+    const logout=footer.querySelector('a[href="/logout/"]');
+    if(!logout)continue;
+    const label=doc.createElement("span");
+    label.className="sukimakun-login-name";
+    label.textContent=name;
+    logout.classList.add("sukimakun-logout");
+    logout.title="ログアウト";
+    logout.setAttribute("aria-label","ログアウト");
+    for(const attribute of ["style","onmouseover","onmouseout"])logout.removeAttribute(attribute);
+    footer.replaceChildren(label,logout);
+  }
+  const style=doc.createElement("style");
+  style.textContent=`
+    .sidebar-brand{height:105px;min-height:105px;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sidebar-brand svg{display:block;width:174.2px;height:19.5px;flex:none}
+    .sidebar-user{height:93px;min-height:93px;box-sizing:border-box;padding:0 20px;gap:16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .sukimakun-login-name{font-size:17px;line-height:24px;font-weight:600;color:#fff;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+    .sidebar-user .sukimakun-logout{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#fff;font-size:22px;text-decoration:none}
+    .sukimakun-logout:hover,.sukimakun-logout:focus-visible{background:#ffffff1f}
+  `;
+  doc.head.append(style);
+}
+function render(record,programs,language,inside,tech,brand,place){
   const mode=record.mode,raw=mode==="active"?record.raw:record.view;
   const doc=new DOMParser().parseFromString(raw.replaceAll("@@FILES@@",base.href),"text/html");
   const routes=Object.keys(catalog.files).filter(x=>x.startsWith(place.role+"|")).map(x=>x.split("|")[1]);
@@ -147,13 +172,6 @@ function render(record,programs,language,inside,tech,place){
   const conf={fleet:place.fleet,fleetToken:place.fleetToken,vehicle:place.vehicle,office:place.office,officeToken:place.officeToken,
     expense:place.expense,corrections:place.corrections,route:place.route,role:place.role,mode,captured:record.captured,terms:language.terms,fixtures:record.fx,routes,sidebarTop};
   if(place.route==="/customers/")conf.directoryQuery=history.state?.customerDirectoryQuery || "";
-  const person=catalog.accounts[account];
-  const profile=doc.querySelector(".sidebar-user");
-  if(profile){
-    profile.querySelector(".name").textContent=person.name;
-    profile.querySelector(".role").textContent=roleName[place.role];
-    profile.querySelector(".avatar").textContent=person.name.split(/\s+/).map(n=>n[0]).slice(0,2).join("");
-  }
   if(place.role==="company_admin" && place.route==="/settings/"){
     conf.staff=staffList();
     conf.openStaffPanel=new URLSearchParams(location.search).get("panel")==="users";
@@ -180,6 +198,7 @@ function render(record,programs,language,inside,tech,place){
     style.textContent=programs.styles[style.dataset.slStyle]||"";
     style.removeAttribute("data-sl-style");
   }
+  styleSidebar(doc,brand,place.account.name);
   for(const node of doc.querySelectorAll("script[data-sl-script]")){
     const h=node.dataset.slScript;let code=programs.scripts[h]||"";
     if(skip.has(h)||!code){node.remove();continue;}
@@ -208,7 +227,7 @@ async function openScreen(navigation=false){
   const turn=++seq;
   if(pending){pending.frame.remove();pending=null;}
   try{
-    const [c,programs,language,inside,tech]=await common;
+    const [c,programs,language,inside,tech,brand]=await common;
     if(turn!==seq)return;
     catalog=c;
     const place=requested();
@@ -245,7 +264,7 @@ async function openScreen(navigation=false){
     nextFrame.removeAttribute("id");
     nextFrame.inert=true;
     nextFrame.title=(language.terms[label]||language.terms[record.title]||record.title)+"｜ServiceLife 日本語";
-    nextFrame.srcdoc=render(record,programs,language,inside,tech,place);
+    nextFrame.srcdoc=render(record,programs,language,inside,tech,brand,place);
     pending={frame:nextFrame,place};
     frame.after(nextFrame);
   }catch(e){
