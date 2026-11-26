@@ -23,6 +23,9 @@ async function read(name,type) {
       return JSON.parse(new TextDecoder().decode(bytes));
     })().catch(e=>{inFlight.delete(name);throw e});
     inFlight.set(name,request);
+    // Retain only a few screen groups; customer-tab groups can be large.
+    const screenKeys=[...inFlight.keys()].filter(key=>key.startsWith('screens/'));
+    for(const key of screenKeys.slice(0,-4))inFlight.delete(key);
   }
   return inFlight.get(name);
 }
@@ -235,7 +238,18 @@ function render(record,programs,language,inside,tech,place,brand){
     const script=doc.createElement("script");script.src=resources+"leaflet/leaflet.js";doc.head.prepend(script);
   }
   const queries=doc.createElement("script");queries.src=base.href+"query-support.js"+assetVersion;doc.head.prepend(queries);
-  const conf={...place,mode:"active",pdfLibUrl:resources+"pdf-lib-1.17.1.min.js",publicBase:new URL(location.href).href,captured:record.captured,terms:language.terms,fixtures:record.fx,responses:record.responses||{},routes};
+  // JSON GETs already present as fixtures need no second, escaped copy in srcdoc.
+  // This keeps repeated menu navigation from retaining very large frame payloads.
+  const fixtures={...record.fx},responses={};
+  if(place.route!=="/reports/"){
+    if(fixtures['/reference/query-data/'])fixtures['/reference/query-data/']={date:fixtures['/reference/query-data/'].date,searchCustomers:fixtures['/reference/query-data/'].searchCustomers};
+  }
+  for(const [url,value]of Object.entries(record.responses||{})){
+    if(url==='/reference/query-data/'&&place.route!=='/reports/')continue;
+    if(value.status===200&&value.contentType?.includes('json')&&Object.hasOwn(fixtures,url)&&value.body===JSON.stringify(fixtures[url]))continue;
+    responses[url]=value;
+  }
+  const conf={...place,mode:"active",pdfLibUrl:resources+"pdf-lib-1.17.1.min.js",publicBase:new URL(location.href).href,captured:record.captured,terms:language.terms,fixtures,responses,routes};
   inline(doc.head,"("+inside+")("+safeJson(conf)+");",true);
   inline(doc.head,"(function(terms){"+language.charts+"})("+safeJson(language.terms)+");");
   inline(doc.body,"(function(terms){"+language.localizer+"})("+safeJson(language.terms)+");");
