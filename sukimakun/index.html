@@ -12,12 +12,18 @@
     iframe[inert]{position:absolute;inset:0;opacity:0;pointer-events:none}
     #notice{position:absolute;inset:0;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}
     #notice[hidden],#screen[hidden]{display:none}
+    #reference-status{position:fixed;right:16px;bottom:16px;z-index:3000;max-width:calc(100vw - 64px);display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border:1px solid #dfe6e9;border-radius:8px;box-shadow:0 4px 18px #0002;color:#636e72;font:13px/1.5 system-ui}
+    #reference-status[hidden]{display:none}
+    #reference-status button{background:transparent;border:0;font-size:20px;cursor:pointer;color:inherit}
     #office-pdf{width:min(960px,94vw);height:85vh;box-sizing:border-box;padding:12px;border:1px solid #cbd6d0;border-radius:10px;font:14px system-ui;color:#23362b}
     #office-pdf::backdrop{background:#19282099}
     #office-pdf header{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:10px}
     #office-pdf strong{flex:1;overflow-wrap:anywhere}
     #office-pdf a,#office-pdf button{color:#225a37;font:inherit}#office-pdf iframe{border:0;width:100%;height:calc(100% - 54px)}
     #office-pdf img{width:100%;height:calc(100% - 54px);object-fit:contain}
+    #office-pdf .pdf-pages{height:calc(100% - 54px);overflow:auto;background:#f0f1f3;padding:12px;box-sizing:border-box}
+    #office-pdf .pdf-pages[hidden]{display:none}
+    #office-pdf .pdf-pages img{display:block;width:100%;height:auto;object-fit:initial;margin:0 auto 12px}
     #viewport-hud{
       position:fixed;right:1px;bottom:1px;z-index:2147483647;
       padding:1px 3px;border-radius:2px;background:#000;color:#fff;
@@ -27,12 +33,11 @@
   </style>
 </head>
 <body>
-  <iframe id="screen" title="ServiceLife 日本語" sandbox="allow-scripts" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <iframe id="screen" title="ServiceLife 日本語" sandbox="allow-scripts allow-modals" referrerpolicy="strict-origin-when-cross-origin"></iframe>
   <p id="notice" role="status">ServiceLifeの日本語画面を読み込んでいます…</p>
-  <dialog id="office-pdf" aria-label="書類の控え"><header><strong></strong><a target="_blank" rel="noopener">別タブで開く</a><a download>ダウンロード</a><button type="button">閉じる</button></header><img hidden alt="保管した写真"></dialog>
+  <div id="reference-status" role="status" aria-live="polite" hidden><span></span><button type="button" aria-label="閉じる">×</button></div>
+  <dialog id="office-pdf" aria-label="書類の控え"><header><strong></strong><a target="_blank" rel="noopener">別タブで開く</a><a download>ダウンロード</a><button type="button">閉じる</button></header><div class="pdf-pages" hidden></div><iframe hidden title="書類プレビュー" sandbox="allow-same-origin"></iframe><img hidden alt="保管した写真"></dialog>
   <span id="viewport-hud" aria-hidden="true" hidden></span>
-  <script src="./fleet-store.js?v=1c14f1d67efb7227" defer></script>
-  <script src="./office-store.js?v=1c14f1d67efb7227" defer></script>
-  <script src="./viewer.js?v=1c14f1d67efb7227" defer></script>
+  <script src="./viewer.js?v=8d9dd9861a3a61c8" defer></script>
 </body>
 </html>
