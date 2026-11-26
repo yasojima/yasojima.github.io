@@ -23,6 +23,7 @@ RETIRED = ('servicelife.app', 'googletagmanager.com', 'google-analytics.com',
            'tile.openstreetmap.org', 'serviceWorker.register', 'availability-query',
            'sukimakun-demo-availability', 'trycloudflare.com')
 MAX_BYTES = 128 * 1024 * 1024
+PRIVATE = re.compile(r'(?i)(?:AIza[\w-]{30,}|\b(?:sk|rk)_(?:live|test)_[\w]{10,}|\bgh[pousr]_[\w]{25,}|\bAKIA[0-9A-Z]{16}|-----BEGIN (?:RSA |EC )?PRIVATE KEY)')
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
@@ -37,6 +38,7 @@ class Inspector:
         self.links = set(policy['virtual_links'])
         self.seen = set()
         self.pdfs = set()
+        self.nodes = 0
 
     def code(self, text, label):
         if text.strip() and digest(text.strip().encode()) not in self.codes:
@@ -69,14 +71,16 @@ class Inspector:
         if posixpath.normpath(path).startswith('..') or path not in self.policy['files']:
             raise ValueError(label + ': unlisted resource ' + path)
 
-    def data_url(self, value, label):
+    def data_url(self, value, label, depth=0):
         header, sep, payload = value.partition(',')
         if not sep:
             raise ValueError(label + ': invalid data URL')
         data = base64.b64decode(payload, validate=True) if ';base64' in header else unquote(payload).encode()
-        self.binary(data, label)
+        self.binary(data, label, depth + 1)
 
-    def binary(self, data, label):
+    def binary(self, data, label, depth=0):
+        if depth > 20:
+            raise ValueError(label + ': nested binary limit')
         if len(data) > MAX_BYTES:
             raise ValueError(label + ': decoded content too large')
         if data.startswith(b'%PDF-'):
@@ -101,7 +105,7 @@ class Inspector:
                 text = data.decode('utf-8')
             except UnicodeError as exc:
                 raise ValueError(label + ': unrecognized embedded binary') from exc
-            self.text(text, label + '/decoded', 1)
+            self.text(text, label + '/decoded', depth + 1)
 
     def text(self, text, label, depth):
         if depth > 20:
@@ -113,6 +117,8 @@ class Inspector:
         for term in RETIRED:
             if term in text:
                 raise ValueError(label + ': retired integration ' + term)
+        if PRIVATE.search(text):
+            raise ValueError(label + ': credential-shaped content (value withheld)')
         stripped = text.lstrip()
         if stripped.startswith(('{', '[', '"')):
             try:
@@ -126,11 +132,11 @@ class Inspector:
             Markup(self, label).feed(text)
             return
         if text.startswith('data:'):
-            self.data_url(text, label)
+            self.data_url(text, label, depth + 1)
         elif len(text) >= 16 and len(text) % 4 == 0 and re.fullmatch(r'[A-Za-z0-9+/]*={0,2}', text):
             decoded = base64.b64decode(text, validate=True)
             if decoded.startswith((b'%PDF-', b'PK\x03\x04', b'\x89PNG', b'\xff\xd8')):
-                self.binary(decoded, label)
+                self.binary(decoded, label, depth + 1)
             else:
                 try:
                     plain = decoded.decode('utf-8')
@@ -146,8 +152,33 @@ class Inspector:
     def walk(self, value, label, depth=0, key=''):
         if depth > 20:
             raise ValueError(label + ': nested data limit')
+        self.nodes += 1
+        if self.nodes > 2000000:
+            raise ValueError(label + ': object count limit')
         if isinstance(value, dict):
+            mime = str(value.get('contentType', value.get('content_type', ''))).split(';')[0].lower()
+            if mime == 'application/pdf' and value.get('bodyBase64'):
+                try:
+                    data = base64.b64decode(value['bodyBase64'], validate=True)
+                except Exception as exc:
+                    raise ValueError(label + ': invalid PDF Base64') from exc
+                validate_pdf(data)
+                self.pdfs.add(digest(data))
+            if mime == 'text/csv' and isinstance(value.get('body'), str):
+                import csv
+                for row in csv.reader(io.StringIO(value['body'].lstrip('\ufeff'))):
+                    if any(re.match(r'^[\s]*[=+@]', cell) for cell in row):
+                        raise ValueError(label + ': active CSV cell')
             for k, v in value.items():
+                if k in {'pdf', 'pdfBase64'} and isinstance(v, str) and v:
+                    try:
+                        data = base64.b64decode(v, validate=True)
+                    except Exception as exc:
+                        raise ValueError(label + ': invalid PDF field') from exc
+                    validate_pdf(data)
+                    self.pdfs.add(digest(data))
+                if re.search(r'(?:secret|token|api.?key|credential|password)', str(k), re.I) and isinstance(v, str) and re.fullmatch(r'[a-zA-Z0-9_/+=.\-]{24,}', v):
+                    raise ValueError(label + ': credential field (value withheld)')
                 if k in {'scripts', 'styles'} and isinstance(v, dict):
                     for name, source in v.items():
                         self.code(source, label + '/' + k + '/' + name)

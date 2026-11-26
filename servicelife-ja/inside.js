@@ -16,6 +16,9 @@ function startServiceLifeReference(config){
     send("route",{url:url.pathname+url.search+url.hash,replace});
   }
   const originalOpen=window.open.bind(window);
+  const documentBlobs=new Map(),createBlobUrl=URL.createObjectURL.bind(URL),revokeBlobUrl=URL.revokeObjectURL.bind(URL);
+  URL.createObjectURL=blob=>{const url=createBlobUrl(blob);if(/^(?:application\/pdf|text\/csv|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet)(?:;|$)/i.test(blob.type))documentBlobs.set(url,blob);return url;};
+  URL.revokeObjectURL=url=>{documentBlobs.delete(url);return revokeBlobUrl(url);};
   function openView(value,target,features){
     const url=new URL(value,current);
     if(url.origin!==sourceOrigin){const local=new URL(config.publicBase);return (url.protocol==="blob:"||(url.origin===local.origin&&url.pathname.startsWith(new URL("./",local).pathname)))?originalOpen(url.href,target,features):null;}
@@ -343,8 +346,9 @@ function startServiceLifeReference(config){
   };
   Object.defineProperty(window,"fetch",{value:window.fetch,writable:false,configurable:false});
   addEventListener("click",event=>{
-    const link=event.target.closest?.("a[href]");if(!link)return;
+    const link=event.target.closest?.("a[href],area[href]");if(!link)return;
     const href=link.getAttribute("href");if(!href)return;
+    if(documentBlobs.has(href)){event.preventDefault();event.stopImmediatePropagation();send('file',{blob:documentBlobs.get(href),filename:link.download||'document',download:link.hasAttribute('download')});return;}
     if(href.startsWith("#")){event.preventDefault();return;}
     if(href.startsWith("javascript:"))return;
     let url;try{url=new URL(href,current)}catch{return;}

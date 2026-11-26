@@ -6,13 +6,31 @@ let frame=document.querySelector("#screen"),catalog,active,sequence=0;
 const notice=document.querySelector("#notice");
 const referenceStatus=document.querySelector("#reference-status");
 const inFlight=new Map();
+const fixedReads=new Map([
+  ['catalog.json','json'],['pdf-previews.json','json'],['brand.svg','text'],
+  ['inside.js','text'],['tech-map.js','text'],['language.bin','bundle'],
+  ['programs.bin','bundle'],['contract-documents.bin','bundle'],
+]);
+function checkedRead(name,type) {
+  const mode=type||'bundle';
+  const group=name.match(/^screens\/([a-f0-9]+)\.bin$/);
+  const role=name.match(/^api\/(company_admin|csr|technician)\.bin$/);
+  const allowed=fixedReads.get(name)===mode||mode==='bundle'&&(role||group&&catalog&&Object.values(catalog.files).includes(group[1]));
+  if(!allowed)throw Error('Unlisted distribution file');
+  const url=new URL(name,base);url.search=assetVersion;
+  if(url.origin!==base.origin||url.pathname!==base.pathname+name||url.hash||!/^(?:|\?v=[a-f0-9]+)$/.test(url.search))throw Error('Invalid distribution URL');
+  return url;
+}
 async function read(name,type) {
+  const url=checkedRead(name,type);
   if(!inFlight.has(name)){
     const request=(async()=>{
-      const url=new URL(name,base);
-      url.search=assetVersion;
-      const r=await fetch(url,{cache:"no-cache"});
+      const r=await fetch(url,{cache:"no-cache",redirect:"error",credentials:"omit",referrerPolicy:"no-referrer"});
       if(!r.ok)throw Error(name+" ("+r.status+")");
+      if(r.url!==url.href||r.redirected||!['basic','cors'].includes(r.type))throw Error('Unexpected distribution response');
+      const mime=(r.headers.get('Content-Type')||'').split(';')[0].trim().toLowerCase();
+      const valid=type==='json'?mime==='application/json':type==='text'?(name.endsWith('.svg')?mime==='image/svg+xml':['text/javascript','application/javascript'].includes(mime)):['application/octet-stream','application/gzip'].includes(mime);
+      if(!valid)throw Error('Unexpected distribution content type');
       if(type==="text")return r.text();
       if(type==="json")return r.json();
       const bytes=new Uint8Array(await r.arrayBuffer());
@@ -256,7 +274,7 @@ function render(record,programs,language,inside,tech,place,brand){
   inline(doc.body,"(function(terms){"+language.localizer+"})("+safeJson(language.terms)+");");
   const meta=doc.createElement("meta");meta.httpEquiv="Content-Security-Policy";
   meta.content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' "+resources+" "+base.href+"query-support.js "+base.href+"offline-map.js "+base.href+"privacy-guard.js "+base.href+"assets/; style-src 'unsafe-inline' "+resources+" "+base.href+"assets/; img-src data: blob: "+base.href+"; font-src data: "+resources+"; connect-src 'none'; object-src 'none'; form-action 'none'; worker-src 'none'; frame-src 'none'; base-uri 'none'";
-  const guard=doc.createElement("script");guard.src=base.href+"privacy-guard.js"+assetVersion;doc.head.prepend(guard);
+  const guard=doc.createElement("script");guard.src=base.href+"privacy-guard.js"+assetVersion;guard.setAttribute('data-saved-api','');doc.head.prepend(guard);
   doc.head.prepend(meta);doc.title=doc.title.replace(/ServiceLife/gi,"SUKIMAKUN");doc.documentElement.lang="ja";
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }

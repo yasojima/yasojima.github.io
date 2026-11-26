@@ -37,7 +37,11 @@ def verify(stage):
     for name, sha in allowed.items():
         assert_file(stage, name, sha)
     result = check_distribution(stage / 'servicelife-ja')
-    return {'publishedFiles': len(actual), 'distribution': result}
+    manifest = [{'path': name, 'size': (stage/name).stat().st_size, 'sha256': allowed[name]} for name in sorted(allowed)]
+    encoded = (json.dumps(manifest, ensure_ascii=False, indent=2)+'\n').encode()
+    stage.with_name(stage.name+'.manifest.json').write_bytes(encoded)
+    return {'publishedFiles': len(actual), 'bytes': sum(x['size'] for x in manifest),
+            'manifestSha256': hashlib.sha256(encoded).hexdigest(), 'distribution': result}
 
 def stage(repo, output):
     allowed = expected()

@@ -42,6 +42,10 @@ async function main(){
     pass('beacon',navigator.sendBeacon(ext,'SUKIMAKUN_GATE_FAKE_20261127')===false);
     pass('location',typeof navigator.geolocation==='undefined');
     pass('service worker',typeof navigator.serviceWorker==='undefined');
+    for(const name of ['fetch','XMLHttpRequest','open']){
+     const original=window[name];try{window[name]=()=>null}catch{}
+     pass(name+' cannot be overwritten',window[name]===original&&Object.getOwnPropertyDescriptor(window,name).writable===false);
+    }
     for(const name of ['XMLHttpRequest','WebSocket','EventSource','WebTransport','RTCPeerConnection','Worker','SharedWorker']){
      let blocked=false;try{new window[name](ext)}catch(e){blocked=e.name==='SecurityError'}pass(name,blocked);
     }
@@ -49,6 +53,7 @@ async function main(){
      let denied=false;try{denied=(await fetch(url)).status===403}catch(e){denied=e.name==='SecurityError'}pass('fetch '+url,denied);
     }
     let denied=false;try{denied=(await fetch('/api/v1/customers/',{method:'POST',body:'SUKIMAKUN_GATE_FAKE_20261127'})).status===403}catch(e){denied=e.name==='SecurityError'}pass('save',denied);
+    let absent=false;try{absent=(await fetch('/api/v1/not-captured-audit/')).status===404}catch(e){absent=e.name==='SecurityError'}pass('unrecorded GET',absent);
     pass('popup',window.open(ext)===null);
     const form=document.createElement('form');form.action=ext;document.body.append(form);let stopped=false;try{form.submit()}catch(e){stopped=e.name==='SecurityError'}pass('form',stopped);form.remove();
     const meta=document.head.querySelector('meta[http-equiv="Content-Security-Policy"]');
@@ -62,6 +67,29 @@ async function main(){
   await page.goto('about:blank');await page.goto(base+'#/customers/');await frame().locator('#search').waitFor();
   await frame().locator('#search').fill(marker);await page.waitForTimeout(700);
   await frame().locator('#search').fill('');
+  const readChecks=await page.evaluate(async()=>{
+   const results=[];
+   for(const name of ['//audit.example.invalid/x','../contact/index.html','/contact/','screens/not-recorded.bin','catalog.json?other=1','https://reference.invalid/api/v1/customers/']){
+    let denied=false;try{await read(name,'json')}catch{denied=true}results.push({name,ok:denied});
+   }
+   return results;
+  });
+  for(const r of readChecks)check('parent read rejects '+r.name,r.ok);
+  const linkChecks=await frame().locator('body').evaluate(()=>{
+   const results=[];
+   for(const tag of ['a','area'])for(const href of ['/\\audit.example.invalid/x','/%5caudit.example.invalid/x','//audit.example.invalid/x','https:\n//audit.example.invalid/x','https://yasojima.github.io/contact/']){
+    const element=document.createElement(tag);document.body.append(element);element.setAttribute('href',href);element.target='_blank';element.setAttribute('ping','https://audit.example.invalid/ping');
+    const event=new MouseEvent('click',{bubbles:true,cancelable:true});element.dispatchEvent(event);
+    results.push({name:tag+' '+href,ok:event.defaultPrevented});element.remove();
+   }
+   const unknown=URL.createObjectURL(new Blob(['<script>fetch("//audit.example.invalid/")</script>'],{type:'text/html'}));
+   const a=document.createElement('a');a.href=unknown;document.body.append(a);const event=new MouseEvent('click',{bubbles:true,cancelable:true});a.dispatchEvent(event);results.push({name:'unmanaged blob link',ok:event.defaultPrevented});a.remove();URL.revokeObjectURL(unknown);
+   return results;
+  });
+  for(const r of linkChecks)check('immediate link guard '+r.name,r.ok);
+  const beforeHash=await page.evaluate(()=>location.hash);
+  await page.evaluate(()=>window.postMessage({application:'servicelife-jp',type:'route',url:'/reports/'},'*'));
+  await page.waitForTimeout(100);check('unrelated window message rejected',await page.evaluate(()=>location.hash)===beforeHash);
   await frame().locator('body').evaluate(async()=>{
    const targets=['https://audit.example.invalid/SUKIMAKUN_GATE_FAKE_20261127',location.ancestorOrigins[0]+'/contact/SUKIMAKUN_GATE_FAKE_20261127'];
    window.__gateCsp=[];document.addEventListener('securitypolicyviolation',e=>window.__gateCsp.push(e.blockedURI));
@@ -73,6 +101,17 @@ async function main(){
   check('no forbidden network requests',attempts.length===0);
   check('no writes',requests.every(r=>['GET','HEAD'].includes(r.method)));
   await context.close();
+  // A server redirect must be rejected before following it, not by our abort handler.
+  const redirectContext=await browser.newContext({serviceWorkers:'block'});let redirectAttempts=0;
+  await redirectContext.route('**/*',r=>{
+   const u=new URL(r.request().url());
+   if(u.origin!==new URL(base).origin||!u.pathname.startsWith(new URL(base).pathname)){redirectAttempts++;return r.abort();}
+   if(u.pathname.endsWith('/catalog.json'))return r.fulfill({status:302,headers:{Location:'https://audit.example.invalid/redirect'}});
+   return r.continue();
+  });
+  const redirectPage=await redirectContext.newPage();await redirectPage.goto(base+'#/customers/');
+  await redirectPage.locator('#notice').filter({hasText:'表示できませんでした'}).waitFor();
+  check('distribution redirect refused before external request',redirectAttempts===0);await redirectContext.close();
   // Prove browser tests also catch comment-only guard, independently of hashes.
   if(!process.env.BASE){
    const broken=await browser.newContext();let blockedAttempts=0;
@@ -88,7 +127,7 @@ async function main(){
   }
  } catch(e){failures.push(e.stack);process.exitCode=1;}
  finally{await browser.close();if(server)await new Promise(r=>server.close(r));}
- const result={base,checks,attempts,requests:requests.length,failures};
+ const result={base,browser:browser.version(),checks,attempts,requests:requests.length,failures};
  console.log(JSON.stringify(result,null,2));if(failures.length)process.exitCode=1;
 }
 main().catch(e=>{console.error(e);process.exitCode=1});

