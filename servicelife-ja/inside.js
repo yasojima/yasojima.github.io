@@ -15,6 +15,18 @@ function startServiceLifeReference(config){
     if(url.origin!==sourceOrigin)return;
     send("route",{url:url.pathname+url.search+url.hash,replace});
   }
+  const originalOpen=window.open.bind(window);
+  function openView(value,target,features){
+    const url=new URL(value,current);
+    if(url.origin!==sourceOrigin)return originalOpen(url.href,target,features);
+    if(url.pathname.startsWith('/api/')){
+      fetch(url.href).then(async result=>{if(result.ok)send('file',{blob:await result.blob(),filename:url.pathname.split('/').filter(Boolean).slice(-2).join('-')+'.pdf'});});
+      return null;
+    }
+    const app=new URL(config.publicBase);app.hash=(config.role==='company_admin'?'':config.role)+url.pathname+url.search+url.hash;
+    return originalOpen(app.href,target||'_blank',features);
+  }
+  window.open=openView;
   window.SL_VIEW={route:config.route,word,translate:async values=>values.map(word),location:locationView,history:historyView,navigate};
   // Keep the original marker/route UI and its recorded coordinates. Only the
   // map renderer is local, so no upstream Google API key is reused.
@@ -289,6 +301,7 @@ function startServiceLifeReference(config){
     const link=number=>{if(number<1||number>Math.ceil(total/size))return null;const next=new URL(url);next.searchParams.set("page",number);return next.pathname+next.search};
     return {...matching[0][1],count:total,results:values.slice((page-1)*size,page*size),next:link(page+1),previous:link(page-1)};
   }
+  let querySupport;
   window.fetch=async(input,options={})=>{
     const method=String(options.method||input?.method||"GET").toUpperCase();
     if(!["GET","HEAD"].includes(method))return response({detail:"This action is disabled in the read-only demo.",error:"This action is disabled in the read-only demo."},403);
@@ -312,6 +325,16 @@ function startServiceLifeReference(config){
     const day=resourceDay(url);if(day)return response(day);
     if(config.route==="/customers/"&&url.pathname==="/api/v1/customers/"&&variants.length)return response(customerPage(variants,url));
     const page=capturedCollection(variants,url);if(page)return response(page);
+    if(url.pathname==='/api/v1/customers/'&&variants.length&&knownQuery(url,['search','customer_type','ordering']))return response(customerPage(variants,url));
+    if(['/api/v1/chat-rooms/channels/dm-candidates/'].includes(url.pathname)&&knownQuery(url,['q'])){
+      const sets=variants.filter(([key])=>!key.searchParams.get('q'));
+      if(sets.length)return response(searchIn(sets[0][1],url.searchParams));
+    }
+    if(url.pathname==='/api/v1/chat-rooms/messages/'&&knownQuery(url,['channel','before','after'])){
+      const original=variants.find(([key])=>key.searchParams.get('channel')===url.searchParams.get('channel')&&!key.searchParams.has('after')&&!key.searchParams.has('before'));
+      if(original){const value=original[1],after=url.searchParams.get('after'),before=url.searchParams.get('before');return response({...value,results:(value.results||[]).filter(row=>(!after||row.created_at>after)&&(!before||row.created_at<before))});}
+    }
+    if(window.createReferenceQueries){querySupport ||= createReferenceQueries(config);const result=await querySupport(url);if(result)return result;}
     // Missing captures remain visible as failures instead of fabricated records or modal contents.
     console.warn("Uncaptured ServiceLife GET",url.pathname+url.search);
     send("missing-get",{url:url.pathname+url.search});
@@ -330,7 +353,7 @@ function startServiceLifeReference(config){
         const blob=await result.blob();
         const extension=blob.type.includes('pdf')?'pdf':blob.type.includes('spreadsheet')?'xlsx':blob.type.includes('csv')?'csv':'html';
         const label=blob.type.includes('pdf')&&url.pathname.includes('/contracts/contracts/')?'契約書.pdf':blob.type.includes('pdf')&&url.pathname==='/api/v1/billing/reports/revenue/'?'売上レポート.pdf':url.pathname.split('/').filter(Boolean).slice(-2).join('-')+'.'+extension;
-        send('file',{blob,filename:link.download||label,download:link.hasAttribute('download')});
+        send('file',{blob,filename:link.download||label,download:link.hasAttribute('download')||['csv','xlsx'].includes(extension)});
       }).catch(error=>console.error(error));
       return;
     }

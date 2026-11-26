@@ -234,12 +234,13 @@ function render(record,programs,language,inside,tech,place,brand){
     const leaflet=doc.createElement("link");leaflet.rel="stylesheet";leaflet.href=resources+"leaflet/leaflet.css";doc.head.append(leaflet);
     const script=doc.createElement("script");script.src=resources+"leaflet/leaflet.js";doc.head.prepend(script);
   }
-  const conf={...place,mode:"active",captured:record.captured,terms:language.terms,fixtures:record.fx,responses:record.responses||{},routes};
+  const queries=doc.createElement("script");queries.src=base.href+"query-support.js"+assetVersion;doc.head.prepend(queries);
+  const conf={...place,mode:"active",pdfLibUrl:resources+"pdf-lib-1.17.1.min.js",publicBase:new URL(location.href).href,captured:record.captured,terms:language.terms,fixtures:record.fx,responses:record.responses||{},routes};
   inline(doc.head,"("+inside+")("+safeJson(conf)+");",true);
   inline(doc.head,"(function(terms){"+language.charts+"})("+safeJson(language.terms)+");");
   inline(doc.body,"(function(terms){"+language.localizer+"})("+safeJson(language.terms)+");");
   const meta=doc.createElement("meta");meta.httpEquiv="Content-Security-Policy";
-  meta.content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' "+resources+" "+base.href+"assets/; style-src 'unsafe-inline' "+resources+" "+base.href+"assets/; img-src data: blob: "+base.href+" https://tile.openstreetmap.org; font-src data: "+resources+"; connect-src 'none'; object-src 'none'; form-action 'none'; frame-src 'none'; base-uri 'none'";
+  meta.content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' "+resources+" "+base.href+"query-support.js "+base.href+"assets/; style-src 'unsafe-inline' "+resources+" "+base.href+"assets/; img-src data: blob: "+base.href+" https://tile.openstreetmap.org; font-src data: "+resources+"; connect-src 'none'; object-src 'none'; form-action 'none'; frame-src 'none'; base-uri 'none'";
   doc.head.prepend(meta);doc.documentElement.lang="ja";
   return "<!doctype html>\n"+doc.documentElement.outerHTML;
 }
@@ -290,6 +291,7 @@ addEventListener("message",event=>{
     location.assign(url.href);
     return;
   }
+  if(message.type==="ready"){frame.hidden=false;return;}
   if(message.type==="missing-get"){
     referenceStatus.querySelector('span').textContent='この条件のデータは、確認用ページに含まれていません。';
     referenceStatus.hidden=false;return;
