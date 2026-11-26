@@ -31,7 +31,8 @@ const home={company_admin:"/business-manager/",csr:"/csr-dashboard/",technician:
 const samples={company_admin:"demo_owner",csr:"demo_csr",technician:"demo_tech_kevin"};
 const safeJson=value=>JSON.stringify(value).replace(/</g,"\\u003c").replace(/\u2028/g,"\\u2028").replace(/\u2029/g,"\\u2029");
 const scriptText=s=>s.replace(/<\/script/gi,"<\\/script");
-const common=Promise.all([read("catalog.json","json"),read("programs.bin"),read("language.bin"),read("inside.js","text"),read("tech-map.js","text"),read("brand.svg","text")]);
+const catalogRequest = read("catalog.json", "json");
+const workspaceFiles = { "/routes/": "route-workspace", "/csr-dashboard/": "service-workspace" };
 function parseHash(){
   const hash=location.hash.slice(1),match=hash.match(/^(?:(company_admin|csr|technician))?(\/[^#]*)/);
   const url=new URL(location.href),person=catalog.accounts?.[url.searchParams.get("account")];
@@ -93,6 +94,81 @@ async function reservationData(place,record){
   return {...record,fx:{...fixtures,...record.fx},responses:{...responses,...record.responses}};
 }
 function inline(parent,code,first=false){const node=parent.ownerDocument.createElement("script");node.textContent=scriptText(code);if(first)parent.prepend(node);else parent.append(node);}
+
+const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+})[character]);
+
+function workspaceUrl(role, route) {
+  const url = new URL(location.href);
+  url.hash = (role === "company_admin" ? "" : role) + route;
+  return url.href;
+}
+
+function renderWorkspace(place, record, language, brand) {
+  const workspace = workspaceFiles[place.route];
+  const routeView = place.route === "/routes/";
+  const title = routeView ? "当日の訪問ルート" : "顧客対応ダッシュボード";
+  const roleLabels = { company_admin: "会社管理者", csr: "顧客対応", technician: "担当スタッフ" };
+  const current = new URL(location.href);
+  const selectedAccount = catalog.accounts?.[current.searchParams.get("account")];
+  const account = selectedAccount?.role === place.role ? selectedAccount : catalog.accounts?.[samples[place.role]];
+  const viewerAsset = name => escapeHtml(new URL(name + assetVersion, base).href);
+  const localGroups = new Map();
+  for (const item of catalog.roles[place.role]) {
+    if (!localGroups.has(item.group)) localGroups.set(item.group, []);
+    localGroups.get(item.group).push(item);
+  }
+  const links = Object.fromEntries([
+    ...catalog.roles[place.role].map(item => item.route),
+    ...catalog.extra[place.role],
+  ].map(route => [route, workspaceUrl(place.role, route)]));
+  const menus = [...localGroups].map(([group, items], index) => {
+    const isOpen = index === 0 || items.some(item => item.route === place.route);
+    const rows = items.map(item => {
+      const label = language.terms[item.label] || item.label;
+      const selection = item.route === place.route ? ' aria-current="page"' : "";
+      return '<a href="' + escapeHtml(links[item.route]) + '"' + selection + ">" + escapeHtml(label) + "</a>";
+    }).join("");
+    return "<details" + (isOpen ? " open" : "") + "><summary>" + escapeHtml(language.terms[group] || group) + "</summary>" + rows + "</details>";
+  }).join("");
+  const roles = Object.entries(roleLabels).map(([key, label]) =>
+    '<option value="' + key + '"' + (key === place.role ? " selected" : "") + ">" + label + "</option>"
+  ).join("");
+  const data = Object.fromEntries(Object.entries(record.fx).filter(([key]) =>
+    /^\/api\/v1\/(scheduling|routing|customers|technicians|communications|tickets|job-types|users|work-schedules)(?:\/|\?|$)/.test(key)
+  ));
+  const config = { ...place, base: base.href, version: assetVersion, links, data, terms: language.terms };
+  const vendor = base.href + "lib/";
+  const csp = "default-src 'none'; script-src 'unsafe-inline' " + vendor + " " + base.href + workspace + ".js " +
+    base.href + "workspace-shell.js; style-src 'unsafe-inline' " + vendor + " " + base.href + workspace + ".css " +
+    base.href + "workspace-shell.css; img-src data: " + base.href + " https://tile.openstreetmap.org; font-src " +
+    vendor + "; base-uri 'none'; form-action 'none'; frame-src 'none'";
+  const maps = routeView
+    ? '<link rel="stylesheet" href="' + viewerAsset("lib/leaflet/leaflet.css") + '"><script src="' + viewerAsset("lib/leaflet/leaflet.js") + '"></script>'
+    : "";
+  const font = '<style>@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url("' +
+    vendor + 'webfonts/inter-latin.woff2") format("woff2")}</style>';
+
+  return '<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<meta http-equiv="Content-Security-Policy" content="' + escapeHtml(csp) + '"><title>' + title + '｜SUKIMAKUN</title>' +
+    font + '<link rel="stylesheet" href="' + viewerAsset("lib/css/fontawesome.min.css") + '">' +
+    '<link rel="stylesheet" href="' + viewerAsset("lib/css/solid.min.css") + '">' + maps +
+    '<link rel="stylesheet" href="' + viewerAsset("workspace-shell.css") + '"><link rel="stylesheet" href="' + viewerAsset(workspace + ".css") + '">' +
+    '</head><body><div class="sk-shell"><aside class="sk-shell-nav" id="sk-navigation">' +
+    '<div class="sk-shell-brand">' + brand + '</div><nav class="sk-shell-menu" aria-label="管理メニュー">' + menus + '</nav>' +
+    '<div class="sk-shell-account"><span class="sk-shell-account-name">' + escapeHtml(account?.name) + '</span>' +
+    '<button class="sk-shell-signout" type="button" aria-label="ログアウト" title="ログアウト"><i class="fas fa-sign-out-alt" aria-hidden="true"></i></button></div>' +
+    '</aside><button class="sk-shell-shade" type="button" aria-label="メニューを閉じる"></button>' +
+    '<div class="sk-shell-stage"><header class="sk-shell-top"><button class="sk-shell-menu-button" type="button" aria-expanded="false" aria-controls="sk-navigation" aria-label="メニュー">' +
+    '<i class="fas fa-bars" aria-hidden="true"></i>メニュー</button><span class="sk-shell-top-text">確認用デモ</span>' +
+    '<label class="sk-shell-role"><span>表示する役割</span><select aria-label="表示する役割">' + roles + '</select></label></header>' +
+    '<main class="sk-shell-main" data-sukimakun-workspace="' + workspace + '"></main></div></div>' +
+    '<script src="' + viewerAsset(workspace + ".js") + '"></script>' +
+    '<script src="' + viewerAsset("workspace-shell.js") + '"></script>' +
+    "<script>startSukimakunWorkspace(" + safeJson(config) + ");</script></body></html>";
+}
+
 function restoreSidebar(doc,brand,place){
   for(const header of doc.querySelectorAll(".sidebar-brand"))header.innerHTML=brand;
   for(const footer of doc.querySelectorAll(".sidebar-user")){
@@ -138,14 +214,26 @@ function render(record,programs,language,inside,tech,place,brand){
 async function openScreen(){
   const turn=++sequence;
   try{
-    const [c,programs,language,inside,tech,brand]=await common;catalog=c;
-    const place=parseHash(),groupId=c.files[place.role+"|"+place.captureRoute];
+    catalog = await catalogRequest;
+    const place=parseHash(),groupId=catalog.files[place.role+"|"+place.captureRoute];
     if(!groupId)throw Error("原本の取得ページがありません："+place.route);
-    const [group,roleApi]=await Promise.all([read("screens/"+groupId+".bin"),read("api/"+place.role+".bin")]);
+    const custom = Boolean(workspaceFiles[place.route]);
+    const [group,roleApi,language,brand]=await Promise.all([
+      read("screens/"+groupId+".bin"), read("api/"+place.role+".bin"),
+      read("language.bin"), read("brand.svg", "text"),
+    ]);
     const source=group[place.captureRoute];
-    const record=await reservationData(place,{...source,fx:{...roleApi.fx,...source.fx},responses:{...roleApi.responses,...source.responses}});
+    const record = { ...source, fx: { ...roleApi.fx, ...source.fx }, responses: { ...roleApi.responses, ...source.responses } };
+    let markup;
+    if (custom) markup = renderWorkspace(place, record, language, brand);
+    else {
+      const [programs, inside, tech, enriched] = await Promise.all([
+        read("programs.bin"), read("inside.js", "text"), read("tech-map.js", "text"), reservationData(place, record),
+      ]);
+      markup = render(enriched, programs, language, inside, tech, place, brand);
+    }
     if(turn!==sequence)return;
-    const next=frame.cloneNode(false);next.hidden=true;next.srcdoc=render(record,programs,language,inside,tech,place,brand);
+    const next=frame.cloneNode(false);next.hidden=true;next.srcdoc=markup;
     const old=frame;frame=next;active=place;old.after(next);old.remove();notice.hidden=true;referenceStatus.hidden=true;
     next.addEventListener("load",()=>{if(frame===next)next.hidden=false;},{once:true});
   }catch(error){if(turn===sequence)showNotice("表示できませんでした："+error.message);}
@@ -158,6 +246,15 @@ addEventListener("message",event=>{
     const url=new URL(location.href);url.searchParams.set("account",samples[role]);url.hash=targetHash(role,new URL(home[role],"https://demo.servicelife.app"));location.assign(url.href);return;
   }
   if(message?.application!=="servicelife-jp")return;
+  if (message.type === "workspace-role" && workspaceFiles[active.route]) {
+    const role = message.role;
+    if (!Object.hasOwn(home, role)) return;
+    const route = findRoute(role, new URL(active.route, "https://demo.servicelife.app")) ? active.route : home[role];
+    const url = new URL(workspaceUrl(role, route));
+    url.searchParams.set("account", samples[role]);
+    location.assign(url.href);
+    return;
+  }
   if(message.type==="missing-get"){
     referenceStatus.querySelector('span').textContent='この条件のデータは、確認用ページに含まれていません。';
     referenceStatus.hidden=false;return;
