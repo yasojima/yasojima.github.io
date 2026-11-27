@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "implementation": "independent",
-  "review": "2026-11-27: reviewed three role-navigation handler changes against retained viewer operations. No data, CSS, markup structure, library or connection capability changed. PC/mobile role navigation comparisons passed. Mandatory publication gates remain required.",
+  "review": "2026-11-27: reviewed literal ServiceLife to SUKIMAKUN replacement in one contract introduction. Local 455-route brand checks, contract search and PDF preview passed. All data, CSS, assets, logic and connection guards are unchanged. Mandatory publication checks remain required.",
   "files": {
     "index.html": "7c53c8e05e3f9bcfee36395ca2c9d18f90e6d9cc4c48fa79fb7a5c86b4f0f3c0",
     "brand.svg": "a925c818826626b8f99c57328c41d7b9470ef80e34dae3ba587cbbbb8522bff9",
@@ -137,7 +137,7 @@
     "data/document-d889125059917db860ba184eeeb8f0803956a9ca5b4ee9bced539b3297014cb0.json": "8dda4333438e0b23f427bfd75ab90feb41c7d4162a732913c14a047b128babb5",
     "src/app.js": "ff2be3fcf5e38ee76c1da3d15165acfd5e643e09716eb62c037c6bdbca4785fe",
     "src/ui/contracts-view.js": "0786379c46864639cae9e2a0282c9b5a3d5514bd07e84e6a2370b761d2a6ab74",
-    "src/ui/contract-documents-view.js": "ae1cc629413406baf80735a843188f2cffa33ffe2246041bed0fc86dca24417d",
+    "src/ui/contract-documents-view.js": "333350dfe7fd5699f6434d80bfe988e82bb8c5d7b650589ce25180789a1ba536",
     "src/ui/root-settings-dialogs.js": "b92f957d90e78cbd6f0650de1220d5ecd98abe2d8d79d05eafb3be2c00c5609a",
     "src/ui/inbox.css": "180ac5640e3f6868d00064aedddad6b73dab4a6209281f8ac08b9942532b1792",
     "src/ui/communications.css": "1765350ed0570166d5e5e70b1cef4db6847c1f547d5493119d58691593392e61",
@@ -265,7 +265,7 @@
     "src/domain/report-hub.js": "743ea8c99ecc07001f70b5dde942a59fd811148099a18cf8a4e607232228d24f",
     "src/domain/report-pdf.js": "7fd9c0edf893f3596f3db8f312dda93d0a7370df990f03a1ad6cf3f31da3debb",
     "src/domain/notifications.js": "592a4da2297863c59398c3f1153049863b9445b75485033c41df5b941d8dfc59",
-    "manifest.json": "1a019f2dedb938d67853896ded99b7a6106df0aa96c4579c5b71b71c3af2b7a7"
+    "manifest.json": "6614b81867f53095ffde053a22a98137a5cc76f6d54afd41bcd622adb53d3c1f"
   },
   "code_sha256": [
     "0517a22cbc9ed7cc48906b7a16ca12434d8cdcd80e49eb8d2e5fa06a1c857efa",
@@ -284,7 +284,6 @@
     "1eeab1cb779471a0b0aaa93dd91c2eb1aa537d696f01ab05ea9dabc55e8525a1",
     "1f9d9589cc7bacebb49aa5d6a5b25331ab84f5501096c112a188554205afac47",
     "23afcf13869df4d265aca893107512755b4285259928bbe908bddf8f3ed4437c",
-    "2588bbea1049e368642bd9b2966eac64707766cb56f6c91bbcafb5fb5bbe8895",
     "26486fa5e9c953e6dce85aa432a062f8603a828a6fa6577fb1cb09995256117d",
     "28cc4c13f9d517eeda7de420616bf40a66ce0f9f4fd2a2940bcecd578a04573c",
     "2ebc51f22f58ad3a3cf1c166f67e2773133d236ad702baa1386581142db6179d",
@@ -324,6 +323,7 @@
     "6f34139322a8e989537eeb74288bf60fb4f1b37884ee6d56f29b676112ab6bd6",
     "72a7d6f69d6f39541bf4bada02100edf413c18fbae1e94c6bb7b367e6b9f4cb3",
     "752b1f3c5d23373fc24debdfc9f81bd5aa114df02507f3aa956fa5046c4dcf88",
+    "758425450c43d6ab1ac76533984951dd0b458ea97d4ae1503fccdd11c2969256",
     "7592c7826525297dd93c032b9ecf15af962425bff9173b9a789c7cfcb0ee5b4d",
     "7592d3348f1f8ef90174976efe7c14b728e3d3b7e33ee56bd28037b7b4d4c469",
     "77b76fabf91825ce955e96d0b51eaa2a503c0c1a1020dd678b0e1b08efd9e06a",

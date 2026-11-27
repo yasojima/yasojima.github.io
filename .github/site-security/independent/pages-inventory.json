@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "reviewedCommit": "ddf93c34cd99769410de19b3f6a72f46a753ddef",
+  "reviewedCommit": "9794a42b58d18c605c6e91c5e23bdd200ec64182",
   "files": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "assets/css/2027problem/2027problem.css": "7ad7eff4a8c3ec908e33a14e62c55d700909a0a138c4aa833d68e220b79fdede",
@@ -825,7 +825,7 @@
     "servicelife-ja/data/document-d889125059917db860ba184eeeb8f0803956a9ca5b4ee9bced539b3297014cb0.json": "8dda4333438e0b23f427bfd75ab90feb41c7d4162a732913c14a047b128babb5",
     "servicelife-ja/src/app.js": "ff2be3fcf5e38ee76c1da3d15165acfd5e643e09716eb62c037c6bdbca4785fe",
     "servicelife-ja/src/ui/contracts-view.js": "0786379c46864639cae9e2a0282c9b5a3d5514bd07e84e6a2370b761d2a6ab74",
-    "servicelife-ja/src/ui/contract-documents-view.js": "ae1cc629413406baf80735a843188f2cffa33ffe2246041bed0fc86dca24417d",
+    "servicelife-ja/src/ui/contract-documents-view.js": "333350dfe7fd5699f6434d80bfe988e82bb8c5d7b650589ce25180789a1ba536",
     "servicelife-ja/src/ui/root-settings-dialogs.js": "b92f957d90e78cbd6f0650de1220d5ecd98abe2d8d79d05eafb3be2c00c5609a",
     "servicelife-ja/src/ui/inbox.css": "180ac5640e3f6868d00064aedddad6b73dab4a6209281f8ac08b9942532b1792",
     "servicelife-ja/src/ui/communications.css": "1765350ed0570166d5e5e70b1cef4db6847c1f547d5493119d58691593392e61",
@@ -953,6 +953,6 @@
     "servicelife-ja/src/domain/report-hub.js": "743ea8c99ecc07001f70b5dde942a59fd811148099a18cf8a4e607232228d24f",
     "servicelife-ja/src/domain/report-pdf.js": "7fd9c0edf893f3596f3db8f312dda93d0a7370df990f03a1ad6cf3f31da3debb",
     "servicelife-ja/src/domain/notifications.js": "592a4da2297863c59398c3f1153049863b9445b75485033c41df5b941d8dfc59",
-    "servicelife-ja/manifest.json": "1a019f2dedb938d67853896ded99b7a6106df0aa96c4579c5b71b71c3af2b7a7"
+    "servicelife-ja/manifest.json": "6614b81867f53095ffde053a22a98137a5cc76f6d54afd41bcd622adb53d3c1f"
   }
 }

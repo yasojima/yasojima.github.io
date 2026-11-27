@@ -7,7 +7,7 @@ export function contractDocumentsView(data){
  const search=el('input',{id:'document-search',type:'search'}),pdfOnly=el('input',{id:'document-pdf-only',type:'checkbox'}),count=el('p',{class:'documents-count'}),list=el('div',{class:'documents-list'}),detail=el('section',{class:'documents-detail'}),dialogs=new Set();
  let selected=data.records.find(r=>r.document)?.id||data.records[0]?.id,disposed=false;
  const node=el('section',{class:'contract-documents','data-contract-documents':''},
-  el('header',{class:'documents-intro'},el('a',{href:routeHash('csr','/contracts/'),text:'← 契約管理へ'}),el('h1',{text:'契約PDF・署名情報'}),el('p',{text:'ServiceLifeの顧客対応ロールで収録した契約 · '+japanTime(data.capturedAt)+'（日本時間）'})),
+  el('header',{class:'documents-intro'},el('a',{href:routeHash('csr','/contracts/'),text:'← 契約管理へ'}),el('h1',{text:'契約PDF・署名情報'}),el('p',{text:'SUKIMAKUNの顧客対応ロールで収録した契約 · '+japanTime(data.capturedAt)+'（日本時間）'})),
   el('div',{class:'documents-grid'},el('section',{class:'documents-catalog'},el('div',{class:'documents-controls'},el('label',{for:'document-search',text:'契約番号・契約名'}),search,el('label',{class:'documents-checkbox'},pdfOnly,'PDFを閲覧できる契約のみ'),count),list),detail));
  function render(){
   const query=search.value.trim().toLowerCase(),rows=data.records.filter(r=>(!pdfOnly.checked||r.document)&&[r.number,r.title,r.titleLabel,r.customer].some(s=>s.toLowerCase().includes(query)));
