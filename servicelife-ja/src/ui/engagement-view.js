@@ -1,4 +1,5 @@
 import {el,button,icon} from './elements.js';
+import {localPreviewEditor} from './local-preview-editor.js';
 export const engagementRoutes=['/marketing/','/satisfaction/','/reputation/','/analytics/dashboard/'];
 const titles={'/marketing/':'販促施策','/satisfaction/':'顧客満足度','/reputation/':'口コミ管理ダッシュボード','/analytics/dashboard/':'販促効果の分析'};
 const table=(data,empty='',style='')=>el('div',{class:'engagement-table '+style},el('table',{},el('thead',{},el('tr',{},data.columns.map(text=>el('th',{text})))),el('tbody',{},data.rows.length?data.rows.map(row=>el('tr',{},row.map(parts=>el('td',{},parts.map((text,i)=>el(i?'small':'span',{text})))))):el('tr',{},el('td',{colspan:data.columns.length,class:'engagement-empty',text:empty})))));
@@ -10,9 +11,7 @@ export function engagementView(data,path){
   const d=data.marketing;node.append(kpis(['キャンペーン一覧','送信したメール','開封済み','紹介','成約済み','顧客に付与したクレジット'].map((x,i)=>[x,(i===5?'$':'')+d.stats[i]]),'marketing-kpis'));
   const panel=(heading,cols,empty,...content)=>el('article',{class:'engagement-panel'},el('h3',{text:heading}),content,table({columns:cols,rows:[]},empty));
   node.append(panel('キャンペーン一覧',['名称','種類','対応状況','送信先','送信済み','開封済み','開封率','日付'],'広告キャンペーンはまだありません'),panel('新規開拓 （担当エリア内で、まだ取引がない相手への営業リスト）',['事業者','対応状況','メールアドレス','電話番号','郵便番号','接触回数','開封数・クリック数','ウェブサイト',''],'条件に一致する見込み客はいません',el('p',{class:'engagement-muted',text:'見込み客リストはまだありません。'}),el('div',{class:'engagement-filters'},d.fields.map(control))),panel('紹介',['紹介した方','紹介された方','電話番号','対応状況','クレジット','日付'],'紹介はまだありません'));
-  // The reviewed snapshot has no campaign dialog. Keep its visible behavior
-  // without carrying over the original null-element exception or any API call.
-  add=()=>{};
+  add=()=>localPreviewEditor('キャンペーンを作成',[{key:'name',label:'名称',required:true},{key:'channel',label:'種類',options:[['email','メール'],['sms','SMS']]},{key:'audience',label:'対象',options:[['all','すべての顧客'],['existing','利用経験のある顧客'],['leads','見込み客']]},{key:'message',label:'本文',type:'textarea',required:true}],values=>{const tbody=node.querySelector('.engagement-panel tbody');if(tbody.querySelector('.engagement-empty'))tbody.replaceChildren();tbody.append(el('tr',{},[values.name,values.channel==='email'?'メール':'SMS','下書き（確認用）',values.audience==='all'?'すべての顧客':values.audience==='existing'?'利用経験のある顧客':'見込み客',0,0,'—','—'].map(text=>el('td',{text}))));node.querySelector('.marketing-kpis strong').textContent=tbody.children.length;});
  }else if(path==='/satisfaction/'){
   const d=data.satisfaction;node.append(kpis([['回答',d.total_responses],['平均評価',Number(d.avg_rating).toFixed(1)+'/5'],['顧客推奨度（NPS）',d.nps],['他の人にも勧めたい',d.would_recommend_pct+'%'],['星5の口コミ',d.five_star_count]],'satisfaction-kpis'),table({columns:['お客様','担当スタッフ','評価','顧客推奨度（NPS）','おすすめ度','コメント','日付'],rows:[]},'アンケートの回答はまだありません。「管理 → 顧客満足度」でアンケートのひな形を設定してください。'));
  }else if(path==='/reputation/'){

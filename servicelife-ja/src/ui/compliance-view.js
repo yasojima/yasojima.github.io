@@ -1,5 +1,7 @@
 import {el,button,icon} from './elements.js';
 import {complianceControls,addLicense} from './compliance-controls.js';
+import {localReportDocument} from './local-report-document.js';
+import {reportExamples,filterReport} from '../domain/compliance-report.js';
 import {reportCopy} from './compliance-content.js';
 const link=(path,text)=>el('a',{href:'#'+path},text);
 const table=(heads,rows)=>el('div',{class:'compliance-table-scroll'},el('table',{},el('thead',{},el('tr',{},heads.map(text=>el('th',{text})))),el('tbody',{},rows)));
@@ -22,10 +24,12 @@ export function complianceView(snapshot,path){
   node.append(el('div',{class:'compliance-summary'},(license?['期限切れ','14日以内','15〜30日','31〜60日']:['在庫切れ','基準値の50％未満','基準値の75％未満','基準値以下']).map(label=>el('article',{},el('strong',{text:'0'}),el('span',{text:label})))),el('div',{class:'compliance-empty'},icon('shield-alt'),el('p',{text:license?'60日以内に更新期限を迎える資格はありません。':'発注点を下回った薬剤はありません。'})));
  }else if(kind==='audit-log'){
   title='法令関連レポートの作成履歴';titleIcon='history';extra=link('/admin-tools/audit-log/','顧客・スタッフ・予約などの変更履歴');extra.className='compliance-summary-link';
-  node.append(el('div',{class:'compliance-callout'},'このページには、作成済みの ',el('strong',{text:'州への法令対応報告書'}),' が表示されます。顧客・ユーザー・訪問先・スタッフ・営業所ごとの編集記録を確認するには、こちらを開いてください： ',link('/admin-tools/audit-log/','変更履歴'),'.'),el('form',{class:'compliance-audit-filters',onsubmit:e=>e.preventDefault()},c.field(snapshot.audit.fields,'report_type','報告書の種類'),c.field(snapshot.audit.fields,'start','対象期間の開始日（この日以降）'),c.field(snapshot.audit.fields,'end','対象期間の終了日（この日以前）'),el('button',{type:'submit',class:'primary'},icon('filter'),' 絞り込み')),table(['日時','報告書の種類','対象期間','作成者','行数','SHA-256ハッシュ値'],snapshot.audit.rows.map(r=>el('tr',{},cell(r.timestamp),cell(el('span',{class:'compliance-report-kind',text:r.report})),cell(r.period),cell(r.actor),cell(r.count),el('td',{title:r.digest},r.digestLabel)))),el('div',{class:'compliance-pages'},button('« 前へ',()=>{},{disabled:true}),el('span',{text:'全1ページ中1ページ'}),button('次へ »',()=>{},{disabled:true})));
+  const result=el('div'),status=el('p',{role:'status'});
+  const draw=()=>{const selected=c.inputs.report_type.selectedOptions[0],label=selected?.label||'',start=c.inputs.start.value,end=c.inputs.end.value;const rows=snapshot.audit.rows.filter(r=>(!selected.value||r.report===label)&&(!start||r.timestamp.slice(0,10)>=start)&&(!end||r.timestamp.slice(0,10)<=end));status.textContent='該当 '+rows.length+'件';result.replaceChildren(table(['日時','報告書の種類','対象期間','作成者','行数','SHA-256ハッシュ値'],rows.length?rows.map(r=>el('tr',{},cell(r.timestamp),cell(r.report),cell(r.period),cell(r.actor),cell(r.count),el('td',{title:r.digest},r.digestLabel))):[el('tr',{},el('td',{colspan:6,text:'条件に一致する作成履歴はありません。'}))]));};
+  node.append(el('div',{class:'compliance-callout'},'報告書の出力履歴です。',link('/admin-tools/audit-log/','顧客・スタッフ・予約の変更履歴')),el('form',{class:'compliance-audit-filters',onsubmit:e=>{e.preventDefault();draw()}},c.field(snapshot.audit.fields,'report_type','報告書の種類'),c.field(snapshot.audit.fields,'start','対象期間の開始日（この日以降）'),c.field(snapshot.audit.fields,'end','対象期間の終了日（この日以前）'),el('button',{type:'submit',class:'primary'},icon('filter'),' 絞り込み')),status,result);draw();
  }else{
   const copy=reportCopy[kind],data=snapshot.reports[kind];if(!copy||!data)throw new Error('未対応の報告書です。');title=copy.title;node.classList.add('compliance-report');
-  const form=el('form',{class:'compliance-report-card',onsubmit:e=>e.preventDefault()},el('h2',{text:'レポートを作成'}),el('p',{class:'compliance-report-intro',text:copy.intro})),grid=el('div',{class:'compliance-report-grid'}),radios=Object.keys(data.fields).filter(k=>data.fields[k].type==='radio');
+  const form=el('form',{class:'compliance-report-card',onsubmit:exportLocal},el('h2',{text:'レポートを作成'}),el('p',{class:'compliance-report-intro',text:copy.intro})),grid=el('div',{class:'compliance-report-grid'}),radios=Object.keys(data.fields).filter(k=>data.fields[k].type==='radio');
   for(const [key,d]of Object.entries(data.fields)){if(d.type==='radio')continue;const label=d.name==='start'?'開始日':d.name==='end'?'終了日':d.name==='year'?'年':d.name==='quarter'?'四半期':key.includes('-tech')?'担当スタッフ（任意）':key.includes('-cust')?'顧客（任意）':'製品（任意）';const field=c.field(data.fields,key,label);grid.append(field);
    if(key==='pdax-cust-q'){
     const input=c.inputs[key],menu=el('div',{class:'compliance-search-options',role:'listbox',hidden:true}),wrap=el('div',{class:'compliance-search-wrap'},input,menu);field.append(wrap);
@@ -35,6 +39,12 @@ export function complianceView(snapshot,path){
    }
   }
   if(radios.length)grid.append(el('div',{class:'compliance-field'},el('span',{text:'ファイル形式'}),el('div',{class:'compliance-formats'},radios.map(key=>{const d=data.fields[key];return el('label',{},el('input',{type:'radio',name:d.name,value:d.value,checked:d.checked}),d.value==='xlsx'?' Excelファイル（XLSX）':' '+d.value.toUpperCase());}))));
+  const examples=reportExamples(snapshot,kind),status=el('p',{role:'status',class:'compliance-report-intro',text:'操作確認用の架空データ3件。条件に合う見本を、この端末で帳票にします。'});
+  async function exportLocal(event){
+   event.preventDefault();const values={};for(const [key,input] of Object.entries(c.inputs)){const name=data.fields[key].name;values[name||key]=input.value;if(key.includes('-tech'))values.technician_id=input.value;if(key.includes('-cust'))values.customer_id=input.dataset.selectedId||input.value;if(key.includes('-prod'))values.product_id=input.value;}
+   try{const result=filterReport(examples,values),format=form.querySelector('input[name="format"]:checked')?.value||'csv';status.textContent='対象 '+result.rows.length+'件（操作確認用の見本）';await localReportDocument({title:copy.title,filename:'sukimakun-'+kind.replaceAll('/','-'),columns:['記録ID','使用日','担当スタッフ','お客様','製品（見本）','数量（L）'],rows:result.rows.map(r=>[r.id,r.date,r.staff,r.customer,r.product,r.quantity]),summary:['対象期間: '+(result.start||'指定なし')+' - '+(result.end||'指定なし'),'対象 '+result.rows.length+'件'],format});}catch(error){status.textContent=error.message;}
+  }
+  form.append(status);
   form.append(grid,el('footer',{},el('button',{type:'submit',class:'primary'},icon('download'),' '+(radios.length?'レポートをダウンロード':'CSVをダウンロード'))));node.append(form,...copy.notes.map(([heading,text])=>el('article',{class:'compliance-report-note'},el('p',{},el('strong',{text:heading}),' '+text))));
  }
  return {title,titleIcon,node,headerExtra:extra,headerClass:'compliance-header',mount:c.mount,dispose(){c.dispose();cleanups.forEach(fn=>fn());}};

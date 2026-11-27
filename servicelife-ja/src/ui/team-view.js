@@ -1,6 +1,6 @@
 import {el,button,icon} from './elements.js';
 const blocked='This action is disabled in the read-only demo.';
-export function teamView(data){
+export function teamView(data,bookings=[]){
  const node=el('section',{class:'team-content','data-team':''});let modal=null;
  const initials=name=>name.split(' ').map(x=>x[0]).join('');
  function status(person){
@@ -18,7 +18,7 @@ export function teamView(data){
     if(!restore)body.append(row('Effective at (blank = now)',el('input',{id:'lc_eff',type:'datetime-local',value:state.effective,oninput:e=>state.effective=e.target.value})));
     else{body.append(el('b',{text:'What to restore?'}),...[['restore_all','Restore everything (re-assign released appointments)'],['cherry_pick','Cherry-pick (review past changes — manual ID list)'],['clean_slate','Clean slate (restore access only)']].map(([value,label])=>el('label',{class:'team-radio'},el('input',{type:'radio',name:'lc_mode',value,checked:state.restore===value,onchange:()=>{state.restore=value;draw()}}),' '+label)))}
     footer.append(button('キャンセル',close));
-   }else if(step===1){body.append(el('div',{},['Future appointments: undefined','Open time entries: undefined','Open invoices: undefined','Equipment assigned: undefined','Active licenses: undefined','Active sessions: undefined','SIP active: いいえ','Push tokens: undefined'].map(text=>el('div',{text}))));footer.append(button('← Back',()=>{step--;if(step===0)Object.assign(state,{target:'inactive',reason:'parental_leave',text:'',effective:''});draw()}))}
+   }else if(step===1){body.append(el('div',{},['対象日以降の予約: '+bookings.filter(b=>b.staffId===person.id&&b.startsAt.slice(0,10)>=(state.effective?.slice(0,10)||'2026-11-26')).length+'件','勤務記録・請求書・貸与品・資格：この画面には影響集計用の記録がありません。','ログインセッション・内線・通知端末：本番の接続はありません。'].map(text=>el('div',{text}))));footer.append(button('← Back',()=>{step--;if(step===0)Object.assign(state,{target:'inactive',reason:'parental_leave',text:'',effective:''});draw()}))}
    else if(restore){body.append(el('p',{text:'Confirm reactivation: '+person.name+' → 稼働中'}),el('p',{text:'Restore mode: '+state.restore}),el('p',{text:'Reason: '+state.reason}));footer.append(button('← Back',()=>{step=0;Object.assign(state,{reason:'returning_from_leave',text:'',restore:'clean_slate'});draw()}))}
    else{body.append(el('p',{text:'確定 '+person.name+' → '+(restore?'稼働中':({on_leave:'休暇中',inactive:'停止中',terminated:'Terminated'})[state.target])}),el('p',{text:'Reason: '+state.reason}),el('p',{text:'Appointment disposition: release_to_pool'}));footer.append(button('← Back',()=>{step--;if(step===0)Object.assign(state,{target:'inactive',reason:'parental_leave',text:'',effective:''});draw()}))}
    footer.append(button(step===2?'適用':'次へ →',()=>{if(step===2){alert('Failed: '+JSON.stringify({detail:blocked,error:blocked}));return}step=restore?2:step+1;draw()},{class:'team-apply'}));

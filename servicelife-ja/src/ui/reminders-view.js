@@ -7,10 +7,7 @@ export function remindersView(data) {
   const tabs = el('div', { class: 'reminder-tabs', role: 'tablist', 'aria-label': 'リマインダーの状態' });
   const panel = el('div', { class: 'reminder-panel', id: 'reminder-results', role: 'tabpanel', tabindex: 0 });
   const updated = el('span', { class: 'updated-at', text: '最終更新 ' + data.reminders.lastUpdated });
-  const warning = el('div', { class: 'delivery-warning' }, icon('info-circle'), ' ',
-    el('strong', { text: 'テスト送信モードが有効です' }),
-    '。送信待ちのお知らせは、指定した時刻になっても ', el('strong', { text: '送信されません' }),
-    '。例外として許可した宛先だけに送信します。テスト送信モードを解除する前に、この一覧で送信予定を確認してください。');
+  const warning=el('div',{class:'delivery-warning'},icon('info-circle'),' 確認用デモの保存済み通知です。実際のメール・SMSは送信されません。');
   const controls = reminderTabs.map(([key, label]) => button([label, el('span', { class: 'tab-count', text: data.reminders.counts[key || 'all'] || 0 })], () => {
     selected = key; paint();
   }, { role: 'tab', id: 'reminder-tab-' + (key || 'all'), 'aria-controls': panel.id, 'data-status': key }));
@@ -31,8 +28,7 @@ export function remindersView(data) {
     });
     panel.classList.toggle('unavailable', !state.available);
     panel.dataset.status = String(state.code);
-    if (!state.available) panel.replaceChildren(el('p', { role: 'status', text: 'Failed to load (404)' }));
-    else panel.replaceChildren(icon('bell-slash'), el('p', { role: 'status', text: '送信待ちのリマインダーはありません。予約が入ると自動で作成されます。' }));
+    panel.replaceChildren(icon('bell-slash'),el('p',{role:'status',text:state.rows.length?state.rows.map(r=>r.subject||r.message||'通知').join(' / '):(reminderTabs.find(([k])=>k===selected)[1]+'に該当する保存済みの通知はありません。')}));
   }
   node.append(warning, tabs, panel); paint();
   return { node, headerExtra: updated, mount() {}, dispose() {} };

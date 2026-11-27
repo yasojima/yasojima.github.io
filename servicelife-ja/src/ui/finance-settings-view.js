@@ -12,11 +12,14 @@ export function financeSettingsView(snapshot,path,role,query){
  let title,compactHeader=true,headerExtra=null,titleIcon;
  if(path==='/settings/billing-policies/'){
   title='請求ルール';node.classList.add('policy-settings');
-  const input=choices('tenantPolicySelect',snapshot.policyOptions,'');
-  node.append(el('h2',{text:title}),description(['Cascade order: customer override > customer-type default > parent-account default > tenant default.']),
-   el('div',{class:'policy-card'},el('nav',{class:'policy-tabs'},['Tenant default','Customer-type defaults','親アカウント','Per-customer overrides'].map((name,i)=>button(name,noop,{class:i===0?'active':''}))),
-    el('section',{},el('h3',{text:'Tenant-wide default'}),description('Applies to every customer with no override and whose customer-type and parent-account have no explicit policy.'),
-     el('div',{class:'policy-row'},el('label',{for:input.id,text:'Policy'}),input,el('span',{class:'policy-unset',text:'NOT SET'})),button('Save tenant default',noop,{id:'tenantSaveBtn',class:'primary'}))));
+  const body=el('section'),tabs=el('nav',{class:'policy-tabs'}),drafts={};let selected=0;
+  const names=['Tenant default','Customer-type defaults','親アカウント','Per-customer overrides'];
+  const draw=()=>{for(const [i,b] of [...tabs.children].entries())b.classList.toggle('active',i===selected);const input=choices('tenantPolicySelect',snapshot.policyOptions,drafts[selected]?.policy||''),status=el('span',{class:'policy-unset',text:drafts[selected]?'仮設定済み':'NOT SET'});let target=null;
+   if(selected===1)target=choices('policyTarget',[{value:'residential',text:'個人宅'},{value:'commercial',text:'会社・施設'}],drafts[selected]?.target||'residential');
+   else if(selected>1)target=el('input',{id:'policyTarget',placeholder:selected===2?'親アカウント名':'顧客名またはID',value:drafts[selected]?.target||''});
+   body.replaceChildren(el('h3',{text:['Tenant-wide default','顧客区分ごとの標準','親アカウントごとの標準','お客様ごとの例外'][selected]}),description('優先順：お客様の例外 → 顧客区分 → 親アカウント → 業者の標準。仮設定はこの画面を離れると元に戻ります。'),...(target?[el('label',{},'対象 ',target)]:[]),el('div',{class:'policy-row'},el('label',{for:input.id,text:'Policy'}),input,status),button('設定をプレビュー',()=>{if(!input.value||target&&!target.value.trim()){status.textContent='対象とルールを選択してください。';return}drafts[selected]={policy:input.value,target:target?.value};status.textContent='仮設定：'+input.selectedOptions[0].label;},{id:'tenantSaveBtn',class:'primary'}));};
+  names.forEach((name,i)=>tabs.append(button(name,()=>{selected=i;draw()},{class:i===0?'active':''})));
+  node.append(el('h2',{text:title}),description('Cascade order: customer override > customer-type default > parent-account default > tenant default.'),el('div',{class:'policy-card'},tabs,body));draw();
  }else if(path==='/settings/payments/'){
   title='決済会社';node.classList.add('payment-settings');let selected='square';
   const provider=choices('pp-provider-select',[{value:'square',text:'Square',label:'Square'},{value:'stripe',text:'Stripe',label:'Stripe'}],snapshot.provider),saveMessage=el('p',{class:'finance-setting-error',hidden:true,role:'status'});

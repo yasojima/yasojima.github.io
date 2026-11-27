@@ -15,7 +15,7 @@ function zipStored(files){
  return new Blob([...chunks,...central,bytes(22,[[0,0x06054b50],[8,count,1],[10,count,1],[12,size],[16,offset]])],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
 }
 export async function reportFile(kind,format,rows){
- if(format==='csv')return new Blob(['\ufeff'+rows.map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+ if(format==='csv')return new Blob(['\ufeff'+rows.map(row=>row.map(v=>'"'+(typeof v==='string'&&/^[=+@\-\t\r]/.test(v)?"'"+v:String(v)).replaceAll('"','""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
  if(format==='xlsx'){
   const spreadsheet='http://schemas.openxmlformats.org/spreadsheetml/2006/main',relationships='http://schemas.openxmlformats.org/package/2006/relationships',office='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
   return zipStored({

@@ -1,4 +1,5 @@
 import {el,icon,button} from './elements.js';
+import {localPreviewEditor} from './local-preview-editor.js';
 import {routeHash} from '../core/router.js';
 export const supportRoutes=['/ai-assistant/','/knowledge/','/job-forms/','/commissions/dashboard/'];
 export function supportPagesView(data,path,role){
@@ -11,10 +12,9 @@ export function supportPagesView(data,path,role){
   node=el('section',{class:'support-content'},el('input',{id:'search',placeholder:'記事を検索',class:'support-search','aria-label':'記事を検索'}),el('div',{class:'support-no-articles'},icon('book-open'),el('p',{text:'該当する記事はありません'})));
  }else if(path==='/job-forms/'){
   title='作業用フォーム・チェックリスト';titleIcon='clipboard-check';
-  const link=el('a',{href:'#',text:'管理メニュー → フォームのひな形',onclick:event=>{
-   event.preventDefault();overlay=el('div',{class:'support-unavailable',role:'dialog','aria-label':'未収録の画面'},el('div',{},el('div',{text:'この原本ページはまだ取得されていません：/admin/forms/formtemplate/'}),button('元の画面へ戻る',()=>{overlay.remove();overlay=null;link.focus()})));document.body.append(overlay);overlay.querySelector('button').focus();
-  }});
-  node=el('section',{class:'support-content'},el('div',{class:'support-form-empty'},icon('clipboard-check'),el('p',{},'まだフォームのひな形がありません。作成先： ',link,'.')));
+  const list=el('div',{class:'support-form-empty'});
+  const create=()=>localPreviewEditor('フォームのひな形',[{key:'name',label:'ひな形の名称',required:true},{key:'items',label:'確認項目（1行に1項目）',type:'textarea',required:true}],v=>{const names=v.items.split('\n').map(x=>x.trim()).filter(Boolean);if(!names.length)throw new Error('確認項目を入力してください。');list.replaceChildren(el('h3',{text:v.name}),el('p',{text:'確認用のひな形。チェックして記入時の動きを確認できます。'}),...names.map(text=>el('label',{style:'display:block;margin:12px 0'},el('input',{type:'checkbox'}),' '+text)),button('ひな形を変更',create));});
+  const link=el('a',{href:'#',text:'管理メニュー → フォームのひな形',onclick:event=>{event.preventDefault();overlay=create();}});list.append(icon('clipboard-check'),el('p',{},'まだフォームのひな形がありません。作成先： ',link,'.'));node=el('section',{class:'support-content'},list);
  }else{
   title='歩合給';titleIcon='hand-holding-usd';
   headerExtra=el('a',{class:'support-commission-settings',href:routeHash(role,'/settings/commissions/')},icon('cog'),' Plan settings');

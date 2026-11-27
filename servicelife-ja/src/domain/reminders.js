@@ -3,9 +3,8 @@ export const reminderTabs = Object.freeze([
   ['skipped', '処理対象外'], ['failed', '失敗'], ['', 'すべて']
 ]);
 
-export function reminderState(snapshot, status = 'pending') {
-  const key = reminderTabs.some(([key]) => key === status) ? status : 'pending';
-  const found = snapshot.states.find(state => state.status === key);
-  if (!found) return { status: key, available: false, code: 404, rows: [] };
-  return { status: key, available: true, code: 200, rows: found.rows };
+export function reminderState(snapshot,status='pending'){
+ const key=reminderTabs.some(([k])=>k===status)?status:'pending';
+ const rows=[...new Map(snapshot.states.flatMap(s=>s.rows||[]).map((r,i)=>[r.id||JSON.stringify(r),r])).values()];
+ return {status:key,available:true,code:200,rows:key?rows.filter(r=>r.status===key):rows};
 }
