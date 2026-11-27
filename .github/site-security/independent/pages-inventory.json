@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "reviewedCommit": "a2d16b8f1087415abd53fbc78421825be9091a8e",
+  "reviewedCommit": "ddf93c34cd99769410de19b3f6a72f46a753ddef",
   "files": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "assets/css/2027problem/2027problem.css": "7ad7eff4a8c3ec908e33a14e62c55d700909a0a138c4aa833d68e220b79fdede",
@@ -823,7 +823,7 @@
     "servicelife-ja/data/routes.json": "b054332336956fc8ad23490529b9b976847f560dc7a45947359be6a9681d5199",
     "servicelife-ja/data/document-7051e72b26d81340da25db3d2167c42e0b137757f84edbaf6422bc257a3c8482.json": "e32864d0d4a2fb195c35e987fd079c2c8b86b4e0bd132a4b4efe53e38dddf327",
     "servicelife-ja/data/document-d889125059917db860ba184eeeb8f0803956a9ca5b4ee9bced539b3297014cb0.json": "8dda4333438e0b23f427bfd75ab90feb41c7d4162a732913c14a047b128babb5",
-    "servicelife-ja/src/app.js": "df15ea6cd31067b10b64d8d8a149bfa25d86ffa44eb0d336717df05807548cf2",
+    "servicelife-ja/src/app.js": "ff2be3fcf5e38ee76c1da3d15165acfd5e643e09716eb62c037c6bdbca4785fe",
     "servicelife-ja/src/ui/contracts-view.js": "0786379c46864639cae9e2a0282c9b5a3d5514bd07e84e6a2370b761d2a6ab74",
     "servicelife-ja/src/ui/contract-documents-view.js": "ae1cc629413406baf80735a843188f2cffa33ffe2246041bed0fc86dca24417d",
     "servicelife-ja/src/ui/root-settings-dialogs.js": "b92f957d90e78cbd6f0650de1220d5ecd98abe2d8d79d05eafb3be2c00c5609a",
@@ -896,7 +896,7 @@
     "servicelife-ja/src/ui/support-pages-view.js": "aca8c1373e4902685cd26d359be54a4d90c4f2178e7eeef1f2ef1c2cfdf228d2",
     "servicelife-ja/src/ui/leaderboard-view.js": "f4ddc250d1c241ccc7e4548c765f054bb5392f660fcc66bdf4c8ac8e1e11ba5a",
     "servicelife-ja/src/ui/utilities-view.js": "0afe9602cb8872b156b1665b28228488a8d1c75098f03c2d098fa1f7c77d7353",
-    "servicelife-ja/src/ui/workspace-frame.js": "012ae882545231821e25e5e66b8f53571dc8bd926c81f4e66a4a0bedbff0972e",
+    "servicelife-ja/src/ui/workspace-frame.js": "11dcc7d9fed76efa7f8e5cedc3e4af8b2311aaf6a8b95b87778c325251ff2071",
     "servicelife-ja/src/ui/bookings-view.js": "32d80e578261df82d2157afd5577ba79c0827c2804493509558436006ca647e7",
     "servicelife-ja/src/ui/field-payment.js": "515028a05feb2ad03464aa42201123d82defc6b06ae0bd09697982ff6c04530d",
     "servicelife-ja/src/ui/report-hub.css": "a8d481c894fc95a3842df797bd98f9b0933e02785e77b93257a4828488f8c4ae",
@@ -937,7 +937,7 @@
     "servicelife-ja/src/ui/maintenance-view.js": "5701bd0a8ee45d54fb66b181f453a3be6511384665ec1c0b97906f11e0f0a600",
     "servicelife-ja/src/ui/routes.css": "969874a4e87d685a682a44a4a63f990ab7cb75f8cd304c560ffdbd4bf62085c7",
     "servicelife-ja/src/core/data-reader.js": "5e368af7adb72e200e0d32b7bfcfbb04b3d7647d9003ab0e68d9e5fe55b3d409",
-    "servicelife-ja/src/core/router.js": "2fe6e6f7e67103ea93a2a0ee470c7d5921e5a09a5fda82e2c02c37891cddada7",
+    "servicelife-ja/src/core/router.js": "78805daa553d9c1ef98a7fd5e926b7be7630c0ea0e853070ee42858125089219",
     "servicelife-ja/src/core/approved-data.js": "ecc1a009037e7dc61124d575a18dfb4fd70c1716ceef83dad03963b276a251d1",
     "servicelife-ja/src/core/local-files.js": "0c077dbba47c3272d30295291fe2928bbdaea017e074cba16fbdb50afedb9912",
     "servicelife-ja/src/domain/bookings.js": "ad8aad239d2289e174def5febaf0ff012c4ee225288d0171bcdc0d7ed08dcc0b",
@@ -953,6 +953,6 @@
     "servicelife-ja/src/domain/report-hub.js": "743ea8c99ecc07001f70b5dde942a59fd811148099a18cf8a4e607232228d24f",
     "servicelife-ja/src/domain/report-pdf.js": "7fd9c0edf893f3596f3db8f312dda93d0a7370df990f03a1ad6cf3f31da3debb",
     "servicelife-ja/src/domain/notifications.js": "592a4da2297863c59398c3f1153049863b9445b75485033c41df5b941d8dfc59",
-    "servicelife-ja/manifest.json": "b88398812ef07de48d01a107d7c0b6a4dd81b613aa59e304ea4aa6baee5a3500"
+    "servicelife-ja/manifest.json": "1a019f2dedb938d67853896ded99b7a6106df0aa96c4579c5b71b71c3af2b7a7"
   }
 }

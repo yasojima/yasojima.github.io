@@ -26,3 +26,13 @@ function containsRoute(routes,place){
 }
 export function canOpen(catalog,place){return containsRoute(catalog.routes,place)}
 export function supportsIndependent(catalog,place){return containsRoute(catalog.migratedRoutes,place)}
+
+export function roleLanding(catalog,role,currentPath=null){
+  const home={company_admin:'/business-manager/',csr:'/csr-dashboard/',technician:'/my-day/'};
+  if(!roles.has(role))throw new Error('無効な役割です。');
+  if(currentPath){
+    const path=currentPath==='/contracts/documents/'&&role!=='csr'?'/contracts/':currentPath;
+    if(canOpen(catalog,{role,path,query:new URLSearchParams()}))return path;
+  }
+  return home[role];
+}
