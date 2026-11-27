@@ -1,44 +1,22 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-src 'self' blob:; object-src 'none'; form-action 'none'; worker-src 'none'; base-uri 'self'">
-  <title>SUKIMAKUN</title>
-  <style>
-    html,body{margin:0;width:100%;height:100%;background:#f4f6fa}
-    body>iframe{display:block;width:100%;height:100%;border:0}
-    iframe[inert]{position:absolute;inset:0;opacity:0;pointer-events:none}
-    #notice{position:absolute;inset:0;display:grid;place-content:center;font:15px system-ui;color:#34513d;background:#f4f6fa}
-    #notice[hidden],#screen[hidden]{display:none}
-    #reference-status{position:fixed;right:16px;bottom:16px;z-index:3000;max-width:calc(100vw - 64px);display:flex;align-items:center;gap:12px;padding:12px 16px;background:white;border:1px solid #dfe6e9;border-radius:8px;box-shadow:0 4px 18px #0002;color:#636e72;font:13px/1.5 system-ui}
-    #reference-status[hidden]{display:none}
-    #reference-status button{background:transparent;border:0;font-size:20px;cursor:pointer;color:inherit}
-    #office-pdf{width:min(960px,94vw);height:85vh;box-sizing:border-box;padding:12px;border:1px solid #cbd6d0;border-radius:10px;font:14px system-ui;color:#23362b}
-    #office-pdf::backdrop{background:#19282099}
-    #office-pdf header{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:10px}
-    #office-pdf strong{flex:1;overflow-wrap:anywhere}
-    #office-pdf a,#office-pdf button{color:#225a37;font:inherit}#office-pdf iframe{border:0;width:100%;height:calc(100% - 54px)}
-    #office-pdf img{width:100%;height:calc(100% - 54px);object-fit:contain}
-    #office-pdf .pdf-pages{height:calc(100% - 54px);overflow:auto;background:#f0f1f3;padding:12px;box-sizing:border-box}
-    #office-pdf .pdf-pages[hidden]{display:none}
-    #office-pdf .pdf-pages img{display:block;width:100%;height:auto;object-fit:initial;margin:0 auto 12px}
-    #viewport-hud{
-      position:fixed;right:1px;bottom:1px;z-index:2147483647;
-      padding:1px 3px;border-radius:2px;background:#000;color:#fff;
-      font:10px/12px ui-monospace,monospace;white-space:nowrap;
-      pointer-events:none;user-select:none;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'">
+<title>SUKIMAKUN</title>
+<link rel="stylesheet" href="./lib/css/fontawesome.min.css">
+<link rel="stylesheet" href="./lib/css/solid.min.css">
+<link rel="stylesheet" href="./lib/flatpickr.min.css">
+<link rel="stylesheet" href="./lib/quill.snow.min.css">
+<link rel="stylesheet" href="./src/ui/app.css">
+<script src="./lib/chart.umd.js" defer></script>
+<script src="./lib/flatpickr.min.js" defer></script>
+<script src="./lib/flatpickr-ja.js" defer></script>
+<script src="./lib/quill.min.js" defer></script>
+<script type="module" src="./src/app.js"></script>
 </head>
-<body>
-  <iframe id="screen" title="SUKIMAKUN" sandbox="allow-scripts allow-modals allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>
-  <p id="notice" role="status">SUKIMAKUNを読み込んでいます…</p>
-  <div id="reference-status" role="status" aria-live="polite" hidden><span></span><button type="button" aria-label="閉じる">×</button></div>
-  <dialog id="office-pdf" aria-label="書類の控え"><header><strong></strong><a target="_blank" rel="noopener">別タブで開く</a><a download>ダウンロード</a><button type="button">閉じる</button></header><div class="pdf-pages" hidden></div><iframe hidden title="書類プレビュー" sandbox="allow-same-origin"></iframe><img hidden alt="保管した写真"></dialog>
-  <span id="viewport-hud" aria-hidden="true" hidden></span>
-  <script src="./viewer.js?v=ce7472a176454823" defer></script>
-</body>
+<body><div id="app"><p role="status">SUKIMAKUNを読み込んでいます…</p></div></body>
 </html>

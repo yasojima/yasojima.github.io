@@ -34,18 +34,18 @@ jobs:
           npm install --prefix .github/site-security/security --ignore-scripts --omit=optional --no-audit --no-fund --no-package-lock
           node .github/site-security/security/node_modules/playwright/cli.js install --with-deps chromium
       - name: Stage only reviewed public files and inspect actual payloads
-        run: python .github/site-security/security/stage_pages.py "$GITHUB_WORKSPACE" "$RUNNER_TEMP/approved-site"
+        run: python .github/site-security/independent/stage_pages.py "$GITHUB_WORKSPACE" "$RUNNER_TEMP/approved-site"
       - name: Reject known bypasses
-        run: python .github/site-security/security/check_regressions.py "$RUNNER_TEMP/approved-site/servicelife-ja"
+        run: python .github/site-security/independent/check_regressions.py "$RUNNER_TEMP/approved-site/servicelife-ja"
       - name: Verify real protection and CSP in Chromium
-        run: node .github/site-security/security/browser_gate.cjs "$RUNNER_TEMP/approved-site"
+        run: node .github/site-security/independent/browser_gate.cjs "$RUNNER_TEMP/approved-site"
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Name this build artifact
         id: artifact-name
         run: echo "name=github-pages-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
       - name: Recheck the exact artifact immediately before upload
-        run: python .github/site-security/security/stage_pages.py --verify "$RUNNER_TEMP/approved-site"
+        run: python .github/site-security/independent/stage_pages.py --verify "$RUNNER_TEMP/approved-site"
       - name: Upload verified artifact only
         uses: actions/upload-pages-artifact@v3
         with:

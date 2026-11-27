@@ -1,0 +1,1 @@
+{"role":"csr","fields":{"/reschedule-requests/":{"rrRejectNote":{"tag":"textarea","type":"text","name":"","value":"","required":false,"placeholder":"例：希望時間が別の予約と重なったため、折り返しの電話で別の時間をご案内","min":"","step":"","accept":"","options":[]}}},"rescheduleRefreshed":"20:43:33","rescheduleUpdated":"20:43:28"}

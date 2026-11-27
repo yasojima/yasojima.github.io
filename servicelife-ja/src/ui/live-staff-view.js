@@ -1,0 +1,9 @@
+import {el,icon} from './elements.js';
+import {coordinatePlot} from './coordinate-plot.js';
+export function liveStaffView(data){
+ const node=el('section',{class:'live-staff','data-live-staff':''}),list=el('div',{class:'live-staff-list'}),map=coordinatePlot(data.live,p=>el('div',{},el('strong',{text:p.name}),el('div',{text:'予定どおり'}),el('div',{text:'次の訪問先　'+p.next}),el('div',{text:'本日の完了　0件'})));
+ const filter=el('select',{id:'filterStatus','aria-label':'スタッフの状態',onchange:render},data.statusOptions.map(o=>el('option',o)));
+ node.append(el('div',{class:'live-staff-stats'},[[7,'対象スタッフ数'],[0,'現場で作業中'],[7,'訪問予定・移動中'],[0,'待機中・勤務外']].map(([v,t])=>el('div',{},el('strong',{text:v}),el('small',{text:t})))),el('div',{class:'live-staff-filter'},el('small',{},el('span',{class:'live-dot'}),' 一覧の最終更新 '+data.updated),filter),el('div',{class:'live-staff-columns'},list,map.node));
+ function render(){list.replaceChildren();if(filter.value&&filter.value!=='on_route'){list.append(el('div',{class:'live-staff-empty',text:'該当するスタッフはいません'}));return}list.append(...data.live.map((p,i)=>el('article',{class:'live-staff-card',tabindex:0,onclick:()=>map.choose(i,true),onkeydown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();map.choose(i,true)}}},el('div',{class:'live-staff-identity'},el('span',{class:'team-avatar',style:'background:'+p.color,text:p.initials}),el('div',{class:'live-staff-person'},el('strong',{text:p.name}),el('small',{text:'次の訪問先：'+p.next})),el('span',{class:'live-staff-status'},el('span',{class:'live-dot'}),'予定どおり')),el('div',{class:'live-staff-next'},el('small',{text:'次の訪問先：'+p.next}),el('b',{text:p.time})),el('small',{class:'live-staff-coordinates'},icon('satellite'),' '+p.lat.toFixed(4)+', '+p.lng.toFixed(4)+' • '+p.updated))));}render();
+ return{title:'現場スタッフの稼働状況',titleIcon:'satellite-dish',headerClass:'team-header',node,mount:()=>map.mount(),dispose:()=>map.dispose()};
+}
