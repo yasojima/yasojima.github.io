@@ -1,5 +1,5 @@
 import { readSnapshot, disableConnections } from './core/data-reader.js';
-import { parseRoute, routeHash, canOpen, supportsIndependent, roleLanding } from './core/router.js';
+import { parseRoute, routeHash, canOpen, supportsIndependent } from './core/router.js';
 import { el, button, icon, notice } from './ui/elements.js';
 import { bookingsView } from './ui/bookings-view.js';
 import { remindersView } from './ui/reminders-view.js';
@@ -7,6 +7,7 @@ import { notificationsView, notificationPopover } from './ui/notifications-view.
 import { locationsView } from './ui/locations-view.js';
 import { customersView } from './ui/customers-view.js';
 import { menuIcons } from './ui/menu-icons.js';
+import { roleNavigation, sidebarClose } from './ui/sidebar-controls.js';
 import { resourcesView } from './ui/resources-view.js';
 import { settingsView, settingRoutes } from './ui/settings-view.js';
 import { treatmentView } from './ui/treatment-view.js';
@@ -58,8 +59,6 @@ disableConnections();
 const app = document.getElementById('app');
 const catalogPromise = readSnapshot('data/catalog.json');
 let dispose = () => {}, generation = 0;
-const roles = [['company_admin','会社管理者'],['csr','顧客対応'],['technician','担当スタッフ']];
-function navigate(role, path) { location.hash = routeHash(role, path); }
 async function render() {
   const current = ++generation;
   try {
@@ -121,17 +120,15 @@ async function render() {
     dispose();
     document.querySelectorAll('dialog.dialog').forEach(node => node.close());
     const accountName = catalog.accounts[catalog.defaultAccounts[place.role]]?.name || '';
-    const demo = el('header', { class: 'demo-bar' }, el('span', {}, el('span', { class: 'demo-dot' }), '操作見本（閲覧専用）'),
-      el('span', {}, icon('eye'), ' 表示する役割 →'),
-      roles.map(([role,label]) => button(label, () => navigate(role, roleLanding(catalog,role)), { class: role === place.role ? 'selected' : '', 'aria-pressed': String(role === place.role) })));
     const navItems = catalog.menus[place.role] || [];
     const menu = el('nav', { 'aria-label': '管理メニュー', class: 'menu' });
+    menu.append(roleNavigation(catalog, place));
     let group = '';
     navItems.forEach(item => {
       if (group !== item.group) { group = item.group; menu.append(el('div', { class: 'menu-group', text: group })); }
       menu.append(el('a', { href: routeHash(place.role,item.route), class: item.route === place.path ? 'active' : '', ...(item.route === place.path ? { 'aria-current': 'page' } : {}) }, icon(menuIcons[item.route] || 'circle'), el('span', { text: item.label })));
     });
-    const sidebar = el('aside', { class: 'sidebar' }, el('div', { class: 'brand' }, el('img', { src: './brand.svg', alt: 'SUKIMAKUN' })), menu,
+    const sidebar = el('aside', { class: 'sidebar' }, el('div', { class: 'brand' }, el('img', { src: './brand.svg', alt: 'SUKIMAKUN' }), sidebarClose(() => { sidebar.classList.remove('open'); hamburger.setAttribute('aria-expanded', 'false'); })), menu,
       el('footer', {}, el('span', { text: accountName }), button(icon('sign-out-alt'), () => notice('確認用デモのため、実際のログアウトは行いません。'), { class: 'logout', 'aria-label': 'ログアウト' })));
     const view = owned ? (place.path==='/business-manager/'&&place.role!=='company_admin'?accessDeniedView(place.path,place.role,['company_admin']):inbox ? inboxView(inbox) : dashboard ? dashboardView(dashboard) : routing ? routingView(routing,place.path) : routes ? routesView(routes) : bi ? biView(bi) : csrDashboard ? csrDashboardView(csrDashboard) : contractDocuments ? contractDocumentsView(contractDocuments) : contracts ? contractsView(contracts) : maintenance ? maintenanceView(maintenance) : business ? businessView(business,place.role) : chat ? chatView(chat,place.query) : calendar ? calendarView(calendar,data) : fieldJob ? fieldJobView(fieldJob,place.query.get('appt')) : myDay ? myDayView(myDay) : users ? usersView(users) : staff ? (place.path==='/tech-team/'?teamView(staff):liveStaffView(staff)) : myLeads ? myLeadsView(myLeads) : workforce ? workforceView(workforce,place.path) : leaderboard ? leaderboardView(leaderboard) : contest ? contestsView(contest,place.role) : tickets ? ticketsView(tickets) : leads ? leadsView(leads) : jobLogs ? jobLogsView(jobLogs,place.role) : engagement ? engagementView(engagement,place.path) : utilities ? utilitiesView(utilities,place.path,place.role) : communications ? communicationsView(communications,place.path) : drilldowns ? drilldownView(drilldowns,place.path,place.role) : support ? supportPagesView(support,place.path,place.role) : reportHub ? reportHubView(reportHub,place.role) : staffReport ? staffReportsView(staffReports,place.path,place.role) : compliance ? complianceView(compliance,place.path) : adminTools ? adminToolsView(adminTools,place.path) : rootSettings ? rootSettingsView(rootSettings,place.role,place.query) : lunch ? lunchView(lunch,place.path.split('/')[3]) : place.path==='/settings/'&&place.role!=='company_admin' ? accessDeniedView(place.path,place.role,['company_admin']) : financeSettings ? financeSettingsView(financeSettings,place.path,place.role,place.query) : disputes ? disputesView(disputes,place.path,place.role) : billing ? billingView(billing,invoices,payments,place.role,place.path) : payments ? paymentsView(payments,invoices,place.role,place.query) : invoices ? invoicesView(invoices,place.query) : customerMatch ? customerDetailView(customersData,histories,customerMatch[1],place.role) : treatmentRoute ? treatmentView(settingsData,place.path,place.role) : settingsData ? settingsView(settingsData,place.path,place.role) : resourceKind ? resourcesView(resourcesData,resourceKind) : locationMatch ? locationsView(locationData,locationMatch[1],place.role) : place.path === '/customers/' ? customersView(customersData,place.role,place.query) : place.path === '/reminders/' ? remindersView(data) : place.path === '/notifications/' ? notificationsView(notificationData,catalog,place.role) : bookingsView(data, place.query)) : null;
     app.classList.toggle('workspace-app',Boolean(view?.workspace));
@@ -149,11 +146,8 @@ async function render() {
       bell);
     const pending = el('section', { class: 'migration-notice' }, el('h2', { text: canOpen(catalog,place) ? 'この画面は移行作業中です' : 'この役割では予約一覧を利用できません' }),
       el('p', { text: 'このローカル版は独自実装の動作比較用です。公開中の既存画面と全機能は保持されています。' }));
-    app.replaceChildren(demo, sidebar, el('main', {'data-route':place.role+'|'+place.path,'data-query':place.query.toString()}, place.role==='csr'&&contracts?el('a',{class:'contract-documents-link',href:routeHash('csr','/contracts/documents/'),text:'契約PDF・署名情報を確認'}):null, header, view?.node || pending));
-    const resize = new ResizeObserver(() => app.style.setProperty('--role-bar-height', demo.getBoundingClientRect().height + 'px'));
-    resize.observe(demo);
-    app.style.setProperty('--role-bar-height', demo.getBoundingClientRect().height + 'px');
-    view?.mount(); dispose = () => { resize.disconnect(); closePopover?.(); view?.dispose(); };
+    app.replaceChildren(sidebar, el('main', {'data-route':place.role+'|'+place.path,'data-query':place.query.toString()}, place.role==='csr'&&contracts?el('a',{class:'contract-documents-link',href:routeHash('csr','/contracts/documents/'),text:'契約PDF・署名情報を確認'}):null, header, view?.node || pending));
+    view?.mount(); dispose = () => { closePopover?.(); view?.dispose(); };
     document.title = title + '｜SUKIMAKUN';
   } catch (error) {
     if (current === generation) { dispose(); app.replaceChildren(el('p', { role: 'alert', class: 'fatal', text: '表示できませんでした：' + error.message })); }
